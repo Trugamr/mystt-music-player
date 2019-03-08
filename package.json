@@ -1,0 +1,27 @@
+{
+  "name": "mystt-music-player",
+  "version": "1.0.0",
+  "description": "Electron music player",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron .",
+    "postinstall": "electron-builder install-app-deps"
+  },
+  "repository": "",
+  "keywords": [
+    "Electron"
+  ],
+  "author": "Trugamr",
+  "license": "",
+  "devDependencies": {
+    "electron": "4.0.3",
+    "electron-builder": "^20.38.5",
+    "electron-rebuild": "^1.8.4",
+    "electron-reload": "^1.4.0"
+  },
+  "dependencies": {
+    "music-metadata": "^3.5.2",
+    "recursive-readdir": "^2.2.2",
+    "sqlite3": "^4.0.6"
+  }
+}
