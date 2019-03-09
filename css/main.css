@@ -1,0 +1,119 @@
+@import url('https://fonts.googleapis.com/css?family=Montserrat:400,500,700');
+
+
+:root {
+    --primary-color: #1e1e35;
+    --primary-color-light: #2e2e4e; 
+}
+
+html, body {
+    border-radius: 20px;
+}
+
+* {
+    padding: 0px;
+    margin: 0px;
+}
+
+#container {
+    width: 100vw;
+    height: 100vh !important;
+}
+  
+.rowParent, .columnParent {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    justify-content: flex-start;
+    align-content: stretch;
+    align-items: stretch;
+}
+  
+.columnParent {
+    flex-direction: column;
+}
+
+.flexChild {
+    flex: 1;
+    align-self: auto;
+}
+
+#titlebar {
+    flex: 0 0 auto; height: 30px;
+    background-color: var(--primary-color);
+    width: 100vw;
+    border-radius: 8px 8px 0 0;
+    -webkit-app-region: drag;
+}
+
+#titlebar-title, #titlebar-buttons {
+    display: inline-block;
+}
+
+#titlebar-title {
+    font-family: Montserrat;
+    font-size: 14px;
+    padding-left: 10px;
+    line-height: 30px;
+    font-weight: 500;
+    color: #f8f8f8;
+    width: 100px;
+    float: left;
+}
+
+#titlebar-buttons {
+    float: right;
+    padding: 6px;
+    padding-right: 10px;
+}
+
+#titlebar-buttons div {
+    display: inline-block;
+    height: 12px;
+    width: 12px;
+    border-radius: 50%;
+    margin-left: 5px;
+    -webkit-app-region: no-drag;
+    transition: ease all 0.2s;
+    cursor: pointer;
+}
+
+#minimize-btn {
+    background-color: hsl(60, 96%, 70%);
+}
+
+#maximize-btn {
+    background-color: hsl(120, 100%, 70%);
+}
+
+#close-btn {
+    background-color: hsl(0, 97%, 70%);
+}
+
+#minimize-btn:hover {
+    background-color: hsl(60, 62%, 40%);
+}
+
+#maximize-btn:hover {
+    background-color: hsl(120, 64%, 39%);
+}
+
+#close-btn:hover {
+    background-color: hsl(0, 61%, 41%);
+}
+
+
+  
+#sidebar {
+    flex: 0 0 auto; 
+    width: 200px;
+    transition: ease all;
+    background-color: var(--primary-color);
+    border-radius: 0 0 0 8px;
+    border-right: solid 1px var(--primary-color-light);
+}
+  
+#main {
+    background-color: var(--primary-color);
+    border-radius: 0 0 8px 0;
+}

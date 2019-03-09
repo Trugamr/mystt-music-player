@@ -6,11 +6,33 @@
 // All of the Node.js APIs are available in this process.
 
 const { dialog } = require('electron').remote
+const { remote } = require('electron')
 const recursiveRead = require('recursive-readdir') 
 const path = require('path')
 const mm = require('music-metadata')
 const fs = require('fs')
 const sqlite3 = require('sqlite3')
+
+// Get current window and creating custom min, max, close buttons
+let win = remote.getCurrentWindow();
+document.querySelector('#minimize-btn').addEventListener('click', () => {
+    win.minimize();
+})
+let isMaximized = false;
+document.querySelector('#maximize-btn').addEventListener('click', () => {
+    console.log(win.isMaximized())
+    if(isMaximized) {
+        win.unmaximize()
+        isMaximized = false;
+    }
+    else {
+        win.maximize();
+        isMaximized = true;
+    }
+})
+document.querySelector('#close-btn').addEventListener('click', () => {
+    win.close();
+})
 
 // Mock metadata for testing with sqlite
 let md = require('./mockdata.js');
