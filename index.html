@@ -5,6 +5,13 @@
     <title>mystt</title>
     <!-- main page stylesheet -->
     <link rel="stylesheet" href="./css/main.css">
+    
+    <!-- Adding first and last script tags to make scripts work in both browser and electron -->
+    <script>if (typeof module === 'object') {window.module = module; module = undefined;}</script>
+    
+    <script src="./js/jquery-3.3.1.min.js"></script>
+
+    <script>if (window.module) module = window.module;</script>
   </head>
   <body>
     <div id="container" class="flexChild columnParent">
@@ -18,7 +25,7 @@
       </div>
       <div id="wrapper" class="flexChild rowParent">
         <div id="sidebar" class="flexChild">
-            <!-- <button id="selectBtn">Add</button> -->
+            <button id="selectBtn">Add</button>
         </div>
         <div id="main" class="flexChild"></div>
       </div>      

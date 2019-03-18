@@ -1,9 +1,21 @@
 @import url('https://fonts.googleapis.com/css?family=Montserrat:400,500,700');
 
+@font-face {
+    font-family: 'Avenir';
+    src: url('/assets/fonts/Avenir/Avenir-Book.ttf');
+}
+
+@font-face {
+    font-family: 'Futura';
+    src: url('/assets/fonts/Futura/Futura.ttf');
+}
+
 
 :root {
     --primary-color: #1e1e35;
     --primary-color-light: #2e2e4e; 
+    --primary-color-white: #ffffff;
+    --primary-color-gray: #c4c4c4;
 }
 
 html, body {
@@ -42,7 +54,7 @@ html, body {
     flex: 0 0 auto; height: 30px;
     background-color: var(--primary-color);
     width: 100vw;
-    border-radius: 8px 8px 0 0;
+    /* border-radius: 8px 8px 0 0; */
     -webkit-app-region: drag;
 }
 
@@ -109,11 +121,11 @@ html, body {
     width: 200px;
     transition: ease all;
     background-color: var(--primary-color);
-    border-radius: 0 0 0 8px;
+    /* border-radius: 0 0 0 8px; */
     border-right: solid 1px var(--primary-color-light);
 }
   
 #main {
     background-color: var(--primary-color);
-    border-radius: 0 0 8px 0;
+    /* border-radius: 0 0 8px 0; */
 }

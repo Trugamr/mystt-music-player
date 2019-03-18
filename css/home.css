@@ -1,0 +1,73 @@
+@import url('https://fonts.googleapis.com/css?family=Montserrat:400,500,600,700');
+
+@font-face {
+    font-family: 'Avenir';
+    src: url('../assets/fonts/Avenir/Avenir.ttf');
+}
+
+@font-face {
+    font-family: 'Futura';
+    src: url('../assets/fonts/Futura/Futura\ Heavy\ font.ttf');
+}
+
+#homeContainer {
+    box-sizing: border-box;
+    padding: 30px;
+    width: 100%;
+}
+
+#homeMusicHeading {
+     /* getting from main.css */
+    color: var(--primary-color-white);
+    font-family: Futura;
+    margin-bottom: 20px;
+}
+
+#homeMusicRow {
+    width: 100%;
+    white-space: nowrap;    
+}
+
+@keyframes scaleUp {
+    0% {
+        transform: scale(0);
+    }
+    100% {
+        transfrom: scale(1);
+    }
+}
+
+#homeMusicCard {
+    display: inline-block;
+    margin-right: 18px;
+}
+
+#homeMusicCardArt {
+    height: 150px;
+    width: 150px;
+    border-radius: 6px;
+    box-shadow: 0px 6px 30px -5px rgba(0, 0, 0, 0.4);
+}
+
+#homeMusicCardTitle, #homeMusicCardArtist {
+    margin-left: 6px;
+    width: 120px;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+
+#homeMusicCardTitle {
+    color: var(--primary-color-white);
+    font-family: Montserrat;
+    font-weight: 500;
+    font-size: 14px;
+    margin-top: 8px;
+    margin-bottom: 3px;
+}
+
+#homeMusicCardArtist {
+    color: var(--primary-color-gray);
+    font-family: Montserrat;
+    font-size: 12px;
+}

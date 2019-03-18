@@ -20,15 +20,16 @@ document.querySelector('#minimize-btn').addEventListener('click', () => {
 })
 let isMaximized = false;
 document.querySelector('#maximize-btn').addEventListener('click', () => {
-    console.log(win.isMaximized())
-    if(isMaximized) {
-        win.unmaximize()
-        isMaximized = false;
-    }
-    else {
-        win.maximize();
-        isMaximized = true;
-    }
+    win.isMaximized() ? win.unmaximize() : win.maximize()
+    // console.log(win.isMaximized())
+    // if(isMaximized) {
+    //     win.unmaximize()
+    //     isMaximized = false;
+    // }
+    // else {
+    //     win.maximize();
+    //     isMaximized = true;
+    // }
 })
 document.querySelector('#close-btn').addEventListener('click', () => {
     win.close();
@@ -183,18 +184,82 @@ function pushToDatabase(data) {
                 .catch(err => {
                     reject(err)
                     console.error(err)
-                })  
-                
-            
-            db.each("SELECT id , title, album, artist, duration, plays, favourite, birthtime, path FROM Music", function(err, row) {
-                console.log({id: row.id, title: row.title, artist: row.artist, duration: row.duration, plays: row.plays, favourite: row.favourite, birthtime: row.birthtime, path: row.path});
-                if(err) console.error(err);
-            });
+                })
         });
-        db.close((err) => {
-            if(err) console.error(err)
-            else console.log('connection to database closed.')
+        // db.close((err) => {
+        //     if(err) console.error(err)
+        //     else console.log('connection to database closed.')
+        // });
+    })
+}
+
+// Fething music from database 
+// title COLLATE NOCASE ASC
+// birthtime DESC - for recently added
+function fetchMusic(args = "title COLLATE NOCASE ASC") {
+    let fetchedMusic = [];
+    return new Promise((resolve, reject) => {
+        db.each(`SELECT id, title, album, artist, duration, plays, favourite, birthtime, path FROM Music ${args}`, (err, row) => {
+            let track = {
+                id: row.id,
+                title: row.title,
+                artist: row.artist,
+                duration: row.duration,
+                plays: row.plays,
+                favourite: row.favourite,
+                birthtime: row.birthtime,
+                path: row.path
+            }
+            fetchedMusic.push(track);
+            if(err) console.error(err);
+        }, (err, data) => {
+            if(data) resolve(fetchedMusic)
+            else reject(err)
         });
     })
 }
 
+
+// Loading home page in #main content at start
+$('#main').load('./pages/home.htm');
+// Populating home page
+
+fetchMusic('WHERE ID <=5 ORDER BY birthtime DESC')
+    .then(music=> {
+        let homeMusicRow = document.querySelector('#homeMusicRow');
+        let homeMusicCards = '';
+        let homeMusicCardPromises = [];
+        music.forEach(track => {
+            let b64encoded, datajpg;
+            homeMusicCardPromises.push(
+                new Promise((resolve, reject) => {
+                    mm.parseFile(track.path)
+                    .then(metadata => {                
+                        b64encoded = btoa(new Uint8Array(metadata.common.picture[0].data).reduce((data, byte) => data + String.fromCharCode(byte), ''));;
+                        datajpg = "data:image/jpg;base64," + b64encoded;
+                        homeMusicCards += `
+                            <div id="homeMusicCard">
+                                <img src="${datajpg}" id="homeMusicCardArt">
+                                <p id="homeMusicCardTitle">${track.title}</p>
+                                <p id="homeMusicCardArtist">${track.artist}</p>
+                            </div>
+                        `
+                        if(datajpg) resolve(`got art for ${metadata.common.title}`)
+                        else reject(`failed to get art for ${metadata.common.title}`)
+                    })
+                })
+            )
+
+        })
+
+        // making sure we get all the artworks before populating
+        Promise.all(homeMusicCardPromises)
+            .then(data => {
+                console.log(data);
+                homeMusicRow.innerHTML = homeMusicCards;
+            })
+        
+    })
+    .catch(err => {
+        console.error(err);
+    })

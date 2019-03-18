@@ -10,9 +10,9 @@ let mainWindow
 function createWindow () {
   // Create the browser window.
   mainWindow = new BrowserWindow({
-    width: 1024,
-    height: 600,
-    transparent: true,
+    width: 1152,
+    height: 648,
+    // transparent: true,
     frame: false,
     webPreferences: {
       nodeIntegration: true
