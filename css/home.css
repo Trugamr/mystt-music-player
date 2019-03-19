@@ -2,12 +2,12 @@
 
 @font-face {
     font-family: 'Avenir';
-    src: url('../assets/fonts/Avenir/Avenir.ttf');
+    src: url('../assets/fonts/Avenir/Avenir-Book.ttf');
 }
 
 @font-face {
     font-family: 'Futura';
-    src: url('../assets/fonts/Futura/Futura\ Heavy\ font.ttf');
+    src: url('../assets/fonts/Futura/Futura Heavy font.ttf');
 }
 
 #homeContainer {

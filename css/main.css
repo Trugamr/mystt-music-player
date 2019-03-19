@@ -1,13 +1,14 @@
 @import url('https://fonts.googleapis.com/css?family=Montserrat:400,500,700');
 
+
 @font-face {
     font-family: 'Avenir';
-    src: url('/assets/fonts/Avenir/Avenir-Book.ttf');
+    src: url('../assets/fonts/Avenir/Avenir-Book.ttf');
 }
 
 @font-face {
     font-family: 'Futura';
-    src: url('/assets/fonts/Futura/Futura.ttf');
+    src: url('../assets/fonts/Futura/Futura.ttf');
 }
 
 
@@ -16,6 +17,7 @@
     --primary-color-light: #2e2e4e; 
     --primary-color-white: #ffffff;
     --primary-color-gray: #c4c4c4;
+    --primary-color-gray-light: #e2e2e2;
 }
 
 html, body {
@@ -124,6 +126,41 @@ html, body {
     /* border-radius: 0 0 0 8px; */
     border-right: solid 1px var(--primary-color-light);
 }
+
+#sidebarWrapper {
+    box-sizing: border-box;
+    /* background-color: var(--primary-color-light); */
+    height: 100%;
+    width: 100%;
+    padding: 20px;
+}
+
+#sidebarHeading {
+    font-family: Futura;
+    color: var(--primary-color-gray);
+    margin-bottom: 20px;
+    margin-top: 30px;
+}
+
+.sidebarLinks {
+    font-family: Avenir;
+    color: var(--primary-color-gray-light);
+    margin-bottom: 14px;
+    font-size: 16px;
+    cursor: pointer;
+    margin-left: 2px;
+    transition: ease all 0.2s;
+}
+
+.sidebarLinks:hover {
+    color: var(--primary-color-white);
+    transform: translateX(4px)
+}
+
+.sidebarLinks span {
+    font-size: 20px;
+}
+
   
 #main {
     background-color: var(--primary-color);

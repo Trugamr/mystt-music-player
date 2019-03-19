@@ -20,6 +20,7 @@
     "electron-reload": "^1.4.0"
   },
   "dependencies": {
+    "jsdom": "^14.0.0",
     "music-metadata": "^3.5.2",
     "recursive-readdir": "^2.2.2",
     "sqlite3": "^4.0.6"

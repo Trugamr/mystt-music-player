@@ -5,6 +5,9 @@
     <title>mystt</title>
     <!-- main page stylesheet -->
     <link rel="stylesheet" href="./css/main.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/typicons/2.0.9/typicons.min.css">
+    
+
     
     <!-- Adding first and last script tags to make scripts work in both browser and electron -->
     <script>if (typeof module === 'object') {window.module = module; module = undefined;}</script>
@@ -14,6 +17,10 @@
     <script>if (window.module) module = window.module;</script>
   </head>
   <body>
+
+    <!-- main audio element -->
+    
+
     <div id="container" class="flexChild columnParent">
       <div id="titlebar" class="flexChild">
         <div id="titlebar-title">mystt</div>
@@ -25,7 +32,15 @@
       </div>
       <div id="wrapper" class="flexChild rowParent">
         <div id="sidebar" class="flexChild">
-            <button id="selectBtn">Add</button>
+            <div id="sidebarWrapper">
+                <h5 id="sidebarHeading">MUSIC</h5>
+                <div class="sidebarLinks" id="homePage"><span class="typcn typcn-compass"></span></i> Discover</div>
+                <div class="sidebarLinks" id="songsPage"><span class="typcn typcn-notes"></span></i> Songs</div>
+                <div class="sidebarLinks" id="albumsPage"><span class="typcn typcn-th-large"></span></i> Albums</div>
+                <div class="sidebarLinks" id="artistsPage"><span class="typcn typcn-user"></span></i> Artists</div>
+                <div class="sidebarLinks" id="likedPage"><span class="typcn typcn-heart-full-outline"></span></i> Liked</div>
+                <button id="selectBtn">Add</button>
+            </div>            
         </div>
         <div id="main" class="flexChild"></div>
       </div>      

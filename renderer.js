@@ -12,6 +12,8 @@ const path = require('path')
 const mm = require('music-metadata')
 const fs = require('fs')
 const sqlite3 = require('sqlite3')
+const jsdom = require('jsdom');
+const { JSDOM } = jsdom;
 
 // Get current window and creating custom min, max, close buttons
 let win = remote.getCurrentWindow();
@@ -219,47 +221,157 @@ function fetchMusic(args = "title COLLATE NOCASE ASC") {
     })
 }
 
+// Generating all pages
+function generateHomePage() {
+    return new Promise((resolve, reject) => {
+        fs.readFile('./pages/home.htm', 'utf-8', function (err, data) {
+            if(err) console.error(err);
+            const jsdomWindow = new JSDOM(data).window;
+            
+            // fetching recently added music
+            fetchMusic('ORDER BY birthtime DESC LIMIT 5')
+            .then(music=> {
+                let homeMusicRow = jsdomWindow.document.querySelector('#homeMusicRow');
+                let homeMusicCards = '';
+                let homeMusicPromises = [];
+                music.forEach(track => {
+                    let b64encoded, datajpg;
+                    homeMusicPromises.push(
+                        new Promise((resolve, reject) => {
+                            mm.parseFile(track.path)
+                            .then(metadata => {                
+                                b64encoded = btoa(new Uint8Array(metadata.common.picture[0].data).reduce((data, byte) => data + String.fromCharCode(byte), ''));;
+                                datajpg = "data:image/jpg;base64," + b64encoded;
+                                homeMusicCards += `
+                                    <div id="homeMusicCard" data-id=${track.id}>
+                                        <img src="${datajpg}" id="homeMusicCardArt">
+                                        <p id="homeMusicCardTitle">${track.title}</p>
+                                        <p id="homeMusicCardArtist">${track.artist}</p>
+                                    </div>
+                                `
+                                if(datajpg) resolve(`got art for ${metadata.common.title}`)
+                                else reject(`failed to get art for ${metadata.common.title}`)
+                            })
+                        })
+                    )
 
-// Loading home page in #main content at start
-$('#main').load('./pages/home.htm');
-// Populating home page
-
-fetchMusic('WHERE ID <=5 ORDER BY birthtime DESC')
-    .then(music=> {
-        let homeMusicRow = document.querySelector('#homeMusicRow');
-        let homeMusicCards = '';
-        let homeMusicCardPromises = [];
-        music.forEach(track => {
-            let b64encoded, datajpg;
-            homeMusicCardPromises.push(
-                new Promise((resolve, reject) => {
-                    mm.parseFile(track.path)
-                    .then(metadata => {                
-                        b64encoded = btoa(new Uint8Array(metadata.common.picture[0].data).reduce((data, byte) => data + String.fromCharCode(byte), ''));;
-                        datajpg = "data:image/jpg;base64," + b64encoded;
-                        homeMusicCards += `
-                            <div id="homeMusicCard">
-                                <img src="${datajpg}" id="homeMusicCardArt">
-                                <p id="homeMusicCardTitle">${track.title}</p>
-                                <p id="homeMusicCardArtist">${track.artist}</p>
-                            </div>
-                        `
-                        if(datajpg) resolve(`got art for ${metadata.common.title}`)
-                        else reject(`failed to get art for ${metadata.common.title}`)
-                    })
                 })
-            )
 
-        })
-
-        // making sure we get all the artworks before populating
-        Promise.all(homeMusicCardPromises)
-            .then(data => {
-                console.log(data);
-                homeMusicRow.innerHTML = homeMusicCards;
+                // making sure we get all the artworks before populating
+                Promise.all(homeMusicPromises)
+                    .then(data => {
+                        console.log(data);
+                        homeMusicRow.innerHTML = homeMusicCards;
+                        const generatedPage = jsdomWindow.document.documentElement.outerHTML;
+                        // Overwrite to file
+                        fs.writeFile('./pages/home.htm', generatedPage, (err) => {
+                            if (err) reject(err)
+                            else resolve('Home page generated')
+                        })
+                    })
+                
             })
-        
+            .catch(err => {
+                console.error(err);
+            })
+                    
+        });
     })
-    .catch(err => {
-        console.error(err);
-    })
+    
+}
+
+generateHomePage()
+    .then(data => console.log(data))
+    .catch(err => console.error(err))
+
+
+function generateHomePageX() {
+    
+    fetchMusic('ORDER BY birthtime DESC LIMIT 5')
+        .then(music=> {
+            let homeMusicRow = document.querySelector('#homeMusicRow');
+            let homeMusicCards = '';
+            let homeMusicCardPromises = [];
+            music.forEach(track => {
+                let b64encoded, datajpg;
+                homeMusicCardPromises.push(
+                    new Promise((resolve, reject) => {
+                        mm.parseFile(track.path)
+                        .then(metadata => {                
+                            b64encoded = btoa(new Uint8Array(metadata.common.picture[0].data).reduce((data, byte) => data + String.fromCharCode(byte), ''));;
+                            datajpg = "data:image/jpg;base64," + b64encoded;
+                            homeMusicCards += `
+                                <div id="homeMusicCard" data-id=${track.id}>
+                                    <img src="${datajpg}" id="homeMusicCardArt">
+                                    <p id="homeMusicCardTitle">${track.title}</p>
+                                    <p id="homeMusicCardArtist">${track.artist}</p>
+                                </div>
+                            `
+                            if(datajpg) resolve(`got art for ${metadata.common.title}`)
+                            else reject(`failed to get art for ${metadata.common.title}`)
+                        })
+                    })
+                )
+
+            })
+
+            // making sure we get all the artworks before populating
+            Promise.all(homeMusicCardPromises)
+                .then(data => {
+                    console.log(data);
+                    homeMusicRow.innerHTML = homeMusicCards;
+                })
+            
+        })
+        .catch(err => {
+            console.error(err);
+        })
+}
+
+loadHomePage();
+
+// Functions to load various pages
+
+function loadHomePage () {
+    // Loading artists page in #main content at start
+    $('#main').load('./pages/home.htm');
+}
+
+function loadArtistsPage () {
+    // Loading artists page in #main content at start
+    $('#main').load('./pages/artists.htm');
+}
+
+function loadSongsPage () {
+    // Loading artists page in #main content at start
+    $('#main').load('./pages/songs.htm');
+}
+
+function loadAlbumsPage () {
+    // Loading artists page in #main content at start
+    $('#main').load('./pages/albums.htm');
+}
+
+function loadArtistsPage () {
+    // Loading artists page in #main content at start
+    $('#main').load('./pages/artists.htm');
+}
+
+function loadLikedPage () {
+    // Loading artists page in #main content at start
+    $('#main').load('./pages/liked.htm');
+}
+
+
+//  Making sidebar links work here
+const sbDiscoverLink = document.querySelector('#homePage');
+const sbSongsLink = document.querySelector('#songsPage');
+const sbAlbumsLink = document.querySelector('#albumsPage');
+const sbArtistsLink = document.querySelector('#artistsPage');
+const sbLikedLink = document.querySelector('#likedPage');
+
+sbDiscoverLink.addEventListener('click', loadHomePage)
+sbSongsLink.addEventListener('click', loadSongsPage)
+sbAlbumsLink.addEventListener('click', loadAlbumsPage)
+sbArtistsLink.addEventListener('click', loadArtistsPage)
+sbLikedLink.addEventListener('click', loadLikedPage)
