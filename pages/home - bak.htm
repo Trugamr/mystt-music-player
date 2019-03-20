@@ -1,0 +1,94 @@
+<html>
+    <head>
+        <title>Home Page</title>
+        <link rel="stylesheet" href="./css/home.css"> 
+    </head>
+    <body>
+        <div id="homeContainer">
+            <h1 id="homeMusicHeading">Music</h1>
+            <div id="homeMusicRow">
+                <div id="homeMusicCard" data-id=${track.id}>
+                    <img src="./assets//test/art1.jpg"" id="homeMusicCardArt">
+                    <p id="homeMusicCardTitle">Eastside</p>
+                    <p id="homeMusicCardArtist">benny blanco</p>
+                </div>
+                <div id="homeMusicCard" data-id=${track.id}>
+                    <img src="./assets//test/art2.jpg"" id="homeMusicCardArt">
+                    <p id="homeMusicCardTitle">Wow.</p>
+                    <p id="homeMusicCardArtist">Post Malone</p>
+                </div>
+                <div id="homeMusicCard" data-id=${track.id}>
+                    <img src="./assets//test/art3.jpg"" id="homeMusicCardArt">
+                    <p id="homeMusicCardTitle">Higher Ground</p>
+                    <p id="homeMusicCardArtist">ODESZA</p>
+                </div>
+                <div id="homeMusicCard" data-id=${track.id}>
+                    <img src="./assets//test/art4.jpg"" id="homeMusicCardArt">
+                    <p id="homeMusicCardTitle">Happier</p>
+                    <p id="homeMusicCardArtist">Marshmello</p>
+                </div>
+                <div id="homeMusicCard" data-id=${track.id}>
+					<img src="./assets//test/art5.jpg"" id="homeMusicCardArt">
+					<p id="homeMusicCardTitle">Grip</p>
+					<p id="homeMusicCardArtist">Bastille</p>
+                </div>
+            </div>
+			<!-- 10 more recently added tracks -->
+			<h1 id="homeRecentHeading">Recently Added</h1>
+            <div id="homeMusicRecent">
+                <ul>
+                    <li class="infoRow" id="categoryRow">
+						<p>Title</p>
+						<p>Album</p>
+						<p>Artist</p>
+						<p>Duration</p>
+						<p>Liked</p> 
+                    </li>
+                    <li class="infoRow">
+						<p>Eastside</p>
+						<p>Eastside - Single</p>
+						<p>benny blanco</p>
+						<p>3:21</p>
+						<p><span class="typcn typcn-heart-outline"></span></p> 
+					</li>
+					<li class="infoRow">
+						<p>Wow.</p>
+						<p>Wow. - Single</p>
+						<p>Post Malone</p>
+						<p>2:22</p>
+						<p><span class="typcn typcn-heart"></span></p> 
+					</li>
+					<li class="infoRow">
+						<p>Higher Ground</p>
+						<p>Higher Ground</p>
+						<p>ODESZA</p>
+						<p>5:01</p>
+						<p><span class="typcn typcn-heart-outline"></span></p> 
+					</li>
+					<li class="infoRow">
+						<p>Happier</p>
+						<p>Happier - Single</p>
+						<p>Marshmello</p>
+						<p>3:34</p>
+						<p><span class="typcn typcn-heart"></span></p> 
+					</li>
+					<li class="infoRow">
+						<p>Grip</p>
+						<p>Grip - Single</p>
+						<p>Seeb x Bastille</p>
+						<p>3:10</p>
+						<p><span class="typcn typcn-heart-outline"></span></p> 
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <script>
+            pivot.init({
+				selector: "img#homeMusicCardArt",
+				scale: true,
+				shadow: true,
+				perspective: 500
+			})
+        </script>    
+    </body> 
+</html>

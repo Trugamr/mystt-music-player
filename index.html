@@ -6,13 +6,12 @@
     <!-- main page stylesheet -->
     <link rel="stylesheet" href="./css/main.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/typicons/2.0.9/typicons.min.css">
-    
 
-    
     <!-- Adding first and last script tags to make scripts work in both browser and electron -->
     <script>if (typeof module === 'object') {window.module = module; module = undefined;}</script>
     
-    <script src="./js/jquery-3.3.1.min.js"></script>
+    <script src="./js/jquery-3.3.1.min.js"></script>	
+    <script src="./js/pivot.js"></script>			
 
     <script>if (window.module) module = window.module;</script>
   </head>
@@ -34,12 +33,12 @@
         <div id="sidebar" class="flexChild">
             <div id="sidebarWrapper">
                 <h5 id="sidebarHeading">MUSIC</h5>
-                <div class="sidebarLinks" id="homePage"><span class="typcn typcn-compass"></span></i> Discover</div>
-                <div class="sidebarLinks" id="songsPage"><span class="typcn typcn-notes"></span></i> Songs</div>
-                <div class="sidebarLinks" id="albumsPage"><span class="typcn typcn-th-large"></span></i> Albums</div>
-                <div class="sidebarLinks" id="artistsPage"><span class="typcn typcn-user"></span></i> Artists</div>
-                <div class="sidebarLinks" id="likedPage"><span class="typcn typcn-heart-full-outline"></span></i> Liked</div>
-                <button id="selectBtn">Add</button>
+                <div class="sidebarLinks sbSelected" id="homePage"><span class="typcn typcn-compass"></span> Discover</div>
+                <div class="sidebarLinks" id="songsPage"><span class="typcn typcn-notes"></span> Songs</div>
+                <div class="sidebarLinks" id="albumsPage"><span class="typcn typcn-th-large"></span> Albums</div>
+                <div class="sidebarLinks" id="artistsPage"><span class="typcn typcn-user"></span> Artists</div>
+                <div class="sidebarLinks" id="likedPage"><span class="typcn typcn-heart-full-outline"></span> Liked</div>
+                <button id="selectBtn" style="display: none;">Add</button>
             </div>            
         </div>
         <div id="main" class="flexChild"></div>

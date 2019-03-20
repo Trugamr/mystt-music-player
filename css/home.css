@@ -12,34 +12,34 @@
 
 #homeContainer {
     box-sizing: border-box;
-    padding: 30px;
-    width: 100%;
+    padding-top: 30px;
+    padding-bottom: 30px;
 }
 
-#homeMusicHeading {
+/* TEMP CODE REMOVE homeMusicHeading */
+#homeMusicHeading, #homeRecentHeading {
      /* getting from main.css */
     color: var(--primary-color-white);
     font-family: Futura;
     margin-bottom: 20px;
+    padding-left: 30px;
 }
 
 #homeMusicRow {
     width: 100%;
-    white-space: nowrap;    
+    overflow: hidden;
+    white-space: nowrap;  
+    margin-left: -10px;  
+    padding-left: 30px;
+    box-sizing: border-box;
 }
 
-@keyframes scaleUp {
-    0% {
-        transform: scale(0);
-    }
-    100% {
-        transfrom: scale(1);
-    }
-}
 
 #homeMusicCard {
     display: inline-block;
-    margin-right: 18px;
+    box-sizing: border-box;
+    padding: 10px;
+    cursor: pointer;
 }
 
 #homeMusicCardArt {
@@ -70,4 +70,104 @@
     color: var(--primary-color-gray);
     font-family: Montserrat;
     font-size: 12px;
+}
+
+#homeRecentHeading {
+    box-sizing: border-box;
+    margin-top: 40px;
+}
+
+#homeMusicRecent {
+    box-sizing: border-box;
+    width: 100%;
+    overflow-y: auto;
+    white-space: nowrap;
+    padding-left: 30px;
+    padding-right: 30px;
+}
+
+#categoryRow {
+    font-family: Avenir;
+    color: var(--primary-color-gray);
+    border-bottom: 1px solid var(--primary-color-light);
+    margin-bottom: 10px;
+    cursor: default;
+}
+
+/* Font side of 'Liked' text */
+#categoryRow p:last-child {
+    font-size: 15px;
+}
+
+#categoryRow:hover {
+    background-color: transparent;
+    box-shadow: none;
+}
+
+.infoRow {
+    list-style: none;
+    display: flex;
+    margin: 0px 0px 4px 0px;
+    font-family: Montserrat;
+    border-radius:5px;
+    color: var(--primary-color-white);
+    font-size: 15px;
+    cursor: pointer;
+    box-sizing: border-box;
+    padding: 2px;    
+    transition: ease all 0.1s;
+    
+}
+
+.infoRow:hover {
+    background-color: var(--primary-color-light);
+    box-shadow: 0 3px 28px rgba(0,0,0,0.1), 0 5px 10px rgba(0,0,0,0.05);
+}
+
+.infoRow p {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    box-sizing: border-box;
+    padding: 10px;
+    margin: auto;
+}
+
+/* Title column */
+.infoRow p:first-child {
+    width: 200px;;
+    font-weight: 500;
+}
+
+/* Album column */
+.infoRow p:nth-child(2) {
+    width: 200px;
+}
+
+/* Artist column */
+.infoRow p:nth-child(3) {
+    width: 180px;;
+}
+
+/* Duration column*/
+.infoRow p:nth-child(4) {
+    width: 120px;
+    text-align: center;
+}
+
+/* Liked column */
+.infoRow p:nth-child(5) {
+    width: 100px;
+    text-align: center;
+    font-size: 18px;    
+}
+
+/* Extra Margin at end */
+.infoRow:last-child {
+    margin-bottom: 30px;
+}
+
+
+.infoRow p {
+    display: inline-block;
 }
