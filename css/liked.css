@@ -1,0 +1,180 @@
+@import url('https://fonts.googleapis.com/css?family=Montserrat:400,500,600,700');
+
+@font-face {
+    font-family: 'Avenir';
+    src: url('../fonts/Avenir/Avenir-Book.ttf');
+}
+
+@font-face {
+    font-family: 'Futura';
+    src: url('../fonts/Futura/Futura Heavy font.ttf');
+}
+
+
+#likedPageContainer {
+    box-sizing: border-box;
+    padding-top: 30px;
+    padding-bottom: 30px;
+}
+
+#likedHeading {
+    color: var(--primary-color-white);
+    font-family: Futura;
+    margin-bottom: 20px;
+    padding-left: 30px;
+}
+
+
+#likedContainer {
+    box-sizing: border-box;
+    width: 100%;
+    overflow-y: auto;
+    white-space: nowrap;
+    padding-left: 30px;
+    padding-right: 30px;
+}
+
+#likedSearchContainer {
+    width: 160px;
+    background-color: var(--primary-color-light);
+    border-radius: 60px;
+    height: 40px;
+    color: var(--primary-color-white);
+    padding: 0px 20px 0px 15px;  
+    position: absolute;
+    top: 50px;
+    right: 40px; 
+    box-shadow: 0px 0px 30px 20px var(--primary-color);
+}
+
+#likedSearchContainer>i {
+    font-size: 16px;
+    float: right;
+    line-height: 40px;
+}
+
+.likedSearch {
+    color: var(--primary-color-white); 
+    font-size: 16px;
+    line-height: 40px;
+    width: 100px;
+    height: 40px;
+    border-radius: 0px 60px 60px 0px;
+    border: 0px;
+    background-color: transparent;
+    border-color: transparent;
+    margin-left: 5px;
+    box-sizing: border-box;
+    font-family: Avenir;
+}
+
+.likedSearch::placeholder {
+    color: var(--primary-color-gray);
+}
+
+.likedSearch:focus {
+    outline: none;
+}
+
+#categoryRowLiked {
+    font-family: Avenir;
+    color: var(--primary-color-gray);
+    border-bottom: 1px solid var(--primary-color-light);
+    margin-bottom: 10px;
+    cursor: default;
+}
+
+#categoryRowLiked p {
+    cursor: pointer;
+}
+
+
+/* Font side of 'Liked' text */
+#categoryRowLiked p:last-child {
+    font-size: 15px;
+}
+
+#categoryRowLiked:hover {
+    background-color: transparent;
+    box-shadow: none;
+}
+
+.likedSort > span {
+    float: right;
+    /* not making them click thorugh causes errors when clicking them while sorting */
+    pointer-events: none;
+}
+
+
+.infoRowLiked {
+    list-style: none;
+    display: flex;
+    margin: 0px 0px 4px 0px;
+    font-family: Montserrat;
+    border-radius:5px;
+    color: var(--primary-color-white);
+    font-size: 15px;
+    cursor: pointer;
+    box-sizing: border-box;
+    padding: 2px;    
+    transition: ease all 0.1s;    
+}
+
+.infoRowLiked:hover {
+    background-color: var(--primary-color-light);
+    box-shadow: 0 3px 28px rgba(0,0,0,0.1), 0 5px 10px rgba(0,0,0,0.05);
+}
+
+.infoRowLiked p {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    box-sizing: border-box;
+    padding: 10px;
+    margin: auto;
+}
+
+/* Title column */
+.infoRowLiked p:first-child {
+    width: 200px;;
+    font-weight: 500;
+}
+
+/* Album column */
+.infoRowLiked p:nth-child(2) {
+    width: 200px;
+}
+
+/* Artist column */
+.infoRowLiked p:nth-child(3) {
+    width: 180px;;
+}
+
+/* Duration column*/
+.infoRowLiked p:nth-child(4) {
+    width: 140px;
+    text-align: center;
+}
+
+/* Year column */
+.infoRowLiked p:nth-child(5) {
+    width: 120px;
+    text-align: center;   
+}
+
+/* Liked column */
+.infoRowLiked p:nth-child(6) {
+    width: 100px;
+    text-align: center;
+    font-size: 18px;    
+}
+
+/* Extra Margin at end */
+.infoRowSongs:last-child {
+    margin-bottom: 30px;
+}
+
+
+.infoRowSongs p {
+    display: inline-block;
+}

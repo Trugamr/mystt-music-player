@@ -228,17 +228,18 @@ function fetchMusic(args = "ORDER BY title COLLATE NOCASE ASC") {
             if(err) console.error(err);
         }, (err, data) => {
             if(data) resolve(fetchedMusic)
-            else reject(err)
+            else if(data == 0) resolve(null)
+            if(err) reject(err)
         });
     })
 }
 
 // Generating home page
-// generateHomePage()
-//     .then(data => console.log(data))
-//     .catch(err => console.error(err))
+generateHomePage()
+    .then(data => console.log(data))
+    .catch(err => console.error(err))
 
-function generateHomePage() {
+function generateHomePage(withTop5 = true) {
     const allHomePromises = [];
     let homeMusicCards = '';
     let homeMusicRecents = `
@@ -256,7 +257,7 @@ function generateHomePage() {
             data.forEach((track, index) => {
                 // console.log(track);
                 // For top 5 recent tracks
-                if(index < 5) {
+                if(index < 5 && withTop5) {
                     allHomePromises.push(
                         new Promise((resolve, reject) => {
                             mm.parseFile(track.path).then(metadata => {
@@ -283,11 +284,11 @@ function generateHomePage() {
                                     <p>${track.album}</p>
                                     <p>${track.artist}</p>
                                     <p>${secondsToMinutes(track.duration)}</p>
-                                    <p><span id="likeHeart" data-isLiked="${track.favourite}" class="typcn ${track.favourite ? 'typcn-heart' : 'typcn-heart-outline'}"></span></p> 
+                                    <p><span id="likeHeart" onclick="likeTrack(event)" data-track-id="${track.id}" data-liked="${track.favourite}" class="typcn ${track.favourite ? 'typcn-heart' : 'typcn-heart-outline'}"></span></p> 
                                 </li>
                             `
                             if(track) resolve('recent added', track.title)
-                            else reject('prolem with track', track)
+                            else reject('problem with track', track)
                         })
                     )
                 }
@@ -300,12 +301,13 @@ function generateHomePage() {
                 fs.readFile('./pages/home.htm', 'utf-8', (err, data) => {
                     if(err) console.err(err);
                     const jsdomWindow = new JSDOM(data).window;
-                    jsdomWindow.document.querySelector('#homeMusicRow').innerHTML = homeMusicCards;
+                    // only update if withTop5 is true
+                    if(withTop5) jsdomWindow.document.querySelector('#homeMusicRow').innerHTML = homeMusicCards;
                     jsdomWindow.document.querySelector('#homeMusicRecent>ul').innerHTML = homeMusicRecents;
                     const generatedContent = jsdomWindow.document.documentElement.outerHTML;                    
                     fs.writeFile('./pages/home.htm', generatedContent, (err) => {
                         if(err) reject(err)
-                        else resolve("home page generated")
+                        else resolve(`home page generated ${withTop5 ? 'with top 5' : 'without top 5'}`)
                     })  
 
                 })                
@@ -316,9 +318,9 @@ function generateHomePage() {
 }
 
 // Generating songs page
-// generateSongsPage()
-//     .then(data => console.log(data))
-//     .catch(err => console.error(err))
+generateSongsPage()
+    .then(data => console.log(data))
+    .catch(err => console.error(err))
 
 function generateSongsPage() {
     let allSongs = '';
@@ -326,7 +328,7 @@ function generateSongsPage() {
         fetchMusic()
             .then(data => {
                 data.forEach(track => {
-                    console.log(track);
+                    // console.log(track);
                     allSongs += `
                     <li class="infoRowSongs" data-id=${track.id} data-title="${track.title}" data-album="${track.album}" data-artist="${track.artist}" data-path="${track.path}" data-duration="${track.duration}">
                         <p class="songName">${track.title}</p>
@@ -334,7 +336,7 @@ function generateSongsPage() {
                         <p class="songArtist">${track.artist}</p>
                         <p class="songTime">${secondsToMinutes(track.duration)}</p>
                         <p class="songYear">${track.year ? track.year : '-'}</p>
-                        <p class="songLiked"><span style="display: none;">${track.favourite ? 'Heart' : 'Nope'}</span> <span id="likeHeart" data-isLiked="${track.favourite}" class="typcn ${track.favourite ? 'typcn-heart' : 'typcn-heart-outline'}"></span></p> 
+                        <p class="songLiked"><span style="display: none;">${track.favourite ? 'Heart' : 'Nope'}</span> <span id="likeHeart" onclick="likeTrack(event)" data-track-id="${track.id}" data-liked="${track.favourite}" class="typcn ${track.favourite ? 'typcn-heart' : 'typcn-heart-outline'}"></span></p> 
                     </li>
                     `
                 })
@@ -351,6 +353,46 @@ function generateSongsPage() {
             })
     })
 }
+
+// Generating liked page
+generateLikedPage()
+    .then(data => console.log(data))
+    .catch(err => console.error(err))
+
+function generateLikedPage() {
+    let allLiked = '';
+    return new Promise((resolve, reject) => {
+        fetchMusic('WHERE FAVOURITE = 1 ORDER BY title COLLATE NOCASE ASC')
+            .then(data => {
+                if(data) data.forEach(track => {
+                    // console.log(track);
+                    allLiked += `
+                    <li class="infoRowLiked" data-id=${track.id} data-title="${track.title}" data-album="${track.album}" data-artist="${track.artist}" data-path="${track.path}" data-duration="${track.duration}">
+                        <p class="likedName">${track.title}</p>
+                        <p class="likedAlbum">${track.album}</p>
+                        <p class="likedArtist">${track.artist}</p>
+                        <p class="likedTime">${secondsToMinutes(track.duration)}</p>
+                        <p class="likedYear">${track.year ? track.year : '-'}</p>
+                        <p class="likedLiked"><span style="display: none;">${track.favourite ? 'Heart' : 'Nope'}</span> <span id="likeHeart" onclick="likeTrack(event)" data-track-id="${track.id}" data-fromliked='true' data-liked="${track.favourite}" class="typcn ${track.favourite ? 'typcn-heart' : 'typcn-heart-outline'}"></span></p> 
+                    </li>
+                    `
+                })
+                fs.readFile('./pages/liked.htm', 'utf-8', (err, data) => {
+                    if(err) console.error(err);
+                    const jsdomWindow = new JSDOM(data).window;
+                    jsdomWindow.document.querySelector('#likedContainer>ul').innerHTML = allLiked;
+                    const generatedContent = jsdomWindow.document.documentElement.outerHTML;
+                    fs.writeFile('./pages/liked.htm', generatedContent, (err) => {
+                        if(err) reject(err)
+                        else resolve("liked page generated")
+                    })  
+                })
+            }).catch(err => console.error(err));
+            
+    })
+}
+
+
 
 //  To convert image blobs to usable base64 images
 function blobTob64(blob) {
@@ -446,3 +488,65 @@ function highlightSbLink(event) {
     sbLinks.forEach(link => link.classList.remove('sbSelected'))
     event.target.classList.add('sbSelected');
 }
+
+// Liking dis-liking track
+
+function likeTrack(e) {
+    let icon = e.target;
+    let iconParent = icon.parentElement;
+    let isLiked = parseInt(e.target.dataset.liked);
+    let trackId = e.target.dataset.trackId;
+
+    //changing icon
+    if(isLiked) {
+        // animate icon
+        iconParent.classList.remove('animated', 'heartBeat');
+        iconParent.classList.add('animated', 'jello');
+
+        // updating like status
+        db.run(`UPDATE Music SET favourite = 0 WHERE id = ${trackId}`, (err) => {
+            if(err) console.error(err);
+            // checking if row on liked page to hide item instantly from page
+            // iconParent is heart container and its parent is music row
+            if(icon.dataset.fromliked) {
+                iconParent.parentElement.addEventListener('animationend', () => {iconParent.parentElement.style = "display: none;"} )
+                iconParent.parentElement.classList.add('animated', 'fadeOut')
+            }
+
+            console.log(`${trackId} set like to 0`);
+            // updating for data liked for cached page
+            e.target.dataset.liked = 0;
+            generateLikedPage().then(data => console.log(data)).catch(err => console.error(err));
+            generateSongsPage().then(data => console.log(data)).catch(err => console.error(err));
+            // causing micro lags
+            // generateHomePage(false).then(data => console.log(data)).catch(err => console.error(err));
+        });
+
+        icon.classList.remove('typcn-heart');
+        icon.classList.add('typcn-heart-outline');
+    } else {
+        // animate icon
+        iconParent.classList.remove('animated', 'jello');
+        iconParent.classList.add('animated', 'heartBeat');
+
+        db.run(`UPDATE Music SET favourite = 1 WHERE id = ${trackId}`, (err) => {
+            if(err) console.error(err);
+            console.log(`${trackId} set to like 1`);
+            // updating for data liked for cached page
+            e.target.dataset.liked = 1;
+            generateLikedPage().then(data => console.log(data)).catch(err => console.error(err));
+            generateSongsPage().then(data => console.log(data)).catch(err => console.error(err));
+            // causing micro lags
+            // generateHomePage(false).then(data => console.log(data)).catch(err => console.error(err));
+            isLiked = isLiked ? 0 : 1;
+        });
+
+        icon.classList.remove('typcn-heart-outline');
+        icon.classList.add('typcn-heart');
+    }
+
+    
+}
+
+// exporting then calling with onclick on likeIcon iteself
+module.exports.likeTrack = likeTrack;

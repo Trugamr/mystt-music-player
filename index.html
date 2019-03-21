@@ -9,6 +9,8 @@
     <link rel="stylesheet" href="./css/main.css">
     <link rel="stylesheet" href="./css/home.css">
     <link rel="stylesheet" href="./css/songs.css">    
+    <link rel="stylesheet" href="./css/liked.css">    
+    <link rel="stylesheet" href="./css/animate.css">    
 
     <!-- Adding first and last script tags to make scripts work in both browser and electron -->
     <script>if (typeof module === 'object') {window.module = module; module = undefined;}</script>
@@ -46,7 +48,8 @@
     </div>
     <script>
       // You can also require other files to run in this process
-      require('./renderer.js')
+      var renderer = require('./renderer.js')
+      var likeTrack = renderer.likeTrack
     </script>
   </body>
 </html>
