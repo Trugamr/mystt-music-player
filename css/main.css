@@ -3,12 +3,12 @@
 
 @font-face {
     font-family: 'Avenir';
-    src: url('../assets/fonts/Avenir/Avenir-Book.ttf');
+    src: url('../fonts/Avenir/Avenir-Book.ttf');
 }
 
 @font-face {
     font-family: 'Futura';
-    src: url('../assets/fonts/Futura/Futura Heavy font.ttf');
+    src: url('../fonts/Futura/Futura Heavy font.ttf');
 }
 
 /* Custom scrollbar */

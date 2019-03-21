@@ -1,0 +1,117 @@
+<html>
+    <head>
+        <title>Songs</title>
+        <!-- Move css injections to index.html page to get rid of jQuery.load() flicker -->
+        <!-- <link rel="stylesheet" href="./css/songs.css"> -->
+    </head>
+    <body>
+        <div id="songsPageContainer">
+            <h1 id="songsHeading"><span>All Music</span></h1>
+            <div id="songsContainer">
+                <div id="songSearchContainer"><input type="text" placeholder="Search" class="songSearch" /><i class="fa fa-search"></i></span></div>
+                <!-- Keeping this row outside to it wont get filtered -->
+                <li class="infoRowSongs" id="categoryRowSongs">
+                    <p class="songSort" data-sort="songName">Title <span class="typcn"></span></p>
+                    <p class="songSort" data-sort="songAlbum">Album <span class="typcn"></span></p>
+                    <p class="songSort" data-sort="songArtist">Artist <span class="typcn"></span></p>
+                    <p class="songSort" data-sort="songTime">Duration <span class="typcn"></span></p>
+                    <p class="songSort" data-sort="songYear">Year <span class="typcn"></span></p>
+                    <p class="songSort" data-sort="songLiked">Liked <span class="typcn"></span></p> 
+                </li>
+                <ul class="list">
+                    
+                    <li class="infoRowSongs" >
+						<p class="songName">Eastside</p>
+						<p class="songAlbum">Eastside - Single</p>
+						<p class="songArtist">benny blanco</p>
+                        <p class="songTime">3:21</p>
+                        <p class="songYear">2019</p>
+						<p class="songLiked"><span style="display: none;">Not Liked</span> <span id="likeHeart class="typcn typcn-heart-outline"></span></p> 
+					</li>
+					<li class="infoRowSongs">
+						<p class="songName"  >Wow.</p>
+						<p class="songAlbum" >Wow. - Single</p>
+						<p class="songArtist">Post Malone</p>
+                        <p class="songTime"  >2:22</p>
+                        <p class="songYear"  >2019</p>
+						<p class="songLiked" ><span style="display: none;">Liked</span><span id="likeHeart class="typcn typcn-heart"></span></p> 
+					</li>
+					<li class="infoRowSongs">
+						<p class="songName"  >Higher Ground</p>
+						<p class="songAlbum" >Higher Ground</p>
+						<p class="songArtist">ODESZA</p>
+                        <p class="songTime"  >5:01</p>
+                        <p class="songYear"  >2015</p>
+						<p class="songLiked" ><span style="display: none;">Not Liked</span><span id="likeHeart class="typcn typcn-heart-outline"></span></p> 
+					</li>
+					<li class="infoRowSongs">
+						<p class="songName"  >Happier</p>
+						<p class="songAlbum" >Happier - Single</p>
+						<p class="songArtist">Marshmello</p>
+                        <p class="songTime"  >3:34</p>
+                        <p class="songYear"  >2017</p>
+						<p class="songLiked" ><span style="display: none;">Liked</span><span id="likeHeart class="typcn typcn-heart"></span></p> 
+					</li>
+					<li class="infoRowSongs">
+						<p class="songName"  >Grip</p>
+						<p class="songAlbum" >Grip - Single</p>
+						<p class="songArtist">Seeb x Bastille</p>
+                        <p class="songTime"  >3:10</p>
+                        <p class="songYear"  >2019</p>
+						<p class="songLiked" ><span style="display: none;">Not Liked</span><span id="likeHeart class="typcn typcn-heart-outline"></span></p> 
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <script>
+            // changing sorting icons
+            
+
+            var songSortCategories = Array.from(document.querySelectorAll('.songSort'));
+            songSortCategories.forEach(category => {
+                category.addEventListener('click', handleSortingIcons);
+            })
+
+            function handleSortingIcons(e) {
+                
+                // childNodes[1] targets typicon span
+                var iconSpan = e.target.childNodes[1];
+
+                // removing sorting icon from other categories
+                songSortCategories.forEach(category => {
+                    if(category != e.target) {
+                        category.childNodes[1].classList.remove('typcn-arrow-sorted-down', 'typcn-arrow-sorted-up');
+                    }
+                })
+
+                // toggling/adding sorting icon
+                if(iconSpan.classList.contains('typcn-arrow-sorted-down')) {
+                    iconSpan.classList.remove('typcn-arrow-sorted-down');
+                    iconSpan.classList.add('typcn-arrow-sorted-up');
+                } else if(iconSpan.classList.contains('typcn-arrow-sorted-up')) {
+                    iconSpan.classList.remove('typcn-arrow-sorted-up');
+                    iconSpan.classList.add('typcn-arrow-sorted-down');
+                } else {
+                    iconSpan.classList.add('typcn-arrow-sorted-down');
+                }
+                
+            }
+
+            // list.js settings and init
+            var options = {
+                valueNames: [
+                    'songName',
+                    'songAlbum',
+                    'songArtist',
+                    'songTime',
+                    'songYear',
+                    'songLiked'
+                ],
+                searchClass : 'songSearch',
+                sortClass : 'songSort'
+            }
+
+            var songsList = new List('songsContainer', options);
+        </script>
+    </body>
+</html>

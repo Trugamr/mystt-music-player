@@ -10,74 +10,22 @@
     src: url('../fonts/Futura/Futura Heavy font.ttf');
 }
 
-#homeContainer {
+
+#songsPageContainer {
     box-sizing: border-box;
     padding-top: 30px;
     padding-bottom: 30px;
 }
 
-/* TEMP CODE REMOVE homeMusicHeading */
-#homeMusicHeading, #homeRecentHeading {
-     /* getting from main.css */
+#songsHeading {
     color: var(--primary-color-white);
     font-family: Futura;
     margin-bottom: 20px;
     padding-left: 30px;
 }
 
-#homeMusicRow {
-    width: 100%;
-    overflow: hidden;
-    white-space: nowrap;  
-    margin-left: -10px;  
-    padding-left: 30px;
-    box-sizing: border-box;
-}
 
-
-#homeMusicCard {
-    display: inline-block;
-    box-sizing: border-box;
-    padding: 10px;
-    cursor: pointer;
-}
-
-#homeMusicCardArt {
-    height: 150px;
-    width: 150px;
-    border-radius: 6px;
-    box-shadow: 0px 6px 30px -5px rgba(0, 0, 0, 0.4);
-}
-
-#homeMusicCardTitle, #homeMusicCardArtist {
-    margin-left: 6px;
-    width: 120px;
-    overflow: hidden;
-    white-space: nowrap;
-    text-overflow: ellipsis;
-}
-
-#homeMusicCardTitle {
-    color: var(--primary-color-white);
-    font-family: Montserrat;
-    font-weight: 500;
-    font-size: 14px;
-    margin-top: 8px;
-    margin-bottom: 3px;
-}
-
-#homeMusicCardArtist {
-    color: var(--primary-color-gray);
-    font-family: Montserrat;
-    font-size: 12px;
-}
-
-#homeRecentHeading {
-    box-sizing: border-box;
-    margin-top: 40px;
-}
-
-#homeMusicRecent {
+#songsContainer {
     box-sizing: border-box;
     width: 100%;
     overflow-y: auto;
@@ -86,7 +34,49 @@
     padding-right: 30px;
 }
 
-#categoryRow {
+#songSearchContainer {
+    width: 160px;
+    background-color: var(--primary-color-light);
+    border-radius: 60px;
+    height: 40px;
+    color: var(--primary-color-white);
+    padding: 0px 20px 0px 15px;  
+    position: absolute;
+    top: 50px;
+    right: 40px; 
+    box-shadow: 0px 0px 30px 20px var(--primary-color);
+}
+
+#songSearchContainer>i {
+    font-size: 16px;
+    float: right;
+    line-height: 40px;
+}
+
+.songSearch {
+    color: var(--primary-color-white); 
+    font-size: 16px;
+    line-height: 40px;
+    width: 100px;
+    height: 40px;
+    border-radius: 0px 60px 60px 0px;
+    border: 0px;
+    background-color: transparent;
+    border-color: transparent;
+    margin-left: 5px;
+    box-sizing: border-box;
+    font-family: Avenir;
+}
+
+.songSearch::placeholder {
+    color: var(--primary-color-gray);
+}
+
+.songSearch:focus {
+    outline: none;
+}
+
+#categoryRowSongs {
     font-family: Avenir;
     color: var(--primary-color-gray);
     border-bottom: 1px solid var(--primary-color-light);
@@ -94,17 +84,29 @@
     cursor: default;
 }
 
+#categoryRowSongs p {
+    cursor: pointer;
+}
+
+
 /* Font side of 'Liked' text */
-#categoryRow p:last-child {
+#categoryRowSongs p:last-child {
     font-size: 15px;
 }
 
-#categoryRow:hover {
+#categoryRowSongs:hover {
     background-color: transparent;
     box-shadow: none;
 }
 
-.infoRow {
+.songSort > span {
+    float: right;
+    /* not making them click thorugh causes errors when clicking them while sorting */
+    pointer-events: none;
+}
+
+
+.infoRowSongs {
     list-style: none;
     display: flex;
     margin: 0px 0px 4px 0px;
@@ -119,12 +121,12 @@
     
 }
 
-.infoRow:hover {
+.infoRowSongs:hover {
     background-color: var(--primary-color-light);
     box-shadow: 0 3px 28px rgba(0,0,0,0.1), 0 5px 10px rgba(0,0,0,0.05);
 }
 
-.infoRow p {
+.infoRowSongs p {
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
@@ -134,40 +136,46 @@
 }
 
 /* Title column */
-.infoRow p:first-child {
+.infoRowSongs p:first-child {
     width: 200px;;
     font-weight: 500;
 }
 
 /* Album column */
-.infoRow p:nth-child(2) {
+.infoRowSongs p:nth-child(2) {
     width: 200px;
 }
 
 /* Artist column */
-.infoRow p:nth-child(3) {
+.infoRowSongs p:nth-child(3) {
     width: 180px;;
 }
 
 /* Duration column*/
-.infoRow p:nth-child(4) {
-    width: 120px;
+.infoRowSongs p:nth-child(4) {
+    width: 140px;
     text-align: center;
 }
 
+/* Year column */
+.infoRowSongs p:nth-child(5) {
+    width: 120px;
+    text-align: center;   
+}
+
 /* Liked column */
-.infoRow p:nth-child(5) {
+.infoRowSongs p:nth-child(6) {
     width: 100px;
     text-align: center;
     font-size: 18px;    
 }
 
 /* Extra Margin at end */
-.infoRow:last-child {
+.infoRowSongs:last-child {
     margin-bottom: 30px;
 }
 
 
-.infoRow p {
+.infoRowSongs p {
     display: inline-block;
 }

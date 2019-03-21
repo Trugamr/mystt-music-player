@@ -32,6 +32,7 @@ document.querySelector('#minimize-btn').addEventListener('click', () => {
 let isMaximized = false;
 document.querySelector('#maximize-btn').addEventListener('click', () => {
     win.isMaximized() ? win.unmaximize() : win.maximize()
+    // Hack for frameless transparent window
     // console.log(win.isMaximized())
     // if(isMaximized) {
     //     win.unmaximize()
@@ -170,14 +171,14 @@ function pushToDatabase(data) {
         let pushedTracksPromises = [];
         db.serialize(function() {
             db.run("DROP TABLE Music");
-            db.run("CREATE TABLE IF NOT EXISTS Music (id INTEGER PRIMARY KEY AUTOINCREMENT, title TEXT, album TEXT, artist TEXT, duration INT, plays INT, favourite INT, birthtime INT, path TEXT)");
-            let stmt = db.prepare("INSERT INTO Music (title, album, artist, duration, plays, favourite, birthtime, path) VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
+            db.run("CREATE TABLE IF NOT EXISTS Music (id INTEGER PRIMARY KEY AUTOINCREMENT, title TEXT, album TEXT, artist TEXT, year INT, duration INT, plays INT, favourite INT, birthtime INT, path TEXT)");
+            let stmt = db.prepare("INSERT INTO Music (title, album, artist, year, duration, plays, favourite, birthtime, path) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)");
             db.parallelize(() => {
                 data.forEach(track => {
                     pushedTracksPromises.push(
                         // pushing promises to all 
                         new Promise((resolve, reject) => {
-                            stmt.run(track.common.title, track.common.album, track.common.artist, track.format.duration, 0, 0, track.birthtimeMs, track.path, (err) => {
+                            stmt.run(track.common.title, track.common.album, track.common.artist, track.common.year, track.format.duration, 0, 0, track.birthtimeMs, track.path, (err) => {
                                 if(err) reject(err)
                                 else resolve('successfully inserted')
                             });
@@ -207,16 +208,17 @@ function pushToDatabase(data) {
 // Fething music from database 
 // title COLLATE NOCASE ASC
 // birthtime DESC - for recently added
-function fetchMusic(args = "title COLLATE NOCASE ASC") {
+function fetchMusic(args = "ORDER BY title COLLATE NOCASE ASC") {
     let fetchedMusic = [];
     return new Promise((resolve, reject) => {
-        db.each(`SELECT id, title, album, artist, duration, plays, favourite, birthtime, path FROM Music ${args}`, (err, row) => {
+        db.each(`SELECT id, title, album, artist, year, duration, plays, favourite, birthtime, path FROM Music ${args}`, (err, row) => {
             let track = {
                 id: row.id,
                 title: row.title,
                 album: row.album,
                 artist: row.artist,
-                duration: row.duration,
+                year: row.year,
+                duration: row.duration ? row.duration : 0,
                 plays: row.plays,
                 favourite: row.favourite,
                 birthtime: row.birthtime,
@@ -249,70 +251,104 @@ function generateHomePage() {
         </li>
     `;
     return new Promise((resolve, reject) => {
-        fs.readFile('./pages/home.htm', 'utf-8', (err, data) => {
-            if(err) console.err(err);
-            const jsdomWindow = new JSDOM(data).window;
-
-            fetchMusic('ORDER BY birthtime DESC LIMIT 15')
-            .then(data => {
-                data.forEach((track, index) => {
-                    console.log(track);
-                    // For top 5 recent tracks
-                    if(index < 5) {
-                        allHomePromises.push(
-                            new Promise((resolve, reject) => {
-                                mm.parseFile(track.path).then(metadata => {
-                                    let datajpg = blobTob64(metadata.common.picture[0].data); 
-                                    homeMusicCards += `
-                                        <div id="homeMusicCard" data-id=${track.id}>
-                                            <img src="${datajpg}" id="homeMusicCardArt">
-                                            <p id="homeMusicCardTitle">${track.title}</p>
-                                            <p id="homeMusicCardArtist">${track.artist}</p>
-                                        </div>
-                                    `
-                                    if(metadata) resolve(`got art for ${track.title}`) 
-                                    else reject(`failed to get art for ${track.title}`)
-                                })
-                            })
-                        )                       
-                    } else {
-                        // for rest 10 recent tracks
-                        allHomePromises.push(
-                            new Promise((resolve, reject) => {
-                                homeMusicRecents += `
-                                    <li class="infoRow">
-                                        <p>${track.title}</p>
-                                        <p>${track.album}</p>
-                                        <p>${track.artist}</p>
-                                        <p>${secondsToMinutes(track.duration)}</p>
-                                        <p><span class="typcn ${track.favourite ? 'typcn-heart' : 'typcn-heart-outline'}"></span></p> 
-                                    </li>
+        fetchMusic('ORDER BY birthtime DESC LIMIT 15')
+        .then(data => {
+            data.forEach((track, index) => {
+                // console.log(track);
+                // For top 5 recent tracks
+                if(index < 5) {
+                    allHomePromises.push(
+                        new Promise((resolve, reject) => {
+                            mm.parseFile(track.path).then(metadata => {
+                                let datajpg = metadata.common.picture[0].data ? blobTob64(metadata.common.picture[0].data) : './assets/images/art.png'; 
+                                homeMusicCards += `
+                                    <div id="homeMusicCard" data-id=${track.id} data-title="${track.title}" data-album="${track.album}" data-artist="${track.artist}" data-path="${track.path}" data-duration="${track.duration}">
+                                        <img src="${datajpg}" id="homeMusicCardArt">
+                                        <p id="homeMusicCardTitle">${track.title}</p>
+                                        <p id="homeMusicCardArtist">${track.artist}</p>
+                                    </div>
                                 `
-                                if(track) resolve('recent added', track.title)
-                                else reject('prolem with track', track)
+                                if(metadata) resolve(`got art for ${track.title}`) 
+                                else reject(`failed to get art for ${track.title}`)
                             })
-                        )
-                    }
-                })
+                        })
+                    )                       
+                } else {
+                    // for rest 10 recent tracks
+                    allHomePromises.push(
+                        new Promise((resolve, reject) => {
+                            homeMusicRecents += `
+                                <li class="infoRow" data-id=${track.id} data-title="${track.title}" data-album="${track.album}" data-artist="${track.artist}" data-path="${track.path}" data-duration="${track.duration}">
+                                    <p>${track.title}</p>
+                                    <p>${track.album}</p>
+                                    <p>${track.artist}</p>
+                                    <p>${secondsToMinutes(track.duration)}</p>
+                                    <p><span id="likeHeart" data-isLiked="${track.favourite}" class="typcn ${track.favourite ? 'typcn-heart' : 'typcn-heart-outline'}"></span></p> 
+                                </li>
+                            `
+                            if(track) resolve('recent added', track.title)
+                            else reject('prolem with track', track)
+                        })
+                    )
+                }
+            })
 
-                Promise.all(allHomePromises)
-                .then(data => {
-                    console.log(data);
-
+            Promise.all(allHomePromises)
+            .then(data => {
+                // console.log(data);
+                // Opening and updating file
+                fs.readFile('./pages/home.htm', 'utf-8', (err, data) => {
+                    if(err) console.err(err);
+                    const jsdomWindow = new JSDOM(data).window;
                     jsdomWindow.document.querySelector('#homeMusicRow').innerHTML = homeMusicCards;
                     jsdomWindow.document.querySelector('#homeMusicRecent>ul').innerHTML = homeMusicRecents;
-
-                    const generatedContent = jsdomWindow.document.documentElement.outerHTML;
+                    const generatedContent = jsdomWindow.document.documentElement.outerHTML;                    
                     fs.writeFile('./pages/home.htm', generatedContent, (err) => {
                         if(err) reject(err)
                         else resolve("home page generated")
                     })  
-                }) 
 
-            })
+                })                
+            }) 
 
-                         
         })
+    })
+}
+
+// Generating songs page
+// generateSongsPage()
+//     .then(data => console.log(data))
+//     .catch(err => console.error(err))
+
+function generateSongsPage() {
+    let allSongs = '';
+    return new Promise((resolve, reject) => {
+        fetchMusic()
+            .then(data => {
+                data.forEach(track => {
+                    console.log(track);
+                    allSongs += `
+                    <li class="infoRowSongs" data-id=${track.id} data-title="${track.title}" data-album="${track.album}" data-artist="${track.artist}" data-path="${track.path}" data-duration="${track.duration}">
+                        <p class="songName">${track.title}</p>
+                        <p class="songAlbum">${track.album}</p>
+                        <p class="songArtist">${track.artist}</p>
+                        <p class="songTime">${secondsToMinutes(track.duration)}</p>
+                        <p class="songYear">${track.year ? track.year : '-'}</p>
+                        <p class="songLiked"><span style="display: none;">${track.favourite ? 'Heart' : 'Nope'}</span> <span id="likeHeart" data-isLiked="${track.favourite}" class="typcn ${track.favourite ? 'typcn-heart' : 'typcn-heart-outline'}"></span></p> 
+                    </li>
+                    `
+                })
+                fs.readFile('./pages/songs.htm', 'utf-8', (err, data) => {
+                    if(err) console.error(err);
+                    const jsdomWindow = new JSDOM(data).window;
+                    jsdomWindow.document.querySelector('#songsContainer>ul').innerHTML = allSongs;
+                    const generatedContent = jsdomWindow.document.documentElement.outerHTML;
+                    fs.writeFile('./pages/songs.htm', generatedContent, (err) => {
+                        if(err) reject(err)
+                        else resolve("songs page generated")
+                    })  
+                })
+            })
     })
 }
 
@@ -357,7 +393,7 @@ function loadSongsPage (e) {
     // Loading artists page in #main content at start
     $('#main').fadeOut('slow',function(){
         $('#main').load('./pages/songs.htm',function(data){
-           $('#main').fadeIn('slow'); 
+           $('#main').fadeIn('slow');           
        });
    })
 }
@@ -395,7 +431,6 @@ function loadLikedPage (e) {
 
 //  Making sidebar links work here
 
-
 sbDiscoverLink.addEventListener('click', loadHomePage)
 sbSongsLink.addEventListener('click', loadSongsPage)
 sbAlbumsLink.addEventListener('click', loadAlbumsPage)
@@ -406,7 +441,6 @@ loadHomePage();
 
 
 // Highligting current page
-
 
 function highlightSbLink(event) {
     sbLinks.forEach(link => link.classList.remove('sbSelected'))
