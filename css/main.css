@@ -43,7 +43,7 @@
     width: 14px;
 }
 
-
+/* Sapphire theme */
 :root {
     --primary-color: #1e1e35;
     --primary-color-light: #2e2e4e; 
@@ -51,6 +51,16 @@
     --primary-color-gray: #c4c4c4;
     --primary-color-gray-light: #e2e2e2;
 }
+
+/* Old MacOS theme */
+
+/* :root {
+    --primary-color: #eeeeee;
+    --primary-color-light: #cecece; 
+    --primary-color-white: #000000;
+    --primary-color-gray: #333333;
+    --primary-color-gray-light: #575757;
+} */
 
 html, body {
     border-radius: 20px;
@@ -209,4 +219,206 @@ html, body {
     width: calc(100% - 200px);
     /* border-radius: 0 0 8px 0; */
     overflow-y: auto;
+    /* Making empty space so player wont hide items */
+    padding-bottom: 50px;
+}
+
+/* Player bar */
+
+#playerBar {
+    height: 80px;
+    width: 100%;
+    box-sizing: border-box;
+    position: absolute;
+    bottom: 0;
+    z-index: 5;
+}
+
+#playerBarArt {
+    box-sizing: border-box;
+    padding: 14px;
+    width: 200px;
+    height:200px;
+    float: left;
+    display: inline-block;
+    transform: translateY(-120px);
+}
+
+#playerBarArt img {
+    box-sizing: border-box;
+    position: relative;
+    width: 100%;
+    height: 100%;
+    border-radius: 6px; 
+    box-shadow: 0px 6px 20px 1px rgba(0, 0, 0, 0.4);
+}
+
+#playerBarControls {
+    box-sizing: border-box;
+    float: right;
+    display: inline-block;
+    background-color: var(--primary-color);
+    border-top: 1px solid var(--primary-color-light);
+    /* box-shadow: 0px -4px 20px -6px rgba(0, 0, 0, 0.4); */
+    height: 100%;
+    width: calc(100% - 200px);
+    display: flex;  
+    flex-direction: row;
+    justify-content: space-between;   
+}
+
+#playerBarLeft, #playerBarMiddle, #playerBarRight {
+    box-sizing: border-box;
+    height: 100%;
+    display: inline-block;
+}
+
+#playerBarLeft {
+    padding: 10px;
+}
+
+#playerBarHeart {
+    height: 50px;
+    /* was causing other elements to move when animating heart */
+    /* height: 100%; */
+    float: left;
+    margin-right: 10px;
+    color: var(--primary-color-white);
+    font-size: 20px;
+    padding-top: 2px;
+    overflow: hidden;
+    white-space: nowrap;
+}
+
+#playerBarHeart span {
+    cursor: pointer;
+}
+
+#playerBarTitle, #playerBarArtist {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+#playerBarTitle {
+    color: var(--primary-color-white);
+    font-family: Futura;
+    font-size: 16px;
+    width: 140px;
+    margin: 5px 0px 5px 0px;
+}
+
+#playerBarArtist {
+    color: var(--primary-color-gray);
+    font-family: Montserrat;
+    font-size: 14px;
+    width: 120px;
+}
+
+#playerBarMiddle {
+    padding: 10px;
+    width: 500px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+#playerBarMediaButtons {
+    margin-bottom: 12px;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+
+#playerBarMediaButtons i {
+    cursor: pointer;
+}
+
+#playerBackBtn {
+    color: var(--primary-color-gray-light);
+    margin-right: 22px;
+}
+
+#playerPlayBtn {
+    font-size: 22px;
+    color: var(--primary-color-white);
+}
+
+#playerForwardBtn {
+    color: var(--primary-color-gray-light);
+    margin-left: 20px;
+}
+
+#playerProgressBarWrapper {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+}
+
+#playerProgressBar {
+    height: 8px;
+    width: 400px;
+    -webkit-appearance: none !important;
+    border: none !important;
+    cursor: pointer;    
+    transition: ease all 1s;
+}
+
+#playerProgressBar::-webkit-progress-bar {
+    background-color: var(--primary-color-light);
+    border-radius: 10px;
+}
+
+#playerProgressBar::-webkit-progress-value {
+    transition: ease width 0.15s;
+    background-color: var(--primary-color-white);
+    border-radius: 10px;
+    height: 10px;
+    transform: translateY(-1px);    
+}
+
+#playerBarCurrentTime, #playerBarTotalTime {
+    font-family: Avenir;
+    color: var(--primary-color-gray-light);
+    font-size: 11px;
+    margin: 1px 6px 0px 6px;
+}
+
+#playerBarRight {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: flex-end;
+    padding: 10px;
+    padding-right: 20px;
+    width: 200px;
+}
+
+#playerVolumeBtn {
+    color: var(--primary-color-gray-light);
+    margin-right: 9px;
+    transform: translateY(-1px);
+}
+
+#playerVolumeBar {
+    height: 6px;
+    width: 70px;
+    -webkit-appearance: none !important;
+    border: none !important;
+    cursor: pointer; 
+}
+
+#playerVolumeBar::-webkit-progress-bar {
+    background-color: var(--primary-color-light);
+    border-radius: 10px;
+}
+
+#playerVolumeBar::-webkit-progress-value {
+    transition: ease width 0.15s;
+    background-color: var(--primary-color-gray-light);
+    border-radius: 10px;
+    height: 8px;
+    transform: translateY(-1px);    
 }

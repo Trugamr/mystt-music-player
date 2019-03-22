@@ -263,10 +263,11 @@ function generateHomePage(withTop5 = true) {
                             mm.parseFile(track.path).then(metadata => {
                                 let datajpg = metadata.common.picture[0].data ? blobTob64(metadata.common.picture[0].data) : './assets/images/art.png'; 
                                 homeMusicCards += `
-                                    <div id="homeMusicCard" data-id=${track.id} data-title="${track.title}" data-album="${track.album}" data-artist="${track.artist}" data-path="${track.path}" data-duration="${track.duration}">
+                                    <div id="homeMusicCard" onclick="playTrack(${track.id})" data-id=${track.id} data-title="${track.title}" data-album="${track.album}" data-artist="${track.artist}" data-path="${track.path}" data-duration="${track.duration}">
                                         <img src="${datajpg}" id="homeMusicCardArt">
                                         <p id="homeMusicCardTitle">${track.title}</p>
                                         <p id="homeMusicCardArtist">${track.artist}</p>
+                                        <p style="display: none;"><span id="likeHeart" onclick="likeTrack(event)" data-track-id="${track.id}" data-liked="${track.favourite}" class="typcn ${track.favourite ? 'typcn-heart' : 'typcn-heart-outline'}"></span></p> 
                                     </div>
                                 `
                                 if(metadata) resolve(`got art for ${track.title}`) 
@@ -279,7 +280,7 @@ function generateHomePage(withTop5 = true) {
                     allHomePromises.push(
                         new Promise((resolve, reject) => {
                             homeMusicRecents += `
-                                <li class="infoRow" data-id=${track.id} data-title="${track.title}" data-album="${track.album}" data-artist="${track.artist}" data-path="${track.path}" data-duration="${track.duration}">
+                                <li class="infoRow" onclick="playTrack(${track.id})" data-id=${track.id} data-title="${track.title}" data-album="${track.album}" data-artist="${track.artist}" data-path="${track.path}" data-duration="${track.duration}">
                                     <p>${track.title}</p>
                                     <p>${track.album}</p>
                                     <p>${track.artist}</p>
@@ -330,7 +331,7 @@ function generateSongsPage() {
                 data.forEach(track => {
                     // console.log(track);
                     allSongs += `
-                    <li class="infoRowSongs" data-id=${track.id} data-title="${track.title}" data-album="${track.album}" data-artist="${track.artist}" data-path="${track.path}" data-duration="${track.duration}">
+                    <li class="infoRowSongs" onclick="playTrack(${track.id})" data-id=${track.id} data-title="${track.title}" data-album="${track.album}" data-artist="${track.artist}" data-path="${track.path}" data-duration="${track.duration}">
                         <p class="songName">${track.title}</p>
                         <p class="songAlbum">${track.album}</p>
                         <p class="songArtist">${track.artist}</p>
@@ -367,7 +368,7 @@ function generateLikedPage() {
                 if(data) data.forEach(track => {
                     // console.log(track);
                     allLiked += `
-                    <li class="infoRowLiked" data-id=${track.id} data-title="${track.title}" data-album="${track.album}" data-artist="${track.artist}" data-path="${track.path}" data-duration="${track.duration}">
+                    <li class="infoRowLiked" onclick="playTrack(${track.id})" data-id=${track.id} data-title="${track.title}" data-album="${track.album}" data-artist="${track.artist}" data-path="${track.path}" data-duration="${track.duration}">
                         <p class="likedName">${track.title}</p>
                         <p class="likedAlbum">${track.album}</p>
                         <p class="likedArtist">${track.artist}</p>
@@ -492,11 +493,18 @@ function highlightSbLink(event) {
 // Liking dis-liking track
 
 function likeTrack(e) {
+
+    // To stop like button from triggerering row click as well
+    e.stopPropagation();
+
     let icon = e.target;
     let iconParent = icon.parentElement;
     let isLiked = parseInt(e.target.dataset.liked);
     let trackId = e.target.dataset.trackId;
 
+    console.log(e.target.dataset)
+
+    console.log(icon, iconParent)
     //changing icon
     if(isLiked) {
         // animate icon
@@ -548,5 +556,155 @@ function likeTrack(e) {
     
 }
 
+
+// Playing functions
+
+const playerBar = document.querySelector('#playerBar')
+
+const backButton = document.querySelector('#playerBackBtn');
+const playButton = document.querySelector('#playerPlayBtn');
+const forwardButton = document.querySelector('#playerForwardBtn');
+
+const playerBarHeart = document.querySelector('#playerBarHeart>span')
+const playerBarTitle = document.querySelector('#playerBarTitle')
+const playerBarArtist = document.querySelector('#playerBarArtist')
+const playerBarArt = document.querySelector('#playerBarArt>img')
+const playerBarTotalTime = document.querySelector('#playerBarTotalTime')
+
+// Player Controls
+// Loading main audio element
+const audioPlayer = document.querySelector('#audioPlayer');
+const audioPlayerSrc = document.querySelector('#audioPlayerSrc');
+
+// Default volume 
+audioPlayer.volume = 0.4;
+
+
+// Getting no. of tracks from database
+let totalTracks;
+db.each('SELECT COUNT(*) AS count from MUSIC', (err, data) => {
+    totalTracks = data.count;
+})
+
+let currentlyPlayingTrack = 0;
+
+// Playing track from id
+function playTrack(trackId) {
+
+    // start from beginning if trackId more than total tracks and start from end if trackId in negative or 0
+    if(trackId > totalTracks) {
+        trackId = 1;
+    } else if(trackId < 1) {
+        trackId = totalTracks;
+    }
+
+
+    fetchMusic(`WHERE id = ${trackId}`)
+        .then(foundTrack => {
+
+            let track = foundTrack[0];
+            console.log(track);
+
+            // let track = document.querySelector(`[data-id='${trackId}']`).dataset;
+            // let likeStatus = parseInt(document.querySelector(`[data-track-id='${trackId}']#likeHeart`).dataset.liked);
+
+            currentlyPlayingTrack = track.id;
+
+            playerBarTitle.textContent = track.title;
+            playerBarArtist.textContent = track.artist;
+            playerBarTotalTime.textContent = secondsToMinutes(track.duration);
+
+            // updating play button class
+            playButton.classList.remove('fa-play');
+            playButton.classList.add('fa-pause');
+
+            // Loading path and playing track
+            audioPlayerSrc.src = track.path;
+            audioPlayer.load();
+            audioPlayer.play();
+
+            // Updating album art
+            mm.parseFile(track.path)
+                .then(metadata => {
+                    let datajpg = metadata.common.picture[0].data ? blobTob64(metadata.common.picture[0].data) : './assets/images/art.png';
+                    playerBarArt.src = datajpg;
+                })
+
+            // Changing heart icon
+            if(track.favourite) {
+                playerBarHeart.dataset.trackId = track.id;
+                playerBarHeart.dataset.liked = track.favourite;
+                playerBarHeart.classList.remove('typcn-heart-outline');
+                playerBarHeart.classList.add('typcn-heart');
+            } else {
+                playerBarHeart.dataset.trackId = track.id;
+                playerBarHeart.dataset.liked = track.favourite;
+                playerBarHeart.classList.remove('typcn-heart');
+                playerBarHeart.classList.add('typcn-heart-outline');
+            }
+        })
+}
+
+
+// Hooking up media buttons
+
+backButton.addEventListener('click', () => {
+    playTrack(--currentlyPlayingTrack);
+})
+
+forwardButton.addEventListener('click', () => {
+    playTrack(++currentlyPlayingTrack);
+})
+
+playButton.addEventListener('click', () => {
+    if(audioPlayer.paused) {
+        audioPlayer.play();
+        playButton.classList.remove('fa-play');
+        playButton.classList.add('fa-pause');
+    } else {
+        audioPlayer.pause();
+        playButton.classList.remove('fa-pause');
+        playButton.classList.add('fa-play');
+    }
+})
+
+
+// Changing progress bar values
+const progressBar = document.querySelector('#playerProgressBar');
+const volumeBar = document.querySelector('#playerVolumeBar');
+
+const currentTimeDisplay = document.querySelector('#playerBarCurrentTime');
+
+function progressTo(e) {
+    e.target.value = e.offsetX/e.target.clientWidth * 100; 
+    // console.log(e);
+}
+
+progressBar.addEventListener('click', (e) => {
+    audioPlayer.currentTime = (e.offsetX/progressBar.clientWidth * audioPlayer.duration);
+})
+
+volumeBar.addEventListener('click', () => {
+    audioPlayer.volume = volumeBar.value/100; 
+})
+
+audioPlayer.addEventListener('timeupdate', () => {
+    // Updating progress bar
+    if(audioPlayer.currentTime) {
+        progressBar.value = audioPlayer.currentTime/audioPlayer.duration * 100;
+        currentTimeDisplay.textContent = secondsToMinutes(audioPlayer.currentTime);
+    }
+
+    // Play next track automatically after one ends
+    if(audioPlayer.duration == audioPlayer.currentTime) {
+        playTrack(++currentlyPlayingTrack);
+    }
+})
+
+
+
+
 // exporting then calling with onclick on likeIcon iteself
 module.exports.likeTrack = likeTrack;
+module.exports.progressTo = progressTo;
+module.exports.playTrack = playTrack;

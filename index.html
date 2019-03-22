@@ -22,15 +22,21 @@
     <script>if (window.module) module = window.module;</script>
   </head>
   <body>
+
+    <!-- Main audio element -->
+    <audio id="audioPlayer">
+      <source id="audioPlayerSrc" src="J:\Dropbox\myst\TEST\Mr FijiWiji &amp; Exist Strategy\Andromeda - Single\02 Andromeda (Instrumental).m4a">
+    </audio>
+
     <div id="container" class="flexChild columnParent">
       <div id="titlebar" class="flexChild">
         <div id="titlebar-title">mystt</div>
-        <dib id="titlebar-buttons">
+        <div id="titlebar-buttons">
           <div id="minimize-btn"></div>
           <div id="maximize-btn"></div>
           <div id="close-btn"></div>
-        </dib>
-      </div>
+        </div>
+      </div>      
       <div id="wrapper" class="flexChild rowParent">
         <div id="sidebar" class="flexChild">
             <div id="sidebarWrapper">
@@ -44,12 +50,44 @@
             </div>            
         </div>
         <div id="main" class="flexChild"></div>
+      </div>
+
+      <div id="playerBar"> 
+        <div id="playerBarArt">
+          <img src="./assets/test/art5.jpg">
+        </div> 
+        <div id="playerBarControls">
+          <div id="playerBarLeft">
+            <!-- Wrapped icon inside div to only show cursor: pointer on icon -->
+            <div id="playerBarHeart"><span data-liked='0' data-track-id="0" onclick="likeTrack(event)" class="typcn typcn-heart-outline"></span></div>
+            <p id="playerBarTitle">Grip</p>
+            <p id="playerBarArtist">Seeb x Bastille</p>
+          </div>
+          <div id="playerBarMiddle">
+            <div id="playerBarMediaButtons">
+              <i id="playerBackBtn" class="fas fa-step-backward"></i>
+              <i id="playerPlayBtn" class="fas fa-play"></i>
+              <i id="playerForwardBtn"  class="fas fa-step-forward"></i>
+            </div>
+            <div id="playerProgressBarWrapper">
+              <span id="playerBarCurrentTime"></span>
+              <progress id="playerProgressBar" onclick="progressTo(event)" max=100 value="35"></progress>
+              <span id="playerBarTotalTime"></span>
+            </div>
+          </div>
+          <div id="playerBarRight">
+            <i id="playerVolumeBtn" class="fas fa-volume"></i>
+            <progress id="playerVolumeBar" onclick="progressTo(event)" max="100" value="40"></progress>;
+          </div>
+        </div>
       </div>      
     </div>
     <script>
       // You can also require other files to run in this process
       var renderer = require('./renderer.js')
       var likeTrack = renderer.likeTrack
+      var progressTo = renderer.progressTo
+      var playTrack = renderer.playTrack
     </script>
   </body>
 </html>

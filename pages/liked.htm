@@ -1,7 +1,7 @@
 <html><head>
     <title>Songs</title>
     <!-- Move css injections to index.html page to get rid of jQuery.load() flicker -->
-    <link rel="stylesheet" href="./css/liked.css">
+    <!-- <link rel="stylesheet" href="./css/liked.css"> -->
 </head>
 <body>
     <div id="likedPageContainer">
@@ -18,22 +18,31 @@
                 <p class="likedSort" data-sort="likedLiked">Liked <span class="typcn"></span></p> 
             </li>
             <ul class="list">
-                    <li class="infoRowLiked" data-id="19" data-title="rockstar (feat. 21 Savage)" data-album="rockstar (feat. 21 Savage) - Single" data-artist="Post Malone" data-path="J:\Dropbox\myst\TEST\Post Malone\rockstar (feat. 21 Savage) - Single\01 rockstar (feat. 21 Savage).m4a" data-duration="218.36045351473922">
-                        <p class="likedName">rockstar (feat. 21 Savage)</p>
-                        <p class="likedAlbum">rockstar (feat. 21 Savage) - Single</p>
-                        <p class="likedArtist">Post Malone</p>
-                        <p class="likedTime">3:38</p>
+                    <li class="infoRowLiked" onclick="playTrack(3)" data-id="3" data-title="anxiety (feat. FRND)" data-album="cybersex" data-artist="blackbear" data-path="J:\Dropbox\myst\TEST\blackbear\cybersex\06 anxiety (feat. FRND).m4a" data-duration="191.10022675736963">
+                        <p class="likedName">anxiety (feat. FRND)</p>
+                        <p class="likedAlbum">cybersex</p>
+                        <p class="likedArtist">blackbear</p>
+                        <p class="likedTime">3:11</p>
                         <p class="likedYear">2017</p>
-                        <p class="likedLiked"><span style="display: none;">Heart</span> <span id="likeHeart" onclick="likeTrack(event)" data-track-id="19" data-fromliked="true" data-liked="1" class="typcn typcn-heart"></span></p> 
+                        <p class="likedLiked"><span style="display: none;">Heart</span> <span id="likeHeart" onclick="likeTrack(event)" data-track-id="3" data-fromliked="true" data-liked="1" class="typcn typcn-heart"></span></p> 
                     </li>
                     
-                    <li class="infoRowLiked" data-id="13" data-title="Row the Body (feat. French Montana)" data-album="Row the Body (feat. French Montana) - Single" data-artist="Taio Cruz" data-path="J:\Dropbox\myst\TEST\Taio Cruz\Row the Body (feat. French Montana) - Single\01 Row the Body (feat. French Montana).m4a" data-duration="237.5633560090703">
-                        <p class="likedName">Row the Body (feat. French Montana)</p>
-                        <p class="likedAlbum">Row the Body (feat. French Montana) - Single</p>
-                        <p class="likedArtist">Taio Cruz</p>
-                        <p class="likedTime">3:57</p>
+                    <li class="infoRowLiked" onclick="playTrack(1)" data-id="1" data-title="Don't Kill My High (feat. Wiz Khalifa &amp; Social House)" data-album="Paper Crowns - EP" data-artist="Lost Kings" data-path="J:\Dropbox\myst\TEST\01 Dont Kill My High (feat. Wiz Kha.m4a" data-duration="180.3958276643991">
+                        <p class="likedName">Don't Kill My High (feat. Wiz Khalifa &amp; Social House)</p>
+                        <p class="likedAlbum">Paper Crowns - EP</p>
+                        <p class="likedArtist">Lost Kings</p>
+                        <p class="likedTime">3:00</p>
+                        <p class="likedYear">2019</p>
+                        <p class="likedLiked"><span style="display: none;">Heart</span> <span id="likeHeart" onclick="likeTrack(event)" data-track-id="1" data-fromliked="true" data-liked="1" class="typcn typcn-heart"></span></p> 
+                    </li>
+                    
+                    <li class="infoRowLiked" onclick="playTrack(5)" data-id="5" data-title="Feels Great (feat. Fetty Wap &amp; CVBZ)" data-album="Feels Great (feat. Fetty Wap &amp; CVBZ) - Single" data-artist="Cheat Codes" data-path="J:\Dropbox\myst\TEST\Cheat Codes\Feels Great (feat. Fetty Wap &amp; CVBZ) - Single\01 Feels Great (feat. Fetty Wap &amp; CVBZ).m4a" data-duration="204.2427210884354">
+                        <p class="likedName">Feels Great (feat. Fetty Wap &amp; CVBZ)</p>
+                        <p class="likedAlbum">Feels Great (feat. Fetty Wap &amp; CVBZ) - Single</p>
+                        <p class="likedArtist">Cheat Codes</p>
+                        <p class="likedTime">3:24</p>
                         <p class="likedYear">2017</p>
-                        <p class="likedLiked"><span style="display: none;">Heart</span> <span id="likeHeart" onclick="likeTrack(event)" data-track-id="13" data-fromliked="true" data-liked="1" class="typcn typcn-heart"></span></p> 
+                        <p class="likedLiked"><span style="display: none;">Heart</span> <span id="likeHeart" onclick="likeTrack(event)" data-track-id="5" data-fromliked="true" data-liked="1" class="typcn typcn-heart"></span></p> 
                     </li>
                     </ul>
         </div>
