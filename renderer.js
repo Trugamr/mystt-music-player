@@ -235,9 +235,9 @@ function fetchMusic(args = "ORDER BY title COLLATE NOCASE ASC") {
 }
 
 // Generating home page
-generateHomePage()
-    .then(data => console.log(data))
-    .catch(err => console.error(err))
+// generateHomePage()
+//     .then(data => console.log(data))
+//     .catch(err => console.error(err))
 
 function generateHomePage(withTop5 = true) {
     const allHomePromises = [];
@@ -319,9 +319,9 @@ function generateHomePage(withTop5 = true) {
 }
 
 // Generating songs page
-generateSongsPage()
-    .then(data => console.log(data))
-    .catch(err => console.error(err))
+// generateSongsPage()
+//     .then(data => console.log(data))
+//     .catch(err => console.error(err))
 
 function generateSongsPage() {
     let allSongs = '';
@@ -355,10 +355,70 @@ function generateSongsPage() {
     })
 }
 
-// Generating liked page
-generateLikedPage()
+// Generating albums page
+generateAlbumsPage()
     .then(data => console.log(data))
     .catch(err => console.error(err))
+
+function generateAlbumsPage() {
+    let allAlbumPromises = [];
+    let allAlbums = '';
+    return new Promise((resolve, reject) => {
+        let allAlbumPromises = [];
+        // fetching all albums        
+        db.all(`SELECT album, artist, path, COUNT(title) as tracks FROM Music GROUP BY album`, (err, albumData) => {
+            if(err) console.error(err);
+            albumData
+                .filter(album => album.tracks > 1)
+                .forEach(album => {
+                    allAlbumPromises.push(
+                        new Promise((res, rej) => {
+                            mm.parseFile(album.path)
+                                .then(metadata => {
+                                    let datajpg = metadata.common.picture[0].data ? blobTob64(metadata.common.picture[0].data) : './assets/images/art.png';
+                                    allAlbums += `
+                                    <div id="albumCard" data-album="${album.album}" data-artist="${album.artist}" data-tracks="${album.tracks}">
+                                        <div id="albumCardArt">
+                                            <img src="${datajpg}">
+                                        </div>
+                                        <p id="albumCardTitle">${album.album}</p>
+                                        <p id="albumCardArtist">${album.artist}</p>
+                                    </div>
+                                    `
+
+                                    if(metadata) res(`got metadata for ${album.album} by ${album.artist}`)
+                                    else rej(`failed to get metadata for ${album.album}} by ${album.artist}`);
+                                })
+                        })
+                    )
+                });
+            Promise.all(allAlbumPromises)
+                .then(data => {
+                    fs.readFile('./pages/albums.htm', 'utf-8', (err, data) => {
+                        if(err) console.error(err);
+                        const jsdomWindow = new JSDOM(data).window;
+                        // only update if withTop5 is true
+                        jsdomWindow.document.querySelector('#albumsContainer').innerHTML = allAlbums;
+                        const generatedContent = jsdomWindow.document.documentElement.outerHTML;                    
+                        fs.writeFile('./pages/albums.htm', generatedContent, (err) => {
+                            if(err) reject(err)
+                            else resolve(`album page generated`)
+                        })  
+    
+                    })   
+                })
+                .catch(err => reject(err))
+            
+        })
+    })
+}
+
+
+
+// Generating liked page
+// generateLikedPage()
+//     .then(data => console.log(data))
+//     .catch(err => console.error(err))
 
 function generateLikedPage() {
     let allLiked = '';
@@ -411,6 +471,12 @@ function secondsToMinutes(duration) {
 
 // Functions to load various pages
 
+// marked for re-generation if anytrack was liked if not don't regenerate page
+let regeneratePage = {
+    homePage: false,
+    likedPage: false
+};
+
 function loadHomePage (e) {
     if(e) highlightSbLink(e);
     // Loading artists page in #main content at start
@@ -418,7 +484,7 @@ function loadHomePage (e) {
         $('#main').load('./pages/home.htm',function(data){
            $('#main').fadeIn('slow'); 
        });
-   })
+    })
 }
 
 function loadArtistsPage (e) {
@@ -428,27 +494,40 @@ function loadArtistsPage (e) {
         $('#main').load('./pages/artists.htm',function(data){
            $('#main').fadeIn('slow'); 
        });
-   })
+    })
 }
 
 function loadSongsPage (e) {
     if(e) highlightSbLink(e);
     // Loading artists page in #main content at start
-    $('#main').fadeOut('slow',function(){
-        $('#main').load('./pages/songs.htm',function(data){
-           $('#main').fadeIn('slow');           
-       });
-   })
+    if(regeneratePage.songsPage) {
+        regeneratePage.songsPage = false;
+        generateSongsPage()
+            .then(data => {
+                console.log(data);
+                $('#main').fadeOut('slow',function(){
+                    $('#main').load('./pages/songs.htm',function(data){
+                       $('#main').fadeIn('slow'); 
+                   });
+                })
+            })
+    } else {
+        $('#main').fadeOut('slow',function(){
+            $('#main').load('./pages/songs.htm',function(data){
+               $('#main').fadeIn('slow'); 
+           });
+        })
+    }
 }
 
 function loadAlbumsPage (e) {
     if(e) highlightSbLink(e);
     // Loading artists page in #main content at start
     $('#main').fadeOut('slow',function(){
-        $('#main').load('./pages/albums.htm',function(data){
+        $('#main').load('./pages/albums.htm',function(data){            
            $('#main').fadeIn('slow'); 
        });
-   });
+    });
 }
 
 function loadArtistsPage (e) {
@@ -458,17 +537,30 @@ function loadArtistsPage (e) {
         $('#main').load('./pages/artists.htm',function(data){
            $('#main').fadeIn('slow'); 
        });
-   })
+    })
 }
 
 function loadLikedPage (e) {
     if(e) highlightSbLink(e);
     // Loading artists page in #main content at start
-    $('#main').fadeOut('slow',function(){
-        $('#main').load('./pages/liked.htm',function(data){
-           $('#main').fadeIn('slow'); 
-       });
-   })
+    if(regeneratePage.likedPage) {
+        regeneratePage.likedPage = false;
+        generateLikedPage()
+            .then(data => {
+                console.log(data);
+                $('#main').fadeOut('slow',function(){
+                    $('#main').load('./pages/liked.htm',function(data){
+                       $('#main').fadeIn('slow'); 
+                   });
+                })
+            })
+    } else {
+        $('#main').fadeOut('slow',function(){
+            $('#main').load('./pages/liked.htm',function(data){
+               $('#main').fadeIn('slow'); 
+           });
+        })
+    }
 }
 
 
@@ -501,10 +593,7 @@ function likeTrack(e) {
     let iconParent = icon.parentElement;
     let isLiked = parseInt(e.target.dataset.liked);
     let trackId = e.target.dataset.trackId;
-
-    console.log(e.target.dataset)
-
-    console.log(icon, iconParent)
+    
     //changing icon
     if(isLiked) {
         // animate icon
@@ -519,13 +608,16 @@ function likeTrack(e) {
             if(icon.dataset.fromliked) {
                 iconParent.parentElement.addEventListener('animationend', () => {iconParent.parentElement.style = "display: none;"} )
                 iconParent.parentElement.classList.add('animated', 'fadeOut')
+                regenerateLikePage = true;
             }
+
+            // marking regenration of pages
+            regeneratePage.likedPage = true;
+            regeneratePage.songsPage = true;
 
             console.log(`${trackId} set like to 0`);
             // updating for data liked for cached page
             e.target.dataset.liked = 0;
-            generateLikedPage().then(data => console.log(data)).catch(err => console.error(err));
-            generateSongsPage().then(data => console.log(data)).catch(err => console.error(err));
             // causing micro lags
             // generateHomePage(false).then(data => console.log(data)).catch(err => console.error(err));
         });
@@ -539,11 +631,14 @@ function likeTrack(e) {
 
         db.run(`UPDATE Music SET favourite = 1 WHERE id = ${trackId}`, (err) => {
             if(err) console.error(err);
+
+            // marking regenration of pages
+            regeneratePage.likedPage = true;
+            regeneratePage.songsPage = true;
+
             console.log(`${trackId} set to like 1`);
             // updating for data liked for cached page
             e.target.dataset.liked = 1;
-            generateLikedPage().then(data => console.log(data)).catch(err => console.error(err));
-            generateSongsPage().then(data => console.log(data)).catch(err => console.error(err));
             // causing micro lags
             // generateHomePage(false).then(data => console.log(data)).catch(err => console.error(err));
             isLiked = isLiked ? 0 : 1;
@@ -603,7 +698,7 @@ function playTrack(trackId) {
         .then(foundTrack => {
 
             let track = foundTrack[0];
-            console.log(track);
+            console.log(`playing ${track.title}`);
 
             // let track = document.querySelector(`[data-id='${trackId}']`).dataset;
             // let likeStatus = parseInt(document.querySelector(`[data-track-id='${trackId}']#likeHeart`).dataset.liked);

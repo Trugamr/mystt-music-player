@@ -43,7 +43,7 @@
     width: 14px;
 }
 
-/* Sapphire theme */
+/* */
 :root {
     --primary-color: #1e1e35;
     --primary-color-light: #2e2e4e; 
@@ -57,7 +57,7 @@
 /* :root {
     --primary-color: #eeeeee;
     --primary-color-light: #cecece; 
-    --primary-color-white: #000000;
+    --primary-color-white: #2c2c2c;
     --primary-color-gray: #333333;
     --primary-color-gray-light: #575757;
 } */
@@ -158,8 +158,6 @@ html, body {
 #close-btn:hover {
     background-color: hsl(0, 61%, 41%);
 }
-
-
   
 #sidebar {
     flex: 0 0 auto; 
@@ -210,6 +208,8 @@ html, body {
 
 .sidebarLinks span {
     font-size: 20px;
+    /* Highlighted class was getting added to icon for some reason, to fix this */
+    pointer-events: none;
 }
 
   

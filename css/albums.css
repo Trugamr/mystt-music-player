@@ -1,0 +1,88 @@
+@import url('https://fonts.googleapis.com/css?family=Montserrat:400,500,600,700');
+
+@font-face {
+    font-family: 'Avenir';
+    src: url('../fonts/Avenir/Avenir-Book.ttf');
+}
+
+@font-face {
+    font-family: 'Futura';
+    src: url('../fonts/Futura/Futura Heavy font.ttf');
+}
+
+
+#albumsPageContainer {
+    box-sizing: border-box;
+    width: 100%;
+    height: 100%;
+    padding: 30px 0px 30px 30px !important;
+    overflow-y: auto;
+    white-space: normal;
+}
+
+#albumsHeading {
+    color: var(--primary-color-white);
+    font-family: Futura;
+    margin-bottom: 24px;
+}
+
+#albumsContainer {
+    box-sizing: border-box;
+    display: flex;
+    flex-flow: row wrap;
+    width: 100%;
+    justify-content: space-between;
+}
+
+#albumCard {
+    width: 150px;
+    border-radius: 8px;
+    background-color: var(--primary-color-light);
+    display: inline-flex;
+    align-items: center;
+    flex-direction: column;
+    margin-bottom: 22px;
+    margin-right: 24px;
+    flex: 1 0 150px;
+    cursor: pointer;
+}
+
+#albumCardArt {
+    width: 100%;
+    /* prevent card click event for not triggering */
+    pointer-events: none
+}
+
+#albumCardArt img {
+    width: 100%;
+    border-radius: 8px 8px 0px 0px;
+    /* prevent card click event for not triggering */
+    pointer-events: none
+}  
+
+#albumCardTitle, #albumCardArtist {
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    /* prevent card click event for not triggering */
+    pointer-events: none;
+}
+
+#albumCardTitle {
+    font-family: Futura;
+    color: var(--primary-color-white);
+    width: 120px;
+    text-align: center;
+    margin-top: 6px;
+    font-size: 15px;
+}
+
+#albumCardArtist {
+    font-family: Montserrat;
+    color: var(--primary-color-gray);
+    width: 120px;
+    text-align: center;
+    margin-top: 2px;
+    margin-bottom: 10px;
+    font-size: 13px;
+}
