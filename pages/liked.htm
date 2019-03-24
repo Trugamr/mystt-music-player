@@ -10,12 +10,12 @@
             <div id="likedSearchContainer"><input type="text" placeholder="Search" class="likedSearch"><i class="fa fa-search"></i></div>
             <!-- Keeping this row outside to it wont get filtered -->
             <li class="infoRowLiked" id="categoryRowSongs">
-                <p class="likedSort" data-sort="likedName">Title <span class="typcn"></span></p>
-                <p class="likedSort" data-sort="likedAlbum">Album <span class="typcn"></span></p>
-                <p class="likedSort" data-sort="likedArtist">Artist <span class="typcn"></span></p>
-                <p class="likedSort" data-sort="likedTime">Duration <span class="typcn"></span></p>
-                <p class="likedSort" data-sort="likedYear">Year <span class="typcn"></span></p>
-                <p class="likedSort" data-sort="likedLiked">Liked <span class="typcn"></span></p> 
+                <p class="likedSort likedName" data-sort="likedName">Title <span class="typcn"></span></p>
+                <p class="likedSort likedAlbum" data-sort="likedAlbum">Album <span class="typcn"></span></p>
+                <p class="likedSort likedArtist" data-sort="likedArtist">Artist <span class="typcn"></span></p>
+                <p class="likedSort likedTime" data-sort="likedTime">Duration <span class="typcn"></span></p>
+                <p class="likedSort likedYear" data-sort="likedYear">Year <span class="typcn"></span></p>
+                <p class="likedSort likedLiked" data-sort="likedLiked">Liked <span class="typcn"></span></p> 
             </li>
             <ul class="list">
                     <li class="infoRowLiked" onclick="playTrack(3)" data-id="3" data-title="365" data-album="365 - Single" data-artist="Zedd &amp; Katy Perry" data-path="J:\Music - M4A\01 365.m4a" data-duration="181.95156462585035">
@@ -25,15 +25,6 @@
                         <p class="likedTime">3:01</p>
                         <p class="likedYear">2019</p>
                         <p class="likedLiked"><span style="display: none;">Heart</span> <span id="likeHeart" onclick="likeTrack(event)" data-track-id="3" data-fromliked="true" data-liked="1" class="typcn typcn-heart"></span></p> 
-                    </li>
-                    
-                    <li class="infoRowLiked" onclick="playTrack(119)" data-id="119" data-title="A Quick Break" data-album="Cuphead (Original Soundtrack)" data-artist="Kristofer Maddigan" data-path="J:\Music - M4A\Kristofer Maddigan\Cuphead (Original Soundtrack)\01-29 A Quick Break.m4a" data-duration="71.70321995464853">
-                        <p class="likedName">A Quick Break</p>
-                        <p class="likedAlbum">Cuphead (Original Soundtrack)</p>
-                        <p class="likedArtist">Kristofer Maddigan</p>
-                        <p class="likedTime">1:11</p>
-                        <p class="likedYear">2017</p>
-                        <p class="likedLiked"><span style="display: none;">Heart</span> <span id="likeHeart" onclick="likeTrack(event)" data-track-id="119" data-fromliked="true" data-liked="1" class="typcn typcn-heart"></span></p> 
                     </li>
                     
                     <li class="infoRowLiked" onclick="playTrack(45)" data-id="45" data-title="A Sky Full of Stars (Radio Edit)" data-album="A Sky Full of Stars - EP" data-artist="Coldplay" data-path="J:\Music - M4A\Coldplay\A Sky Full of Stars - EP\01 A Sky Full of Stars (Radio Edit).m4a" data-duration="236.44879818594103">
@@ -72,6 +63,15 @@
                         <p class="likedLiked"><span style="display: none;">Heart</span> <span id="likeHeart" onclick="likeTrack(event)" data-track-id="60" data-fromliked="true" data-liked="1" class="typcn typcn-heart"></span></p> 
                     </li>
                     
+                    <li class="infoRowLiked" onclick="playTrack(157)" data-id="157" data-title="Andromeda (feat. Matt Van)" data-album="Andromeda - Single" data-artist="Mr FijiWiji &amp; Exist Strategy" data-path="J:\Music - M4A\Mr FijiWiji &amp; Exist Strategy\Andromeda - Single\01 Andromeda (feat. Matt Van).m4a" data-duration="224.42086167800454">
+                        <p class="likedName">Andromeda (feat. Matt Van)</p>
+                        <p class="likedAlbum">Andromeda - Single</p>
+                        <p class="likedArtist">Mr FijiWiji &amp; Exist Strategy</p>
+                        <p class="likedTime">3:44</p>
+                        <p class="likedYear">2017</p>
+                        <p class="likedLiked"><span style="display: none;">Heart</span> <span id="likeHeart" onclick="likeTrack(event)" data-track-id="157" data-fromliked="true" data-liked="1" class="typcn typcn-heart"></span></p> 
+                    </li>
+                    
                     <li class="infoRowLiked" onclick="playTrack(210)" data-id="210" data-title="Bomb a Drop (Mixed)" data-album="Marshmello Fortnite Extended Set (DJ Mix)" data-artist="Marshmello" data-path="J:\Music - M4A\Marshmello\Marshmello Fortnite Extended Set (DJ Mix)\25 - Bomb a Drop (Mixed).m4a" data-duration="31.88">
                         <p class="likedName">Bomb a Drop (Mixed)</p>
                         <p class="likedAlbum">Marshmello Fortnite Extended Set (DJ Mix)</p>
@@ -79,6 +79,60 @@
                         <p class="likedTime">0:31</p>
                         <p class="likedYear">2019</p>
                         <p class="likedLiked"><span style="display: none;">Heart</span> <span id="likeHeart" onclick="likeTrack(event)" data-track-id="210" data-fromliked="true" data-liked="1" class="typcn typcn-heart"></span></p> 
+                    </li>
+                    
+                    <li class="infoRowLiked" onclick="playTrack(201)" data-id="201" data-title="Chasing Colors (feat. Noah Cyrus) [Mixed]" data-album="Marshmello Fortnite Extended Set (DJ Mix)" data-artist="Marshmello" data-path="J:\Music - M4A\Marshmello\Marshmello Fortnite Extended Set (DJ Mix)\14 - Chasing Colors (feat. Noah Cyrus) [Mixed].m4a" data-duration="89.28">
+                        <p class="likedName">Chasing Colors (feat. Noah Cyrus) [Mixed]</p>
+                        <p class="likedAlbum">Marshmello Fortnite Extended Set (DJ Mix)</p>
+                        <p class="likedArtist">Marshmello</p>
+                        <p class="likedTime">1:29</p>
+                        <p class="likedYear">2019</p>
+                        <p class="likedLiked"><span style="display: none;">Heart</span> <span id="likeHeart" onclick="likeTrack(event)" data-track-id="201" data-fromliked="true" data-liked="1" class="typcn typcn-heart"></span></p> 
+                    </li>
+                    
+                    <li class="infoRowLiked" onclick="playTrack(23)" data-id="23" data-title="Finesse" data-album="24K Magic" data-artist="Bruno Mars" data-path="J:\Music - M4A\Bruno Mars\24K Magic\08 Finesse.m4a" data-duration="191.05378684807258">
+                        <p class="likedName">Finesse</p>
+                        <p class="likedAlbum">24K Magic</p>
+                        <p class="likedArtist">Bruno Mars</p>
+                        <p class="likedTime">3:11</p>
+                        <p class="likedYear">2016</p>
+                        <p class="likedLiked"><span style="display: none;">Heart</span> <span id="likeHeart" onclick="likeTrack(event)" data-track-id="23" data-fromliked="true" data-liked="1" class="typcn typcn-heart"></span></p> 
+                    </li>
+                    
+                    <li class="infoRowLiked" onclick="playTrack(75)" data-id="75" data-title="Kids in Love (feat. The Night Game)" data-album="Kids in Love" data-artist="Kygo" data-path="J:\Music - M4A\Kygo\Kids in Love\06 Kids in Love (feat. The Night Game).m4a" data-duration="263.45360544217687">
+                        <p class="likedName">Kids in Love (feat. The Night Game)</p>
+                        <p class="likedAlbum">Kids in Love</p>
+                        <p class="likedArtist">Kygo</p>
+                        <p class="likedTime">4:23</p>
+                        <p class="likedYear">2017</p>
+                        <p class="likedLiked"><span style="display: none;">Heart</span> <span id="likeHeart" onclick="likeTrack(event)" data-track-id="75" data-fromliked="true" data-liked="1" class="typcn typcn-heart"></span></p> 
+                    </li>
+                    
+                    <li class="infoRowLiked" onclick="playTrack(148)" data-id="148" data-title="Lust for Life (feat. The Weeknd)" data-album="Lust for Life" data-artist="Lana Del Rey" data-path="J:\Music - M4A\Lana Del Rey\Lust for Life\02 Lust for Life (feat. The Weeknd).m4a" data-duration="264.12698412698415">
+                        <p class="likedName">Lust for Life (feat. The Weeknd)</p>
+                        <p class="likedAlbum">Lust for Life</p>
+                        <p class="likedArtist">Lana Del Rey</p>
+                        <p class="likedTime">4:24</p>
+                        <p class="likedYear">2017</p>
+                        <p class="likedLiked"><span style="display: none;">Heart</span> <span id="likeHeart" onclick="likeTrack(event)" data-track-id="148" data-fromliked="true" data-liked="1" class="typcn typcn-heart"></span></p> 
+                    </li>
+                    
+                    <li class="infoRowLiked" onclick="playTrack(63)" data-id="63" data-title="My Bad" data-album="Free Spirit" data-artist="Khalid" data-path="J:\Music - M4A\Khalid\Free Spirit\03 - My Bad.m4a" data-duration="164.0257596371882">
+                        <p class="likedName">My Bad</p>
+                        <p class="likedAlbum">Free Spirit</p>
+                        <p class="likedArtist">Khalid</p>
+                        <p class="likedTime">2:44</p>
+                        <p class="likedYear">2019</p>
+                        <p class="likedLiked"><span style="display: none;">Heart</span> <span id="likeHeart" onclick="likeTrack(event)" data-track-id="63" data-fromliked="true" data-liked="1" class="typcn typcn-heart"></span></p> 
+                    </li>
+                    
+                    <li class="infoRowLiked" onclick="playTrack(62)" data-id="62" data-title="Talk" data-album="Free Spirit" data-artist="Khalid" data-path="J:\Music - M4A\Khalid\Free Spirit\05 - Talk.m4a" data-duration="197.62503401360544">
+                        <p class="likedName">Talk</p>
+                        <p class="likedAlbum">Free Spirit</p>
+                        <p class="likedArtist">Khalid</p>
+                        <p class="likedTime">3:17</p>
+                        <p class="likedYear">2019</p>
+                        <p class="likedLiked"><span style="display: none;">Heart</span> <span id="likeHeart" onclick="likeTrack(event)" data-track-id="62" data-fromliked="true" data-liked="1" class="typcn typcn-heart"></span></p> 
                     </li>
                     </ul>
         </div>

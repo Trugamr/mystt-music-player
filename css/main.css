@@ -63,7 +63,11 @@
 } */
 
 html, body {
-    border-radius: 20px;
+    /* USED TO GET RID OF ANIMATION FLICKER IN ALBUM MODAL WHEN CLOSING
+    EXPERIMENTAL
+    EXPERIMENTAL
+    EXPERIMENTAL*/
+    overflow: hidden;
 }
 
 * {

@@ -136,35 +136,35 @@
 }
 
 /* Title column */
-.infoRowSongs p:first-child {
+.infoRowSongs .songName {
     width: 200px;;
     font-weight: 500;
 }
 
 /* Album column */
-.infoRowSongs p:nth-child(2) {
+.infoRowSongs .songAlbum {
     width: 200px;
 }
 
 /* Artist column */
-.infoRowSongs p:nth-child(3) {
+.infoRowSongs .songArtist {
     width: 180px;;
 }
 
 /* Duration column*/
-.infoRowSongs p:nth-child(4) {
+.infoRowSongs .songTime {
     width: 140px;
     text-align: center;
 }
 
 /* Year column */
-.infoRowSongs p:nth-child(5) {
+.infoRowSongs .songYear {
     width: 120px;
     text-align: center;   
 }
 
 /* Liked column */
-.infoRowSongs p:nth-child(6) {
+.infoRowSongs .songLiked {
     width: 100px;
     text-align: center;
     font-size: 18px;    

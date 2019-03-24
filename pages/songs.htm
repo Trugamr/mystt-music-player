@@ -10,12 +10,12 @@
                 <div id="songSearchContainer"><input type="text" placeholder="Search" class="songSearch"><i class="fa fa-search"></i></div>
                 <!-- Keeping this row outside to it wont get filtered -->
                 <li class="infoRowSongs" id="categoryRowSongs">
-                    <p class="songSort" data-sort="songName">Title <span class="typcn"></span></p>
-                    <p class="songSort" data-sort="songAlbum">Album <span class="typcn"></span></p>
-                    <p class="songSort" data-sort="songArtist">Artist <span class="typcn"></span></p>
-                    <p class="songSort" data-sort="songTime">Duration <span class="typcn"></span></p>
-                    <p class="songSort" data-sort="songYear">Year <span class="typcn"></span></p>
-                    <p class="songSort" data-sort="songLiked">Liked <span class="typcn"></span></p> 
+                    <p class="songSort songName" data-sort="songName">Title <span class="typcn"></span></p>
+                    <p class="songSort songAlbum" data-sort="songAlbum">Album <span class="typcn"></span></p>
+                    <p class="songSort songArtist" data-sort="songArtist">Artist <span class="typcn"></span></p>
+                    <p class="songSort songTime" data-sort="songTime">Duration <span class="typcn"></span></p>
+                    <p class="songSort songYear" data-sort="songYear">Year <span class="typcn"></span></p>
+                    <p class="songSort songLiked" data-sort="songLiked">Liked <span class="typcn"></span></p> 
                 </li>
                 <ul class="list">
                     <li class="infoRowSongs" onclick="playTrack(73)" data-id="73" data-title="1-800-273-8255 (feat. Alessia Cara &amp; Khalid)" data-album="Everybody (Deluxe)" data-artist="Logic" data-path="J:\Music - M4A\Logic\Everybody (Deluxe)\10 1-800-273-8255 (feat. Alessia Cara &amp; Khalid).m4a" data-duration="250.24145124716554">
@@ -60,7 +60,7 @@
                         <p class="songArtist">Kristofer Maddigan</p>
                         <p class="songTime">1:11</p>
                         <p class="songYear">2017</p>
-                        <p class="songLiked"><span style="display: none;">Heart</span> <span id="likeHeart" onclick="likeTrack(event)" data-track-id="119" data-liked="1" class="typcn typcn-heart"></span></p> 
+                        <p class="songLiked"><span style="display: none;">Nope</span> <span id="likeHeart" onclick="likeTrack(event)" data-track-id="119" data-liked="0" class="typcn typcn-heart-outline"></span></p> 
                     </li>
                     
                     <li class="infoRowSongs" onclick="playTrack(45)" data-id="45" data-title="A Sky Full of Stars (Radio Edit)" data-album="A Sky Full of Stars - EP" data-artist="Coldplay" data-path="J:\Music - M4A\Coldplay\A Sky Full of Stars - EP\01 A Sky Full of Stars (Radio Edit).m4a" data-duration="236.44879818594103">
@@ -159,7 +159,7 @@
                         <p class="songArtist">Mr FijiWiji &amp; Exist Strategy</p>
                         <p class="songTime">3:44</p>
                         <p class="songYear">2017</p>
-                        <p class="songLiked"><span style="display: none;">Nope</span> <span id="likeHeart" onclick="likeTrack(event)" data-track-id="157" data-liked="0" class="typcn typcn-heart-outline"></span></p> 
+                        <p class="songLiked"><span style="display: none;">Heart</span> <span id="likeHeart" onclick="likeTrack(event)" data-track-id="157" data-liked="1" class="typcn typcn-heart"></span></p> 
                     </li>
                     
                     <li class="infoRowSongs" onclick="playTrack(158)" data-id="158" data-title="Andromeda (Instrumental)" data-album="Andromeda - Single" data-artist="Mr FijiWiji &amp; Exist Strategy" data-path="J:\Music - M4A\Mr FijiWiji &amp; Exist Strategy\Andromeda - Single\02 Andromeda (Instrumental).m4a" data-duration="223.88680272108843">
@@ -348,7 +348,7 @@
                         <p class="songArtist">Marshmello</p>
                         <p class="songTime">1:29</p>
                         <p class="songYear">2019</p>
-                        <p class="songLiked"><span style="display: none;">Nope</span> <span id="likeHeart" onclick="likeTrack(event)" data-track-id="201" data-liked="0" class="typcn typcn-heart-outline"></span></p> 
+                        <p class="songLiked"><span style="display: none;">Heart</span> <span id="likeHeart" onclick="likeTrack(event)" data-track-id="201" data-liked="1" class="typcn typcn-heart"></span></p> 
                     </li>
                     
                     <li class="infoRowSongs" onclick="playTrack(192)" data-id="192" data-title="Check This Out (Mixed)" data-album="Marshmello Fortnite Extended Set (DJ Mix)" data-artist="Marshmello" data-path="J:\Music - M4A\Marshmello\Marshmello Fortnite Extended Set (DJ Mix)\06 - Check This Out (Mixed).m4a" data-duration="39.752">
@@ -1275,7 +1275,7 @@
                         <p class="songArtist">Kygo</p>
                         <p class="songTime">4:23</p>
                         <p class="songYear">2017</p>
-                        <p class="songLiked"><span style="display: none;">Nope</span> <span id="likeHeart" onclick="likeTrack(event)" data-track-id="75" data-liked="0" class="typcn typcn-heart-outline"></span></p> 
+                        <p class="songLiked"><span style="display: none;">Heart</span> <span id="likeHeart" onclick="likeTrack(event)" data-track-id="75" data-liked="1" class="typcn typcn-heart"></span></p> 
                     </li>
                     
                     <li class="infoRowSongs" onclick="playTrack(88)" data-id="88" data-title="Know No Better (feat. Travis Scott, Camila Cabello &amp; Quavo)" data-album="Know No Better - EP" data-artist="Major Lazer" data-path="J:\Music - M4A\Major Lazer\Know No Better - EP\01 Know No Better (feat. Travis Scott, Camila Cabello &amp; Quavo).m4a" data-duration="225.9069387755102">
@@ -1383,7 +1383,7 @@
                         <p class="songArtist">Lana Del Rey</p>
                         <p class="songTime">4:24</p>
                         <p class="songYear">2017</p>
-                        <p class="songLiked"><span style="display: none;">Nope</span> <span id="likeHeart" onclick="likeTrack(event)" data-track-id="148" data-liked="0" class="typcn typcn-heart-outline"></span></p> 
+                        <p class="songLiked"><span style="display: none;">Heart</span> <span id="likeHeart" onclick="likeTrack(event)" data-track-id="148" data-liked="1" class="typcn typcn-heart"></span></p> 
                     </li>
                     
                     <li class="infoRowSongs" onclick="playTrack(179)" data-id="179" data-title="Mad Love (feat. Becky G)" data-album="Mad Love (feat. Becky G) - Single" data-artist="Sean Paul" data-path="J:\Music - M4A\Sean Paul\Mad Love (feat. Becky G) - Single\01 Mad Love (feat. Becky G).m4a" data-duration="199.9934693877551">
@@ -1473,7 +1473,7 @@
                         <p class="songArtist">Khalid</p>
                         <p class="songTime">2:44</p>
                         <p class="songYear">2019</p>
-                        <p class="songLiked"><span style="display: none;">Nope</span> <span id="likeHeart" onclick="likeTrack(event)" data-track-id="63" data-liked="0" class="typcn typcn-heart-outline"></span></p> 
+                        <p class="songLiked"><span style="display: none;">Heart</span> <span id="likeHeart" onclick="likeTrack(event)" data-track-id="63" data-liked="1" class="typcn typcn-heart"></span></p> 
                     </li>
                     
                     <li class="infoRowSongs" onclick="playTrack(235)" data-id="235" data-title="My Sweet Lord" data-album="Vol. 2 Guardians of the Galaxy: Awesome Mix, Vol. 2 (Original Motion Picture Soundtrack)" data-artist="George Harrison" data-path="J:\Music - M4A\Various Artists\Vol. 2 Guardians of the Galaxy Awesome Mix, Vol. 2 (Original Motion Picture Soundtrack)\07 My Sweet Lord.m4a" data-duration="278.01251700680274">
@@ -1968,7 +1968,7 @@
                         <p class="songArtist">Khalid</p>
                         <p class="songTime">3:17</p>
                         <p class="songYear">2019</p>
-                        <p class="songLiked"><span style="display: none;">Nope</span> <span id="likeHeart" onclick="likeTrack(event)" data-track-id="62" data-liked="0" class="typcn typcn-heart-outline"></span></p> 
+                        <p class="songLiked"><span style="display: none;">Heart</span> <span id="likeHeart" onclick="likeTrack(event)" data-track-id="62" data-liked="1" class="typcn typcn-heart"></span></p> 
                     </li>
                     
                     <li class="infoRowSongs" onclick="playTrack(22)" data-id="22" data-title="That’s What I Like" data-album="24K Magic" data-artist="Bruno Mars" data-path="J:\Music - M4A\Bruno Mars\24K Magic\04 That’s What I Like.m4a" data-duration="206.75047619047618">

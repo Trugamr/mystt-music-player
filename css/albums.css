@@ -42,7 +42,7 @@
     align-items: center;
     flex-direction: column;
     margin-bottom: 22px;
-    margin-right: 24px;
+    margin-right: 22px;
     flex: 1 0 150px;
     cursor: pointer;
 }
@@ -85,4 +85,105 @@
     margin-top: 2px;
     margin-bottom: 10px;
     font-size: 13px;
+}
+
+#albumNameHeading {
+    color: var(--primary-color-white);
+    font-family: Futura;
+    font-size: 22px;
+    margin-bottom: 24px;
+    text-align: center;
+}
+
+#categoryRowAlbums {
+    font-family: Avenir;
+    color: var(--primary-color-gray);
+    border-bottom: 1px solid var(--primary-color-light);
+    margin-bottom: 10px;
+    cursor: default;
+}
+
+#categoryRowAlbums p {
+    cursor: pointer;
+}
+
+
+/* Font side of 'Liked' text */
+#categoryRowAlbums p:last-child {
+    font-size: 15px;
+}
+
+#categoryRowAlbums:hover {
+    background-color: transparent;
+    box-shadow: none;
+}
+
+.albumSort > span {
+    float: right;
+    /* not making them click thorugh causes errors when clicking them while sorting */
+    pointer-events: none;
+}
+
+
+.infoRowAlbums {
+    list-style: none;
+    display: flex;
+    margin: 0px 0px 4px 0px;
+    font-family: Montserrat;
+    border-radius:5px;
+    color: var(--primary-color-white);
+    font-size: 15px;
+    cursor: pointer;
+    box-sizing: border-box;
+    padding: 2px;    
+    transition: ease all 0.1s;
+    
+}
+
+.infoRowAlbums:hover {
+    background-color: var(--primary-color-light);
+    box-shadow: 0 3px 28px rgba(0,0,0,0.1), 0 5px 10px rgba(0,0,0,0.05);
+}
+
+.infoRowAlbums p {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    box-sizing: border-box;
+    padding: 10px;
+    margin: auto;
+}
+
+/* Title column */
+.infoRowAlbums .albumName {
+    width: 230px;;
+    font-weight: 500;
+}
+
+/* Artist column */
+.infoRowAlbums .albumArtist {
+    width: 180px;;
+}
+
+/* Duration column*/
+.infoRowAlbums .albumTime {
+    width: 140px;
+    text-align: center;
+}
+
+/* Liked column */
+.infoRowAlbums .albumLiked {
+    width: 100px;
+    text-align: center;
+    font-size: 18px;    
+}
+
+/* Extra Margin at end */
+.infoRowAlbums:last-child {
+    margin-bottom: 30px;
+}
+
+
+.infoRowAlbums p {
+    display: inline-block;
 }

@@ -12,6 +12,7 @@
     <link rel="stylesheet" href="./css/albums.css">    
     <link rel="stylesheet" href="./css/liked.css">    
     <link rel="stylesheet" href="./css/animate.css">    
+    <link rel="stylesheet" href="./css/tingle.css">    
 
     <!-- Adding first and last script tags to make scripts work in both browser and electron -->
     <script>if (typeof module === 'object') {window.module = module; module = undefined;}</script>
@@ -19,6 +20,7 @@
     <script src="./js/jquery-3.3.1.min.js"></script>	
     <script src="./js/list.js"></script>	
     <script src="./js/pivot.js"></script>		
+    <script src="./js/tingle.js"></script>		
 
     <script>if (window.module) module = window.module;</script>
   </head>
@@ -88,6 +90,7 @@
       var renderer = require('./renderer.js')
       var likeTrack = renderer.likeTrack
       var progressTo = renderer.progressTo
+      var showAlbumTracks = renderer.showAlbumTracks
       var playTrack = renderer.playTrack
     </script>
   </body>

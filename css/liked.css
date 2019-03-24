@@ -136,35 +136,35 @@
 }
 
 /* Title column */
-.infoRowLiked p:first-child {
+.infoRowLiked .likedName {
     width: 200px;;
     font-weight: 500;
 }
 
 /* Album column */
-.infoRowLiked p:nth-child(2) {
+.infoRowLiked .likedAlbum {
     width: 200px;
 }
 
 /* Artist column */
-.infoRowLiked p:nth-child(3) {
+.infoRowLiked .likedArtist {
     width: 180px;;
 }
 
 /* Duration column*/
-.infoRowLiked p:nth-child(4) {
+.infoRowLiked .likedTime {
     width: 140px;
     text-align: center;
 }
 
 /* Year column */
-.infoRowLiked p:nth-child(5) {
+.infoRowLiked .likedYear {
     width: 120px;
     text-align: center;   
 }
 
 /* Liked column */
-.infoRowLiked p:nth-child(6) {
+.infoRowLiked .likedLiked {
     width: 100px;
     text-align: center;
     font-size: 18px;    

@@ -356,9 +356,9 @@ function generateSongsPage() {
 }
 
 // Generating albums page
-generateAlbumsPage()
-    .then(data => console.log(data))
-    .catch(err => console.error(err))
+// generateAlbumsPage()
+//     .then(data => console.log(data))
+//     .catch(err => console.error(err))
 
 function generateAlbumsPage() {
     let allAlbumPromises = [];
@@ -377,7 +377,7 @@ function generateAlbumsPage() {
                                 .then(metadata => {
                                     let datajpg = metadata.common.picture[0].data ? blobTob64(metadata.common.picture[0].data) : './assets/images/art.png';
                                     allAlbums += `
-                                    <div id="albumCard" data-album="${album.album}" data-artist="${album.artist}" data-tracks="${album.tracks}">
+                                    <div id="albumCard" onclick="showAlbumTracks('${album.album}')" data-album="${album.album}" data-artist="${album.artist}" data-tracks="${album.tracks}">
                                         <div id="albumCardArt">
                                             <img src="${datajpg}">
                                         </div>
@@ -453,6 +453,41 @@ function generateLikedPage() {
     })
 }
 
+// Get and show album tacks
+function showAlbumTracks(albumName) {
+    let album = albumName;
+    let albumSongsList = '';
+    fetchMusic(`WHERE album = '${album}' ORDER BY title COLLATE NOCASE ASC`)
+        .then(data => {
+            data.forEach(track => {
+                albumSongsList += `
+                <li class="infoRowAlbums" onclick="playTrack(${track.id})" data-id=${track.id} data-title="${track.title}" data-album="${track.album}" data-artist="${track.artist}" data-path="${track.path}" data-duration="${track.duration}">
+                    <p class="albumName">${track.title}</p>
+                    <p class="albumArtist">${track.artist}</p>
+                    <p class="albumTime">${secondsToMinutes(track.duration)}</p>
+                    <p class="albumLiked"><span style="display: none;">${track.favourite ? 'Heart' : 'Nope'}</span> <span id="likeHeart" onclick="likeTrack(event)" data-track-id="${track.id}" data-liked="${track.favourite}" class="typcn ${track.favourite ? 'typcn-heart' : 'typcn-heart-outline'}"></span></p> 
+                </li>
+                `
+            })
+
+            var modal = new tingle.modal({
+                closeMethods: ['overlay', 'escape']
+            })
+            modal.setContent(`
+                <h1 id="albumNameHeading"><span>${albumName}</span></h1>
+                <li class="infoRowAlbums" id="categoryRowAlbums">
+                    <p class="albumSort albumName" data-sort="albumName">Title <span class="typcn"></span></p>
+                    <p class="albumSort albumArtist" data-sort="albumArtist">Artist <span class="typcn"></span></p>
+                    <p class="albumSort albumTime" data-sort="albumTime">Duration <span class="typcn"></span></p>
+                    <p class="albumSort albumLiked" data-sort="albumLiked">Liked <span class="typcn"></span></p> 
+                </li>
+                <ul class="list">            
+                    ${albumSongsList}
+                </ul>
+            `)
+            modal.open();
+        })
+}
 
 
 //  To convert image blobs to usable base64 images
@@ -802,4 +837,5 @@ audioPlayer.addEventListener('timeupdate', () => {
 // exporting then calling with onclick on likeIcon iteself
 module.exports.likeTrack = likeTrack;
 module.exports.progressTo = progressTo;
+module.exports.showAlbumTracks = showAlbumTracks;
 module.exports.playTrack = playTrack;
