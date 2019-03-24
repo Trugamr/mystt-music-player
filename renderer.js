@@ -263,7 +263,7 @@ function generateHomePage(withTop5 = true) {
                             mm.parseFile(track.path).then(metadata => {
                                 let datajpg = metadata.common.picture[0].data ? blobTob64(metadata.common.picture[0].data) : './assets/images/art.png'; 
                                 homeMusicCards += `
-                                    <div id="homeMusicCard" onclick="playTrack(${track.id})" data-id=${track.id} data-title="${track.title}" data-album="${track.album}" data-artist="${track.artist}" data-path="${track.path}" data-duration="${track.duration}">
+                                    <div id="homeMusicCard" onclick="playMusic(${track.id})" data-id=${track.id} data-title="${track.title}" data-album="${track.album}" data-artist="${track.artist}" data-path="${track.path}" data-duration="${track.duration}">
                                         <img src="${datajpg}" id="homeMusicCardArt">
                                         <p id="homeMusicCardTitle">${track.title}</p>
                                         <p id="homeMusicCardArtist">${track.artist}</p>
@@ -280,7 +280,7 @@ function generateHomePage(withTop5 = true) {
                     allHomePromises.push(
                         new Promise((resolve, reject) => {
                             homeMusicRecents += `
-                                <li class="infoRow" onclick="playTrack(${track.id})" data-id=${track.id} data-title="${track.title}" data-album="${track.album}" data-artist="${track.artist}" data-path="${track.path}" data-duration="${track.duration}">
+                                <li class="infoRow" onclick="playMusic(${track.id})" data-id=${track.id} data-title="${track.title}" data-album="${track.album}" data-artist="${track.artist}" data-path="${track.path}" data-duration="${track.duration}">
                                     <p>${track.title}</p>
                                     <p>${track.album}</p>
                                     <p>${track.artist}</p>
@@ -331,7 +331,7 @@ function generateSongsPage() {
                 data.forEach(track => {
                     // console.log(track);
                     allSongs += `
-                    <li class="infoRowSongs" onclick="playTrack(${track.id})" data-id=${track.id} data-title="${track.title}" data-album="${track.album}" data-artist="${track.artist}" data-path="${track.path}" data-duration="${track.duration}">
+                    <li class="infoRowSongs" onclick="playMusic(${track.id})" data-id=${track.id} data-title="${track.title}" data-album="${track.album}" data-artist="${track.artist}" data-path="${track.path}" data-duration="${track.duration}">
                         <p class="songName">${track.title}</p>
                         <p class="songAlbum">${track.album}</p>
                         <p class="songArtist">${track.artist}</p>
@@ -428,7 +428,7 @@ function generateLikedPage() {
                 if(data) data.forEach(track => {
                     // console.log(track);
                     allLiked += `
-                    <li class="infoRowLiked" onclick="playTrack(${track.id})" data-id=${track.id} data-title="${track.title}" data-album="${track.album}" data-artist="${track.artist}" data-path="${track.path}" data-duration="${track.duration}">
+                    <li class="infoRowLiked" onclick="playMusic(${track.id})" data-id=${track.id} data-title="${track.title}" data-album="${track.album}" data-artist="${track.artist}" data-path="${track.path}" data-duration="${track.duration}">
                         <p class="likedName">${track.title}</p>
                         <p class="likedAlbum">${track.album}</p>
                         <p class="likedArtist">${track.artist}</p>
@@ -461,7 +461,7 @@ function showAlbumTracks(albumName) {
         .then(data => {
             data.forEach(track => {
                 albumSongsList += `
-                <li class="infoRowAlbums" onclick="playTrack(${track.id})" data-id=${track.id} data-title="${track.title}" data-album="${track.album}" data-artist="${track.artist}" data-path="${track.path}" data-duration="${track.duration}">
+                <li class="infoRowAlbums" onclick="playMusic(${track.id})" data-id=${track.id} data-title="${track.title}" data-album="${track.album}" data-artist="${track.artist}" data-path="${track.path}" data-duration="${track.duration}">
                     <p class="albumName">${track.title}</p>
                     <p class="albumArtist">${track.artist}</p>
                     <p class="albumTime">${secondsToMinutes(track.duration)}</p>
@@ -474,18 +474,64 @@ function showAlbumTracks(albumName) {
                 closeMethods: ['overlay', 'escape']
             })
             modal.setContent(`
-                <h1 id="albumNameHeading"><span>${albumName}</span></h1>
-                <li class="infoRowAlbums" id="categoryRowAlbums">
-                    <p class="albumSort albumName" data-sort="albumName">Title <span class="typcn"></span></p>
-                    <p class="albumSort albumArtist" data-sort="albumArtist">Artist <span class="typcn"></span></p>
-                    <p class="albumSort albumTime" data-sort="albumTime">Duration <span class="typcn"></span></p>
-                    <p class="albumSort albumLiked" data-sort="albumLiked">Liked <span class="typcn"></span></p> 
-                </li>
-                <ul class="list">            
-                    ${albumSongsList}
-                </ul>
+                <div id="#albumTracksContainer">
+                    <h1 id="albumNameHeading"><span>${albumName}</span></h1>
+                    <li class="infoRowAlbums" id="categoryRowAlbums">
+                        <p class="albumSort albumName" data-sort="albumName">Title <span class="typcn"></span></p>
+                        <p class="albumSort albumArtist" data-sort="albumArtist">Artist <span class="typcn"></span></p>
+                        <p class="albumSort albumTime" data-sort="albumTime">Duration <span class="typcn"></span></p>
+                        <p class="albumSort albumLiked" data-sort="albumLiked">Liked <span class="typcn"></span></p> 
+                    </li>
+                    <ul class="list">            
+                        ${albumSongsList}
+                    </ul>
+                </div>
             `)
             modal.open();
+
+            // changing sorting icons
+            var albumTracksSortCategories = Array.from(document.querySelectorAll('.albumSort'));
+            albumTracksSortCategories.forEach(category => {
+                category.addEventListener('click', handleSortingIcons);
+            })
+
+            function handleSortingIcons(e) {
+                
+                // childNodes[1] targets typicon span
+                var iconSpan = e.target.childNodes[1];
+
+                // removing sorting icon from other categories
+                albumTracksSortCategories.forEach(category => {
+                    if(category != e.target) {
+                        category.childNodes[1].classList.remove('typcn-arrow-sorted-down', 'typcn-arrow-sorted-up');
+                    }
+                })
+
+                // toggling/adding sorting icon
+                if(iconSpan.classList.contains('typcn-arrow-sorted-down')) {
+                    iconSpan.classList.remove('typcn-arrow-sorted-down');
+                    iconSpan.classList.add('typcn-arrow-sorted-up');
+                } else if(iconSpan.classList.contains('typcn-arrow-sorted-up')) {
+                    iconSpan.classList.remove('typcn-arrow-sorted-up');
+                    iconSpan.classList.add('typcn-arrow-sorted-down');
+                } else {
+                    iconSpan.classList.add('typcn-arrow-sorted-down');
+                }
+                
+            }
+
+            // list.js settings and init
+            var options = {
+                valueNames: [
+                    'albumName',
+                    'albumArtist',
+                    'albumTime',
+                    'albumLiked'
+                ],
+                sortClass : 'albumSort'
+            }
+
+            var trackList = new List('#albumTracksContainer', options);
         })
 }
 
@@ -700,6 +746,7 @@ const playerBarTitle = document.querySelector('#playerBarTitle')
 const playerBarArtist = document.querySelector('#playerBarArtist')
 const playerBarArt = document.querySelector('#playerBarArt>img')
 const playerBarTotalTime = document.querySelector('#playerBarTotalTime')
+const playerBarCurrentTime = document.querySelector('#playerBarCurrentTime')
 
 // Player Controls
 // Loading main audio element
@@ -717,8 +764,12 @@ db.each('SELECT COUNT(*) AS count from MUSIC', (err, data) => {
 })
 
 let currentlyPlayingTrack = 0;
+let currentQueue = [];
+let currentQueueTrackIndex = 0;
+let playingQueue = false;
 
 // Playing track from id
+// Legacy playing function
 function playTrack(trackId) {
 
     // start from beginning if trackId more than total tracks and start from end if trackId in negative or 0
@@ -742,6 +793,8 @@ function playTrack(trackId) {
 
             playerBarTitle.textContent = track.title;
             playerBarArtist.textContent = track.artist;
+
+
             playerBarTotalTime.textContent = secondsToMinutes(track.duration);
 
             // updating play button class
@@ -776,14 +829,123 @@ function playTrack(trackId) {
 }
 
 
+function playMusic(data, options = { playBy: 'trackId', fromQueue: false}) {
+    // Here data can be either track ID, album name or artist name 
+    if(options.playBy == 'trackId') {
+        let trackId = data;
+        // Switching to playing shuffled/randomly if track is not from current queue;
+        if(options.fromQueue) playingQueue = true;
+        else playingQueue = false;
+
+        // start from beginning if trackId more than total tracks and start from end if trackId in negative or 0
+        // if(trackId > totalTracks) {
+        //     trackId = 1;
+        // } else if(data < 1) {
+        //     trackId = totalTracks;
+        // }
+
+        fetchMusic(`WHERE id = ${trackId}`)
+            .then(tracks => {
+                // Loading track
+                audioPlayerSrc.src = tracks[0].path;
+                audioPlayer.load();
+                audioPlayer.play();
+                
+                currentlyPlayingTrack = trackId;
+                console.log('playing id', trackId);
+                
+                // Updating play button class
+                playButton.classList.remove('fa-play');
+                playButton.classList.add('fa-pause');
+                
+                updateCurrentlyPlayingInfo(tracks[0]);
+            })
+    } else if(options.playBy = 'albumName') {
+        // Switching to playing queue ie an album or artist provided by array of id's
+        playingQueue = true;
+
+        fetchMusic(`WHERE album = '${data}' ORDER BY title COLLATE NOCASE ASC`)
+            .then(data => {
+                currentQueue = data;
+                currentQueueTrackIndex = 0;
+                playMusic(currentQueue[currentQueueTrackIndex].id, { playBy: 'trackId', fromQueue: true })
+                console.log(currentQueue);
+            });
+    }
+}
+
+function updateCurrentlyPlayingInfo(trackInfo) {
+
+    playerBarTitle.textContent = trackInfo.title;
+    playerBarArtist.textContent = trackInfo.artist;
+
+    playerBarCurrentTime.textContent = '0:00';
+    playerBarTotalTime.textContent = secondsToMinutes(trackInfo.duration);
+    
+    // Updating album art on playerBar
+    mm.parseFile(trackInfo.path)
+    .then(metadata => {
+        let datajpg = metadata.common.picture[0].data ? blobTob64(metadata.common.picture[0].data) : './assets/images/art.png';
+        playerBarArt.src = datajpg;
+    })
+
+    // Updating playerBar heart icon and changing data attributes 
+    if(trackInfo.favourite) {
+        playerBarHeart.dataset.trackId = trackInfo.id;
+        playerBarHeart.dataset.liked = trackInfo.favourite;
+        playerBarHeart.classList.remove('typcn-heart-outline');
+        playerBarHeart.classList.add('typcn-heart');
+    } else {
+        playerBarHeart.dataset.trackId = trackInfo.id;
+        playerBarHeart.dataset.liked = trackInfo.favourite;
+        playerBarHeart.classList.remove('typcn-heart');
+        playerBarHeart.classList.add('typcn-heart-outline');
+    }
+}
+
+
 // Hooking up media buttons
 
 backButton.addEventListener('click', () => {
-    playTrack(--currentlyPlayingTrack);
+    if(playingQueue) {
+        --currentQueueTrackIndex;
+        if(currentQueueTrackIndex < 0) {
+            console.log('first', currentQueueTrackIndex);
+            currentQueueTrackIndex = currentQueue.length-1;
+            playMusic(currentQueue[currentQueueTrackIndex].id, { playBy: 'trackId', fromQueue: true });
+        } else {
+            console.log('second', currentQueueTrackIndex);
+            playMusic(currentQueue[currentQueueTrackIndex].id, { playBy: 'trackId', fromQueue: true });
+        }
+    } else {
+        --currentlyPlayingTrack;
+        if(currentlyPlayingTrack <= 0) {
+            currentlyPlayingTrack = totalTracks;
+            playMusic(currentlyPlayingTrack, { playBy: 'trackId', fromQueue: false })
+        } else {
+            playMusic(currentlyPlayingTrack, { playBy: 'trackId', fromQueue: false })
+        }
+    } 
 })
 
 forwardButton.addEventListener('click', () => {
-    playTrack(++currentlyPlayingTrack);
+    if(playingQueue) {
+        ++currentQueueTrackIndex;
+        if(currentQueueTrackIndex > currentQueue.length-1) {
+            currentQueueTrackIndex = 0;
+            playMusic(currentQueue[currentQueueTrackIndex].id, { playBy: 'trackId', fromQueue: true });
+        } else {
+            playMusic(currentQueue[currentQueueTrackIndex].id, { playBy: 'trackId', fromQueue: true });
+        }
+    } else {
+        ++currentlyPlayingTrack;
+        if(currentlyPlayingTrack >= totalTracks) {
+            currentlyPlayingTrack = 1;
+            playMusic(currentlyPlayingTrack, { playBy: 'trackId', fromQueue: false })
+        } else {
+            playMusic(currentlyPlayingTrack, { playBy: 'trackId', fromQueue: false })
+        }   
+    } 
 })
 
 playButton.addEventListener('click', () => {
@@ -803,8 +965,6 @@ playButton.addEventListener('click', () => {
 const progressBar = document.querySelector('#playerProgressBar');
 const volumeBar = document.querySelector('#playerVolumeBar');
 
-const currentTimeDisplay = document.querySelector('#playerBarCurrentTime');
-
 function progressTo(e) {
     e.target.value = e.offsetX/e.target.clientWidth * 100; 
     // console.log(e);
@@ -822,7 +982,7 @@ audioPlayer.addEventListener('timeupdate', () => {
     // Updating progress bar
     if(audioPlayer.currentTime) {
         progressBar.value = audioPlayer.currentTime/audioPlayer.duration * 100;
-        currentTimeDisplay.textContent = secondsToMinutes(audioPlayer.currentTime);
+        playerBarCurrentTime.textContent = secondsToMinutes(audioPlayer.currentTime);
     }
 
     // Play next track automatically after one ends
@@ -839,3 +999,4 @@ module.exports.likeTrack = likeTrack;
 module.exports.progressTo = progressTo;
 module.exports.showAlbumTracks = showAlbumTracks;
 module.exports.playTrack = playTrack;
+module.exports.playMusic = playMusic;
