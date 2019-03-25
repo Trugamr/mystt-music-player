@@ -1,0 +1,205 @@
+@import url('https://fonts.googleapis.com/css?family=Montserrat:400,500,600,700');
+
+@font-face {
+    font-family: 'Avenir';
+    src: url('../fonts/Avenir/Avenir-Book.ttf');
+}
+
+@font-face {
+    font-family: 'Futura';
+    src: url('../fonts/Futura/Futura Heavy font.ttf');
+}
+
+
+#artistsPageContainer {
+    box-sizing: border-box;
+    width: 100%;
+    height: 100%;
+    padding: 30px 0px 30px 30px !important;
+    overflow-y: auto;
+    white-space: normal;
+}
+
+#artistsHeading {
+    color: var(--primary-color-white);
+    font-family: Futura;
+    margin-bottom: 24px;
+}
+
+#artistsContainer {
+    box-sizing: border-box;
+    display: flex;
+    flex-flow: row wrap;
+    width: 100%;
+    justify-content: space-between;
+}
+
+#artistCard {
+    width: 150px;
+    border-radius: 8px;
+    background-color: var(--primary-color-light);
+    display: inline-flex;
+    align-items: center;
+    flex-direction: column;
+    margin-bottom: 22px;
+    margin-right: 22px;
+    flex: 1 0 150px;
+    cursor: pointer;
+}
+
+#artistCardArt {
+    width: 100%;
+    /* prevent card click event for not triggering */
+    pointer-events: none
+}
+
+#artistCardArt img {
+    width: 100%;
+    border-radius: 8px 8px 0px 0px;
+    /* prevent card click event for not triggering */
+    pointer-events: none
+}  
+
+#artistCardTitle, #artistCardTracks {
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    /* prevent card click event for not triggering */
+    pointer-events: none;
+}
+
+#artistCardTitle {
+    font-family: Futura;
+    color: var(--primary-color-white);
+    width: 120px;
+    text-align: center;
+    margin-top: 6px;
+    font-size: 15px;
+}
+
+#artistCardTracks {
+    font-family: Montserrat;
+    color: var(--primary-color-gray);
+    width: 120px;
+    text-align: center;
+    margin-top: 2px;
+    margin-bottom: 10px;
+    font-size: 13px;
+}
+
+#artistNameHeading {
+    color: var(--primary-color-white);
+    font-family: Futura;
+    font-size: 22px;
+    margin-bottom: 24px;
+    text-align: center;
+    box-sizing: border-box;
+    padding: 0px 70px 0px 70px;
+}
+
+#playArtistBtn {
+    background-color: var(--primary-color-light);
+    color: var(--primary-color-white);
+    padding: 10px;
+    font-size: 16px;
+    border-radius: 6px;
+    font-family: Futura;
+    cursor: pointer;
+    position: fixed;
+    top: 20px;
+    right: 20px;
+}
+
+#categoryRowArtists {
+    font-family: Avenir;
+    color: var(--primary-color-gray);
+    border-bottom: 1px solid var(--primary-color-light);
+    margin-bottom: 10px;
+    cursor: default;
+    width: 100%;
+}
+
+#categoryRowArtists p {
+    cursor: pointer;
+}
+
+
+/* Font side of 'Liked' text */
+#categoryRowArtists p:last-child {
+    font-size: 15px;
+}
+
+#categoryRowArtists:hover {
+    background-color: transparent;
+    box-shadow: none;
+}
+
+.artistSort > span {
+    float: right;
+    /* not making them click thorugh causes errors when clicking them while sorting */
+    pointer-events: none;
+}
+
+
+.infoRowArtists {
+    list-style: none;
+    display: flex;
+    margin: 0px 0px 4px 0px;
+    font-family: Montserrat;
+    border-radius:5px;
+    color: var(--primary-color-white);
+    font-size: 15px;
+    cursor: pointer;
+    box-sizing: border-box;
+    padding: 2px;    
+    transition: ease all 0.1s;
+    
+}
+
+.infoRowArtists:hover {
+    background-color: var(--primary-color-light);
+    box-shadow: 0 3px 28px rgba(0,0,0,0.1), 0 5px 10px rgba(0,0,0,0.05);
+}
+
+.infoRowArtists p {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    box-sizing: border-box;
+    padding: 10px;
+    margin: auto;
+}
+
+/* Title column */
+.infoRowArtists .artistName {
+    width: 230px;;
+    font-weight: 500;
+}
+
+/* Artist column */
+.infoRowArtists .artistAlbum {
+    width: 180px;;
+}
+
+/* Duration column*/
+.infoRowArtists .artistTime {
+    width: 140px;
+    text-align: center;
+}
+
+/* Liked column */
+.infoRowArtists .artistLiked {
+    width: 100px;
+    text-align: center;
+    font-size: 18px;    
+}
+
+/* Extra Margin at end */
+.infoRowArtists:last-child {
+    margin-bottom: 30px;
+}
+
+
+.infoRowArtists p {
+    display: inline-block;
+}

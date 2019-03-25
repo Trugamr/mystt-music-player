@@ -361,7 +361,6 @@ function generateSongsPage() {
 //     .catch(err => console.error(err))
 
 function generateAlbumsPage() {
-    let allAlbumPromises = [];
     let allAlbums = '';
     return new Promise((resolve, reject) => {
         let allAlbumPromises = [];
@@ -413,7 +412,63 @@ function generateAlbumsPage() {
     })
 }
 
+// Generating artists page
+// generateArtistsPage()
+//     .then(data => console.log(data))
+//     .catch(err => console.error(err))
 
+function generateArtistsPage() {
+    let allArtists = '';
+    return new Promise((resolve, reject) => {
+        let allArtistsPromises = [];
+        // fetching all albums        
+        db.all(`SELECT artist, path, COUNT(title) as tracks FROM Music GROUP BY artist`, (err, artistData) => {
+            if(err) console.error(err);
+            artistData
+                .filter(artist => artist.tracks > 1)
+                .forEach(artist => {
+                    allArtistsPromises.push(
+                        new Promise((res, rej) => {
+                            mm.parseFile(artist.path)
+                                .then(metadata => {
+                                    let datajpg = metadata.common.picture[0].data ? blobTob64(metadata.common.picture[0].data) : './assets/images/art.png';
+                                    allArtists += `
+                                    <div id="artistCard" onclick="showArtistTracks('${artist.artist}')" data-artist="${artist.artist}" data-tracks="${artist.tracks}">
+                                        <div id="artistCardArt">
+                                            <img src="${datajpg}">
+                                        </div>
+                                        <p id="artistCardTitle">${artist.artist}</p>
+                                        <p id="artistCardTracks">${artist.tracks} tracks</p>
+                                    </div>
+                                    `
+
+                                    if(metadata) res(`got metadata for ${artist.artist} with ${artist.tracks} tracks`)
+                                    else rej(`failed to get metadata for ${artist.artist}} with ${artist.artist} tracks`);
+                                })
+                        })
+                    )
+                });
+            Promise.all(allArtistsPromises)
+                .then(data => {
+                    console.log(data);
+                    fs.readFile('./pages/artists.htm', 'utf-8', (err, data) => {
+                        if(err) console.error(err);
+                        const jsdomWindow = new JSDOM(data).window;
+                        // only update if withTop5 is true
+                        jsdomWindow.document.querySelector('#artistsContainer').innerHTML = allArtists;
+                        const generatedContent = jsdomWindow.document.documentElement.outerHTML;                    
+                        fs.writeFile('./pages/artists.htm', generatedContent, (err) => {
+                            if(err) reject(err)
+                            else resolve(`artists page generated`)
+                        })  
+    
+                    })   
+                })
+                .catch(err => reject(err))
+            
+        })
+    })
+}
 
 // Generating liked page
 // generateLikedPage()
@@ -475,6 +530,7 @@ function showAlbumTracks(albumName) {
             })
             modal.setContent(`
                 <div id="#albumTracksContainer">
+                    <span id="playAlbumBtn" onclick="playMusic('${albumName}', { playBy: 'albumName', fromQueue: true })"><i class="fas fa-play"></i> Play</span>
                     <h1 id="albumNameHeading"><span>${albumName}</span></h1>
                     <li class="infoRowAlbums" id="categoryRowAlbums">
                         <p class="albumSort albumName" data-sort="albumName">Title <span class="typcn"></span></p>
@@ -532,6 +588,89 @@ function showAlbumTracks(albumName) {
             }
 
             var trackList = new List('#albumTracksContainer', options);
+        })
+}
+
+// Get and show album tacks
+function showArtistTracks(artistName) {
+    let artist = artistName;
+    let artistSongsList = '';
+    fetchMusic(`WHERE artist = '${artist}' ORDER BY title COLLATE NOCASE ASC`)
+        .then(data => {
+            data.forEach(track => {
+                artistSongsList += `
+                <li class="infoRowArtists" onclick="playMusic(${track.id})" data-id=${track.id} data-title="${track.title}" data-album="${track.album}" data-artist="${track.artist}" data-path="${track.path}" data-duration="${track.duration}">
+                    <p class="artistName">${track.title}</p>
+                    <p class="artistAlbum">${track.album}</p>
+                    <p class="artistTime">${secondsToMinutes(track.duration)}</p>
+                    <p class="artistLiked"><span style="display: none;">${track.favourite ? 'Heart' : 'Nope'}</span> <span id="likeHeart" onclick="likeTrack(event)" data-track-id="${track.id}" data-liked="${track.favourite}" class="typcn ${track.favourite ? 'typcn-heart' : 'typcn-heart-outline'}"></span></p> 
+                </li>
+                `
+            })
+
+            var modal = new tingle.modal({
+                closeMethods: ['overlay', 'escape']
+            })
+            modal.setContent(`
+                <div id="#artistTracksContainer">
+                    <span id="playArtistBtn" onclick="playMusic('${artistName}', { playBy: 'artistName', fromQueue: true })"><i class="fas fa-play"></i> Play</span>
+                    <h1 id="artistNameHeading"><span>${artistName}</span></h1>
+                    <li class="infoRowArtists" id="categoryRowArtists">
+                        <p class="artistSort artistName" data-sort="artistName">Title <span class="typcn"></span></p>
+                        <p class="artistSort artistAlbum" data-sort="artistArtist">Album <span class="typcn"></span></p>
+                        <p class="artistSort artistTime" data-sort="artistTime">Duration <span class="typcn"></span></p>
+                        <p class="artistSort artistLiked" data-sort="artistLiked">Liked <span class="typcn"></span></p> 
+                    </li>
+                    <ul class="list">            
+                        ${artistSongsList}
+                    </ul>
+                </div>
+            `)
+            modal.open();
+
+            // changing sorting icons
+            var artistTracksSortCategories = Array.from(document.querySelectorAll('.artistSort'));
+            artistTracksSortCategories.forEach(category => {
+                category.addEventListener('click', handleSortingIcons);
+            })
+
+            function handleSortingIcons(e) {
+                
+                // childNodes[1] targets typicon span
+                var iconSpan = e.target.childNodes[1];
+
+                // removing sorting icon from other categories
+                artistTracksSortCategories.forEach(category => {
+                    if(category != e.target) {
+                        category.childNodes[1].classList.remove('typcn-arrow-sorted-down', 'typcn-arrow-sorted-up');
+                    }
+                })
+
+                // toggling/adding sorting icon
+                if(iconSpan.classList.contains('typcn-arrow-sorted-down')) {
+                    iconSpan.classList.remove('typcn-arrow-sorted-down');
+                    iconSpan.classList.add('typcn-arrow-sorted-up');
+                } else if(iconSpan.classList.contains('typcn-arrow-sorted-up')) {
+                    iconSpan.classList.remove('typcn-arrow-sorted-up');
+                    iconSpan.classList.add('typcn-arrow-sorted-down');
+                } else {
+                    iconSpan.classList.add('typcn-arrow-sorted-down');
+                }
+                
+            }
+
+            // list.js settings and init
+            var options = {
+                valueNames: [
+                    'artistName',
+                    'artistAlbum',
+                    'artistTime',
+                    'artistLiked'
+                ],
+                sortClass : 'artistSort'
+            }
+
+            var trackList = new List('#artistTracksContainer', options);
         })
 }
 
@@ -860,11 +999,22 @@ function playMusic(data, options = { playBy: 'trackId', fromQueue: false}) {
                 
                 updateCurrentlyPlayingInfo(tracks[0]);
             })
-    } else if(options.playBy = 'albumName') {
+    } else if(options.playBy == 'albumName') {
         // Switching to playing queue ie an album or artist provided by array of id's
         playingQueue = true;
 
         fetchMusic(`WHERE album = '${data}' ORDER BY title COLLATE NOCASE ASC`)
+            .then(data => {
+                currentQueue = data;
+                currentQueueTrackIndex = 0;
+                playMusic(currentQueue[currentQueueTrackIndex].id, { playBy: 'trackId', fromQueue: true })
+                console.log(currentQueue);
+            });
+    } else if(options.playBy == 'artistName') {
+        // Switching to playing queue ie an album or artist provided by array of id's
+        playingQueue = true;
+
+        fetchMusic(`WHERE artist = '${data}' ORDER BY title COLLATE NOCASE ASC`)
             .then(data => {
                 currentQueue = data;
                 currentQueueTrackIndex = 0;
@@ -998,5 +1148,6 @@ audioPlayer.addEventListener('timeupdate', () => {
 module.exports.likeTrack = likeTrack;
 module.exports.progressTo = progressTo;
 module.exports.showAlbumTracks = showAlbumTracks;
+module.exports.showArtistTracks = showArtistTracks;
 module.exports.playTrack = playTrack;
 module.exports.playMusic = playMusic;

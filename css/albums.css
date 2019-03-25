@@ -93,6 +93,21 @@
     font-size: 22px;
     margin-bottom: 24px;
     text-align: center;
+    box-sizing: border-box;
+    padding: 0px 70px 0px 70px;
+}
+
+#playAlbumBtn {
+    background-color: var(--primary-color-light);
+    color: var(--primary-color-white);
+    padding: 10px;
+    font-size: 16px;
+    border-radius: 6px;
+    font-family: Futura;
+    cursor: pointer;
+    position: fixed;
+    top: 20px;
+    right: 20px;
 }
 
 #categoryRowAlbums {
