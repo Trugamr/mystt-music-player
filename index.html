@@ -33,7 +33,19 @@
     </audio>
 
     <div id="container" class="flexChild columnParent">
+
+      <div id="settingsPanelOverlay"></div>
+      <div id="settingsPanel">
+        <div id="themeSettingsContainer">
+          <h2 id="themeHeading">Themes</h2>
+          <div id="themesContainer"></div>
+        </div>
+        <h2 id="addMusicSettingsHeading">Add Music</h2>
+        <div id="selectBtn"><i class="fas fa-plus"></i></div>
+      </div>
+
       <div id="titlebar" class="flexChild">
+        <div id="titlebar-settings-btn"><i class="fas fa-circle"></i></div>
         <div id="titlebar-title">mystt</div>
         <div id="titlebar-buttons">
           <div id="minimize-btn"></div>
@@ -50,7 +62,6 @@
                 <div class="sidebarLinks" id="albumsPage"><span class="typcn typcn-th-large"></span> Albums</div>
                 <div class="sidebarLinks" id="artistsPage"><span class="typcn typcn-user"></span> Artists</div>
                 <div class="sidebarLinks" id="likedPage"><span class="typcn typcn-heart-full-outline"></span> Liked</div>
-                <button id="selectBtn" style="display: none;">Add</button>
             </div>            
         </div>
         <div id="main" class="flexChild"></div>
@@ -94,6 +105,42 @@
       var showAlbumTracks = renderer.showAlbumTracks
       var showArtistTracks = renderer.showArtistTracks
       var playMusic = renderer.playMusic
+
+      // Themes
+      var themes = require('./js/themes.js')
+      var applyTheme = themes.applyTheme;
+      const themesContainer = document.querySelector('#themesContainer');
+      Object.keys(themes.allThemes).forEach((theme, index) => {
+        themesContainer.innerHTML += `
+        <div id="themeCircle" onclick="applyTheme('${themes.allThemes[theme].name}')">
+          <div id="themeCircleFirst" style="background-color: ${themes.allThemes[theme].second};"></div>
+          <div id="themeCircleSecond" style="background-color: ${themes.allThemes[theme].fourth};"></div>
+        </div>
+        `
+      })
+      
+
+      // Settings panel
+      const settingsBtn = document.querySelector('#titlebar-settings-btn')
+      const settingsPanel = document.querySelector('#settingsPanel')
+      const settingsPanelOverlay = document.querySelector('#settingsPanelOverlay')
+
+      function handleSettingsPanel() {
+        if(settingsPanel.classList.contains('showSettingsPanel')) {
+          settingsPanel.classList.remove('showSettingsPanel');
+          settingsPanelOverlay.classList.remove('showSettingsOverlay');
+
+        } else {
+          settingsPanel.classList.add('showSettingsPanel');
+          settingsPanelOverlay.classList.add('showSettingsOverlay');
+        }
+      }
+
+      settingsBtn.addEventListener('click', handleSettingsPanel)
+      settingsPanelOverlay.addEventListener('click', handleSettingsPanel)
+
+      //FOR TESTING
+      settingsBtn.click();
     </script>
   </body>
 </html>

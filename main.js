@@ -1,7 +1,7 @@
 // Modules to control application life and create native browser window
 const {app, BrowserWindow} = require('electron')
 
-// For automatic reloads on changes
+// For automatic reloads on changes MAKES SQLITE GO INSANE
 // require('electron-reload')(__dirname);
 
 // Keep a global reference of the window object, if you don't, the window will

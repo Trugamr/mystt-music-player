@@ -11,6 +11,14 @@
     src: url('../fonts/Futura/Futura Heavy font.ttf');
 }
 
+/* To support smooth transition of colors while changing theme */
+
+* {
+    transition: ease color 0.7s;
+    transition: ease background-color 0.7s;
+    transition: ease background 0.7s;
+}
+
 /* Custom scrollbar */
 ::-webkit-scrollbar-button { 
     display: none; 
@@ -43,7 +51,6 @@
     width: 14px;
 }
 
-/* */
 :root {
     --primary-color: #1e1e35;
     --primary-color-light: #2e2e4e; 
@@ -51,16 +58,6 @@
     --primary-color-gray: #c4c4c4;
     --primary-color-gray-light: #e2e2e2;
 }
-
-/* Old MacOS theme */
-
-/* :root {
-    --primary-color: #eeeeee;
-    --primary-color-light: #cecece; 
-    --primary-color-white: #2c2c2c;
-    --primary-color-gray: #333333;
-    --primary-color-gray-light: #575757;
-} */
 
 html, body {
     /* USED TO GET RID OF ANIMATION FLICKER IN ALBUM MODAL WHEN CLOSING
@@ -80,6 +77,108 @@ html, body {
     height: 100vh !important;
     background-color: var(--primary-color);
 }
+
+#settingsPanelOverlay {
+    height: 100%;
+    width: 100%;
+    position: absolute;
+    background-color: rgba(0, 0, 0, 0);
+    z-index: 7;
+    cursor: pointer;
+    pointer-events: none;
+    transition: ease all 0.3s;
+}
+
+.showSettingsPanel {
+    transform: translateX(0) !important;
+}
+
+.showSettingsOverlay {
+    pointer-events: all !important;
+    background-color: rgba(0, 0, 0, 0.45) !important;
+}
+
+#settingsPanel {
+    height: 100%;
+    background-color: var(--primary-color);
+    border-right: solid 1px var(--primary-color-light);
+    width: 200px;
+    position: absolute;
+    z-index: 8;
+    box-sizing: border-box;
+    transform: translateX(-200px);
+    /* From myst <3 */
+    transition: cubic-bezier(.1,.94,.58,1) transform 0.5s, ease background-color 0.7s;
+    padding: 20px;
+    padding-top: 50px;
+}
+
+#themeHeading, #addMusicSettingsHeading {
+    font-family: Futura;
+    color: var(--primary-color-white);
+    margin-bottom: 10px;
+}
+
+#themesContainer {
+    box-sizing: border-box;
+    display: flex;    
+    flex-wrap: wrap;
+}
+
+#themeCircle {
+    height: 20px;
+    width: 20px;
+    display: flex;
+    flex-direction: row;
+    overflow: hidden;
+    border-radius: 50px;
+    transform: rotate(45deg);
+    border: 2px solid var(--primary-color-light);
+    margin: 6px;
+    cursor: pointer;
+}
+
+#themeCircleFirst, #themeCircleSecond {
+    display: inline-block;
+    margin: 0px;
+    padding: 0px;
+    position: relative;
+    pointer-events: none;
+}
+  
+#themeCircleFirst {
+    box-sizing: border-box;
+    width: 50%;
+    height: 100%;
+}
+  
+#themeCircleSecond {
+    box-sizing: border-box;
+    width: 50%;
+}
+
+#addMusicSettingsHeading {
+    margin-top: 30px;
+}
+
+#selectBtn {
+    box-sizing: border-box;
+    width: 100%;
+    height: 40px;
+    font-size: 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: var(--primary-color-white);
+    background-color: var(--primary-color-light);
+    border-radius: 10px;
+    cursor: pointer;
+}
+
+#selectBtn i {
+    pointer-events: none;
+}
+    
   
 .rowParent, .columnParent {
     display: flex;
@@ -105,6 +204,21 @@ html, body {
     width: 100vw;
     /* border-radius: 8px 8px 0 0; */
     -webkit-app-region: drag;
+    z-index: 9;
+}
+
+#titlebar-settings-btn {
+    display: inline-block;
+    color: var(--primary-color-gray-light);
+    float: left;
+    height: 30px;
+    text-align: center;
+    box-sizing: border-box;
+    margin-left: 10px;
+    line-height: 30px;
+    font-size: 12px;
+    cursor: pointer;
+    -webkit-app-region: no-drag;
 }
 
 #titlebar-title, #titlebar-buttons {
@@ -117,7 +231,7 @@ html, body {
     padding-left: 10px;
     line-height: 30px;
     font-weight: 500;
-    color: #f8f8f8;
+    color: var(--primary-color-gray-light);
     width: 100px;
     float: left;
 }
@@ -137,6 +251,8 @@ html, body {
     -webkit-app-region: no-drag;
     transition: ease all 0.2s;
     cursor: pointer;
+    box-sizing: border-box;
+    border: 1px solid var(--primary-color-light);
 }
 
 #minimize-btn {
@@ -175,7 +291,7 @@ html, body {
 
 #sidebarWrapper {
     box-sizing: border-box;
-    /* background-color: var(--primary-color-light); */
+    background-color: var(--primary-color);
     height: 100%;
     width: 100%;
     padding: 20px;

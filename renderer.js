@@ -54,32 +54,52 @@ let md = require('./mockdata.js');
 const musicExtensions = ['.m4a', '.mp3'];
 
 // opening directry add dialog on btn click
-document.querySelector('#selectBtn').addEventListener('click', () => {
-    showAddDialog()
-        .then((directory) => {
-            // got directory, calling recursiveReadDir to get all music files in directory
-            recursiveReadDir(directory)
-                .then(musicFiles=> {
-                    // got all music files, calling getAllMetadata
-                    getAllMetadata((musicFiles))
-                        .then(metadata => {
-                            // got all metadata, calling pushToDatabase
-                            pushToDatabase(metadata)
-                                .then(data => {
-                                    // insertion success
-                                    console.log(data)
-                                })
-                                .catch(err => { console.error(err) });
-                            console.log(metadata);
-                        })
-                        .catch(err => { console.error(err) });
-                    console.log(musicFiles);
+document.querySelector('#selectBtn').addEventListener('click', addMusicFlow);
+    // showAddDialog()
+    //     .then((directory) => {
+    //         // got directory, calling recursiveReadDir to get all music files in directory
+    //         recursiveReadDir(directory)
+    //             .then(musicFiles=> {
+    //                 // got all music files, calling getAllMetadata
+    //                 getAllMetadata((musicFiles))
+    //                     .then(metadata => {
+    //                         // got all metadata, calling pushToDatabase
+    //                         pushToDatabase(metadata)
+    //                             .then(data => {
+    //                                 // insertion success
+    //                                 console.log(data)
+    //                             })
+    //                             .catch(err => { console.error(err) });
+    //                         console.log(metadata);
+    //                     })
+    //                     .catch(err => { console.error(err) });
+    //                 console.log(musicFiles);
+    //             })
+    //             .catch(err => { console.error(err) });
+    //         console.log(directory);
+    //     })
+    //     .catch((err) => { console.error(err) });
+
+function addMusicFlow() {
+    showAddDialog().then(directory => {
+        console.log(`directory chosen ${directory}`)
+        recursiveReadDir(directory).then(musicFiles => {
+            console.log(`got all music files`, musicFiles)
+            getAllMetadata(musicFiles).then(metadata => {
+                console.log('got all metadata', metadata)
+                pushToDatabase(metadata).then(data => {
+                    console.log('pushed to database', metadata)
+                    // Generating all pages now
+                    Promise.all([generateHomePage(), generateSongsPage(), generateAlbumsPage(), generateArtistsPage(), generateLikedPage()])
+                        .then(data => {
+                            console.log('generated all pages', data);
+                            win.reload();
+                        })                    
                 })
-                .catch(err => { console.error(err) });
-            console.log(directory);
+            })
         })
-        .catch((err) => { console.error(err) });
-});
+    })
+}
 
 function showAddDialog() {
     return new Promise((resolve, reject) => {
@@ -1056,7 +1076,27 @@ function updateCurrentlyPlayingInfo(trackInfo) {
 
 // Hooking up media buttons
 
-backButton.addEventListener('click', () => {
+function nextTrack() {
+    if(playingQueue) {
+        ++currentQueueTrackIndex;
+        if(currentQueueTrackIndex > currentQueue.length-1) {
+            currentQueueTrackIndex = 0;
+            playMusic(currentQueue[currentQueueTrackIndex].id, { playBy: 'trackId', fromQueue: true });
+        } else {
+            playMusic(currentQueue[currentQueueTrackIndex].id, { playBy: 'trackId', fromQueue: true });
+        }
+    } else {
+        ++currentlyPlayingTrack;
+        if(currentlyPlayingTrack >= totalTracks) {
+            currentlyPlayingTrack = 1;
+            playMusic(currentlyPlayingTrack, { playBy: 'trackId', fromQueue: false })
+        } else {
+            playMusic(currentlyPlayingTrack, { playBy: 'trackId', fromQueue: false })
+        }   
+    } 
+}
+
+function previousTrack() {
     if(playingQueue) {
         --currentQueueTrackIndex;
         if(currentQueueTrackIndex < 0) {
@@ -1076,27 +1116,11 @@ backButton.addEventListener('click', () => {
             playMusic(currentlyPlayingTrack, { playBy: 'trackId', fromQueue: false })
         }
     } 
-})
+}
 
-forwardButton.addEventListener('click', () => {
-    if(playingQueue) {
-        ++currentQueueTrackIndex;
-        if(currentQueueTrackIndex > currentQueue.length-1) {
-            currentQueueTrackIndex = 0;
-            playMusic(currentQueue[currentQueueTrackIndex].id, { playBy: 'trackId', fromQueue: true });
-        } else {
-            playMusic(currentQueue[currentQueueTrackIndex].id, { playBy: 'trackId', fromQueue: true });
-        }
-    } else {
-        ++currentlyPlayingTrack;
-        if(currentlyPlayingTrack >= totalTracks) {
-            currentlyPlayingTrack = 1;
-            playMusic(currentlyPlayingTrack, { playBy: 'trackId', fromQueue: false })
-        } else {
-            playMusic(currentlyPlayingTrack, { playBy: 'trackId', fromQueue: false })
-        }   
-    } 
-})
+backButton.addEventListener('click', previousTrack)
+
+forwardButton.addEventListener('click', nextTrack)
 
 playButton.addEventListener('click', () => {
     if(audioPlayer.paused) {
@@ -1137,7 +1161,7 @@ audioPlayer.addEventListener('timeupdate', () => {
 
     // Play next track automatically after one ends
     if(audioPlayer.duration == audioPlayer.currentTime) {
-        playTrack(++currentlyPlayingTrack);
+        nextTrack()
     }
 })
 
