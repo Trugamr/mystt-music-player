@@ -83,17 +83,46 @@ document.querySelector('#selectBtn').addEventListener('click', addMusicFlow);
 function addMusicFlow() {
     showAddDialog().then(directory => {
         console.log(`directory chosen ${directory}`)
+        var addMusicFlowModal = new tingle.modal({
+            closeMethods: [],
+            cssClass: ['addMusicFlowModal'],
+            onOpen: function() {
+                var addMusicFlowStatus = document.querySelector('#addMusicFlowStatus');
+                var addMusicFlowIcon = document.querySelector('#addMusicFlowIcon');
+                var addMusicFlowProgress = document.querySelector('#addMusicFlowProgress');
+            }
+        })
+        addMusicFlowModal.setContent(`
+            <i id="addMusicFlowIcon" class="fas fa-redo-alt fa-spin"></i>
+            <p id="addMusicFlowStatus">adding music</p>
+            <progress id="addMusicFlowProgress" max=100 value="5"></progress>
+        `)
+        addMusicFlowModal.open();
+        // Close settings panel to only show adding status modal
+        handleSettingsPanel();
+        addMusicFlowStatus.textContent = `scanning directory for music files`;
+        addMusicFlowProgress.value = 20;
         recursiveReadDir(directory).then(musicFiles => {
+            addMusicFlowStatus.textContent = `fetching metadata for ${musicFiles.length} files`;
+            addMusicFlowProgress.value = 40;
             console.log(`got all music files`, musicFiles)
             getAllMetadata(musicFiles).then(metadata => {
+                addMusicFlowStatus.textContent = `pushing information to database`;
+                addMusicFlowProgress.value = 60;
                 console.log('got all metadata', metadata)
                 pushToDatabase(metadata).then(data => {
+                    addMusicFlowStatus.textContent = `generating all pages`;
+                    addMusicFlowProgress.value = 80;
                     console.log('pushed to database', metadata)
                     // Generating all pages now
                     Promise.all([generateHomePage(), generateSongsPage(), generateAlbumsPage(), generateArtistsPage(), generateLikedPage()])
                         .then(data => {
                             console.log('generated all pages', data);
-                            win.reload();
+                            addMusicFlowProgress.value = 100;
+                            addMusicFlowIcon.removeAttribute("class");
+                            addMusicFlowIcon.classList.add('animated', 'fas', 'fa-heart', 'heartBeat', 'infinite');
+                            addMusicFlowStatus.textContent = `all set, see you on flip side`;
+                            setTimeout(win.reload(), 3000);
                         })                    
                 })
             })
@@ -1164,6 +1193,29 @@ audioPlayer.addEventListener('timeupdate', () => {
         nextTrack()
     }
 })
+
+
+ // Settings panel
+ const settingsBtn = document.querySelector('#titlebar-settings-btn')
+ const settingsPanel = document.querySelector('#settingsPanel')
+ const settingsPanelOverlay = document.querySelector('#settingsPanelOverlay')
+
+ function handleSettingsPanel() {
+   if(settingsPanel.classList.contains('showSettingsPanel')) {
+     settingsPanel.classList.remove('showSettingsPanel');
+     settingsPanelOverlay.classList.remove('showSettingsOverlay');
+
+   } else {
+     settingsPanel.classList.add('showSettingsPanel');
+     settingsPanelOverlay.classList.add('showSettingsOverlay');
+   }
+ }
+
+ settingsBtn.addEventListener('click', handleSettingsPanel)
+ settingsPanelOverlay.addEventListener('click', handleSettingsPanel)
+
+ //FOR TESTING
+//  settingsBtn.click();
 
 
 

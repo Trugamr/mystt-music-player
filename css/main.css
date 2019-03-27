@@ -143,11 +143,65 @@ html, body {
     padding-top: 50px;
 }
 
+.addMusicFlowModal {
+    background-color: var(--primary-color) !important;
+    width: 100% !important;
+    height: 100% !important;
+    transform: translateX(-200px);
+    z-index: 7 !important;
+}
+
+.addMusicFlowModal .tingle-modal-box .tingle-modal-box__content {
+    background-color: var(--primary-color) !important;
+    border-radius: 8px;
+    display: flex !important;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.addMusicFlowModal .tingle-modal-box i {
+    font-size: 28px;
+    color: var(--primary-color-white);
+}
+
+.addMusicFlowModal .tingle-modal-box p {
+    font-size: 18px;
+    text-align: center;
+    color: var(--primary-color-gray-light);
+    font-family: Avenir;
+    margin: 20px;
+    margin-bottom: 26px;
+}
+
+#addMusicFlowProgress {
+    height: 8px;
+    width: 150px;
+    -webkit-appearance: none !important;
+    border: none !important;
+    cursor: pointer;    
+    transition: ease all 1s;
+}
+
+#addMusicFlowProgress::-webkit-progress-bar {
+    background-color: var(--primary-color-light);
+    border-radius: 10px;
+}
+
+#addMusicFlowProgress::-webkit-progress-value {
+    transition: ease-in-out width 1s;
+    background-color: var(--primary-color-white);
+    border-radius: 10px;
+    height: 10px;
+    transform: translateY(-1px);    
+}
+
 #themeHeading, #addMusicSettingsHeading {
     font-family: Futura;
     color: var(--primary-color-white);
     margin-bottom: 10px;
 }
+
 
 #themesContainer {
     box-sizing: border-box;

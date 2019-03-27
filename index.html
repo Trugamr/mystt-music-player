@@ -118,29 +118,6 @@
         </div>
         `
       })
-      
-
-      // Settings panel
-      const settingsBtn = document.querySelector('#titlebar-settings-btn')
-      const settingsPanel = document.querySelector('#settingsPanel')
-      const settingsPanelOverlay = document.querySelector('#settingsPanelOverlay')
-
-      function handleSettingsPanel() {
-        if(settingsPanel.classList.contains('showSettingsPanel')) {
-          settingsPanel.classList.remove('showSettingsPanel');
-          settingsPanelOverlay.classList.remove('showSettingsOverlay');
-
-        } else {
-          settingsPanel.classList.add('showSettingsPanel');
-          settingsPanelOverlay.classList.add('showSettingsOverlay');
-        }
-      }
-
-      settingsBtn.addEventListener('click', handleSettingsPanel)
-      settingsPanelOverlay.addEventListener('click', handleSettingsPanel)
-
-      //FOR TESTING
-      settingsBtn.click();
     </script>
   </body>
 </html>
