@@ -9,16 +9,43 @@ const {app, BrowserWindow} = require('electron')
 let mainWindow
 
 function createWindow () {
+  // Create loading window
+  loadWindow = new BrowserWindow({
+    width:  500,
+    height:  300,
+    resizable: false,
+    frame: false,
+    alwaysOnTop: true,
+    show: false
+  })
+
+  // load loading page
+  loadWindow.loadFile('splash.html')
+
+  loadWindow.once('ready-to-show', () => {
+    loadWindow.show();
+  })
+
   // Create the browser window.
   mainWindow = new BrowserWindow({
     width: 1115,
     height: 700,
     // transparent: true,
+    minHeight: 600,
+    minWidth: 1090,
     frame: false,
     webPreferences: {
       nodeIntegration: true
-    }
+    },
+    show: false
   })
+
+  // show window when dom loads
+  mainWindow.webContents.once('dom-ready', () => {
+    loadWindow.hide();
+    loadWindow.close();
+    mainWindow.show();  
+  });
 
   // and load the index.html of the app.
   mainWindow.loadFile('index.html')
