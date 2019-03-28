@@ -222,6 +222,10 @@ html, body {
     cursor: pointer;
 }
 
+.dynamicThemeCircle {
+    background: linear-gradient(to right, #b993d6, #8ca6db);
+}
+
 #themeCircleFirst, #themeCircleSecond {
     display: inline-block;
     margin: 0px;

@@ -1,12 +1,3 @@
-function applyTheme(value, options = { by: 'name' }) {
-    if(options.by == 'name') theme = allThemes[`${value}`];
-    document.documentElement.style.setProperty('--primary-color', theme.first);
-    document.documentElement.style.setProperty('--primary-color-light', theme.second);
-    document.documentElement.style.setProperty('--primary-color-white', theme.third);
-    document.documentElement.style.setProperty('--primary-color-gray', theme.fourth);
-    document.documentElement.style.setProperty('--primary-color-gray-light', theme.fifth);
-}
-
 const allThemes = {
     darkOnyx: {
         name: 'darkOnyx',

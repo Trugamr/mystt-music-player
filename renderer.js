@@ -12,8 +12,12 @@ const path = require('path')
 const mm = require('music-metadata')
 const fs = require('fs')
 const sqlite3 = require('sqlite3')
-const jsdom = require('jsdom');
+const jsdom = require('jsdom')
 const { JSDOM } = jsdom;
+const Vibrant = require('node-vibrant')
+
+// User Settings
+let isDynamicThemeSelected = false;
 
 // Siderbar links declaration
 const sbDiscoverLink = document.querySelector('#homePage');
@@ -1080,13 +1084,6 @@ function updateCurrentlyPlayingInfo(trackInfo) {
 
     playerBarCurrentTime.textContent = '0:00';
     playerBarTotalTime.textContent = secondsToMinutes(trackInfo.duration);
-    
-    // Updating album art on playerBar
-    mm.parseFile(trackInfo.path)
-    .then(metadata => {
-        let datajpg = metadata.common.picture[0].data ? blobTob64(metadata.common.picture[0].data) : './assets/images/art.png';
-        playerBarArt.src = datajpg;
-    })
 
     // Updating playerBar heart icon and changing data attributes 
     if(trackInfo.favourite) {
@@ -1100,6 +1097,15 @@ function updateCurrentlyPlayingInfo(trackInfo) {
         playerBarHeart.classList.remove('typcn-heart');
         playerBarHeart.classList.add('typcn-heart-outline');
     }
+
+    // Updating album art on playerBar
+    mm.parseFile(trackInfo.path)
+    .then(metadata => {
+        let buffer = metadata.common.picture[0].data;
+        let datajpg = buffer ? blobTob64(buffer) : './assets/images/art.png';
+        playerBarArt.src = datajpg;
+        if(isDynamicThemeSelected) dynamicColorFetch(metadata.common.picture[0].data);
+    })
 }
 
 
@@ -1214,11 +1220,147 @@ audioPlayer.addEventListener('timeupdate', () => {
  settingsBtn.addEventListener('click', handleSettingsPanel)
  settingsPanelOverlay.addEventListener('click', handleSettingsPanel)
 
- //FOR TESTING
-//  settingsBtn.click();
+// FOR TESTING
+// settingsBtn.click();
 
+// Themes
+var themes = require('./js/themes.js');
 
+var lightenColor = function(color, percent) {
+    var num = parseInt(color,16),
+      amt = Math.round(2.55 * percent),
+      R = (num >> 16) + amt,
+      B = (num >> 8 & 0x00FF) + amt,
+      G = (num & 0x0000FF) + amt;
 
+      return (0x1000000 + (R<255?R<1?0:R:255)*0x10000 + (B<255?B<1?0:B:255)*0x100 + (G<255?G<1?0:G:255)).toString(16).slice(1);
+};
+
+function applyTheme(value, options = { by: 'name' }) {
+    if(options.by == 'name') { theme = themes.allThemes[`${value}`] }
+    else if(options.by == 'themeObject') {
+        theme = value
+    };
+
+    if(theme.name == 'dynamic') {
+        isDynamicThemeSelected = true;
+    } else {
+        isDynamicThemeSelected = false;
+    }
+
+    // Theme from theme object    
+    document.documentElement.style.setProperty('--primary-color', theme.first);
+    document.documentElement.style.setProperty('--primary-color-light', theme.second);
+    document.documentElement.style.setProperty('--primary-color-white', theme.third);
+    document.documentElement.style.setProperty('--primary-color-gray', theme.fourth);
+    document.documentElement.style.setProperty('--primary-color-gray-light', theme.fifth);
+    console.log(theme.name);
+}
+
+const themesContainer = document.querySelector('#themesContainer');
+Object.keys(themes.allThemes).forEach((theme, index) => {
+  themesContainer.innerHTML += `
+  <div id="themeCircle" onclick="applyTheme('${themes.allThemes[theme].name}')">
+    <div id="themeCircleFirst" style="background-color: ${themes.allThemes[theme].second};"></div>
+    <div id="themeCircleSecond" style="background-color: ${themes.allThemes[theme].fourth};"></div>
+  </div>
+  `
+})
+
+// Switching to dynamic theme and setting isDynamicThemeSelected = true
+let dynamicThemeBtn = document.querySelector('.dynamicThemeCircle');
+dynamicThemeBtn.addEventListener('click', applyDynamicTheme)
+function applyDynamicTheme() {    
+    isDynamicThemeSelected = true;
+    fetchMusic(`WHERE ID = ${currentlyPlayingTrack}`)
+        .then(track => {
+            mm.parseFile(track[0].path)
+                .then(metadata => {
+                    console.log(metadata);
+                    dynamicColorFetch(metadata.common.picture[0].data, { by: 'themeObject' });
+                })
+        })    
+}
+
+function dynamicColorFetch(image) {
+    // image here is b64 encoded buffer
+    Vibrant.from(image, { ImageClass: Image.Node }).getPalette()
+        .then(palette => {
+            // Legacy
+            let themeObject = {
+                name: 'dynamic',
+                first: palette.LightVibrant.getHex(),
+                second: palette.Vibrant.getHex(),
+                third: palette.DarkVibrant.getHex(),
+                fourth: palette.DarkVibrant.getHex(),
+                fifth: palette.DarkVibrant.getHex()
+            }
+            // let themeObject = {
+            //     name: 'dynamic',
+            //     first: palette.LightVibrant.getHex(),
+            //     second: palette.Vibrant.getHex(),
+            //     third: '#111111',
+            //     fourth:'#1a1a1a',
+            //     fifth: '#1e1e1e'
+            // }
+
+            //Text colors
+            //Ligthing up highlight color by 5%
+            //themeObject.second = `#${lightenColor(palette.Vibrant.getHex().replace('#',''), 0)}`
+            //Darkening text colors
+            themeObject.third = `#${lightenColor(palette.DarkVibrant.getHex().replace('#',''), -32)}`
+            themeObject.fourth = `#${lightenColor(palette.DarkVibrant.getHex().replace('#',''), -28)}`;
+            themeObject.fifth = `#${lightenColor(palette.DarkVibrant.getHex().replace('#',''), -24)}`;
+            applyTheme(themeObject, { by: 'themeObject' });
+
+            // console.log('%c DarkMuted █████ ', `color: ${palette.DarkMuted.getHex()}`)
+            // console.log('%c DarkVibrant █████ ', `color: ${palette.DarkVibrant.getHex()}`)
+            // console.log('%c LightMuted █████ ', `background: #000; color: ${palette.LightMuted.getHex()}`)
+            // console.log('%c LightVibrant █████ ', `background: #000; color: ${palette.LightVibrant.getHex()}`)
+            // console.log('%c Muted █████ ', `background: #000; color: ${palette.Muted.getHex()}`)
+            // console.log('%c Vibrant █████ ', `color: ${palette.Vibrant.getHex()}`)
+            // console.log(palette.LightVibrant.getHsl());
+            // console.log(palette.Vibrant.getHsl());
+            // console.log(palette.DarkMuted.getHsl());
+            // console.log(palette);
+            
+        })
+        .catch(err => console.error(err)); 
+}
+
+// Restoring User State 
+function restoreUserState() {
+    // Creating table if it doesn't exist
+    // db.run("DROP TABLE Settings");
+    // db.run("CREATE TABLE IF NOT EXISTS Settings (selectedTheme TEXT, lastPlayed INT");    
+    db.each("SELECT * FROM Settings LIMIT 1", (err, row) => {
+        if(err) console.error(err);
+        // Fetching lastPlayed track and updating currentlyPlayingTrack
+        if(row.lastPlayed) {
+            currentlyPlayingTrack = row.lastPlayed;
+        } else {
+            // push 1 as default last played
+        }
+
+        // Fetching selectedTheme, if not avaialable setting darkOnyx as default
+        if(row.selectedTheme) {
+            if(row.selectedTheme == 'dynamic') {
+                applyDynamicTheme()
+            } else {
+                applyTheme(row.selectedTheme);
+            }
+        } else {
+            // push default theme to this column i.e darkOnyx
+         }
+    })
+}
+
+// running restore function after window ready
+win.on('ready-to-show', restoreUserState);
+
+function saveUserState() {
+
+}
 
 // exporting then calling with onclick on likeIcon iteself
 module.exports.likeTrack = likeTrack;
@@ -1227,3 +1369,4 @@ module.exports.showAlbumTracks = showAlbumTracks;
 module.exports.showArtistTracks = showArtistTracks;
 module.exports.playTrack = playTrack;
 module.exports.playMusic = playMusic;
+module.exports.applyTheme = applyTheme;
