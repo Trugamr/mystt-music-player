@@ -1,5 +1,5 @@
 // Modules to control application life and create native browser window
-const {app, BrowserWindow} = require('electron')
+const {app, BrowserWindow, ipcMain} = require('electron')
 
 // For automatic reloads on changes MAKES SQLITE GO INSANE
 // require('electron-reload')(__dirname);
@@ -40,6 +40,11 @@ function createWindow () {
     show: false
   })
 
+  mainWindow.on('ready-to-show', () => {
+    // Restoring user state by triggering an event, that executes restoreUserState function in renderer process
+    mainWindow.webContents.send('restore-user-state')
+  })
+
   // show window when dom loads
   mainWindow.webContents.once('dom-ready', () => {
     loadWindow.hide();
@@ -52,6 +57,19 @@ function createWindow () {
 
   // Open the DevTools.
   // mainWindow.webContents.openDevTools()
+
+  mainWindow.on('close', (e) => {
+    // sending message to save user state
+    mainWindow.webContents.send('save-user-state');
+
+    // stopping window from closing
+    e.preventDefault();
+
+    // closing app after save state was successfull
+    ipcMain.on('save-state-success', () => {
+      app.exit();
+    })
+  })
 
   // Emitted when the window is closed.
   mainWindow.on('closed', function () {

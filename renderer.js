@@ -6,7 +6,7 @@
 // All of the Node.js APIs are available in this process.
 
 const { dialog } = require('electron').remote
-const { remote } = require('electron')
+const { remote, ipcRenderer } = require('electron')
 const recursiveRead = require('recursive-readdir') 
 const path = require('path')
 const mm = require('music-metadata')
@@ -18,6 +18,7 @@ const Vibrant = require('node-vibrant')
 
 // User Settings
 let isDynamicThemeSelected = false;
+let currentlySelectedTheme = 'darkOnyx';
 
 // Siderbar links declaration
 const sbDiscoverLink = document.querySelector('#homePage');
@@ -946,7 +947,7 @@ const audioPlayer = document.querySelector('#audioPlayer');
 const audioPlayerSrc = document.querySelector('#audioPlayerSrc');
 
 // Default volume 
-audioPlayer.volume = 0.4;
+audioPlayer.volume = 0.35;
 
 
 // Getting no. of tracks from database
@@ -1241,6 +1242,9 @@ function applyTheme(value, options = { by: 'name' }) {
     else if(options.by == 'themeObject') {
         theme = value
     };
+    
+    // update currentlySelectedTheme so it can be saved later to database before closing
+    currentlySelectedTheme = theme.name;
 
     if(theme.name == 'dynamic') {
         isDynamicThemeSelected = true;
@@ -1333,14 +1337,30 @@ function restoreUserState() {
     // Creating table if it doesn't exist
     // db.run("DROP TABLE Settings");
     // db.run("CREATE TABLE IF NOT EXISTS Settings (selectedTheme TEXT, lastPlayed INT");    
-    db.each("SELECT * FROM Settings LIMIT 1", (err, row) => {
+    db.each("SELECT selectedTheme, lastPlayed, lastPlayedDuration, progressBarValue, volume FROM Settings WHERE rowid = 1", (err, row) => {
         if(err) console.error(err);
+        console.log(row);
+
         // Fetching lastPlayed track and updating currentlyPlayingTrack
         if(row.lastPlayed) {
             currentlyPlayingTrack = row.lastPlayed;
         } else {
-            // push 1 as default last played
+            // set 1 as default last played
+            currentlyPlayingTrack = 1;
         }
+
+        // Update currently playing information
+        db.each(`SELECT * FROM Music WHERE ID = ${currentlyPlayingTrack}`, (err, track) => {
+            if(err) console.error(err);
+            updateCurrentlyPlayingInfo(track);
+            audioPlayerSrc.src = track.path;
+            audioPlayer.load();
+            audioPlayer.volume = row.volume/100;
+            volumeBar.value = row.volume;
+            audioPlayer.currentTime = row.lastPlayedDuration; 
+            progressBar.value = row.progressBarValue;
+            playerBarCurrentTime.textContent = secondsToMinutes(row.lastPlayedDuration);
+        })
 
         // Fetching selectedTheme, if not avaialable setting darkOnyx as default
         if(row.selectedTheme) {
@@ -1350,17 +1370,33 @@ function restoreUserState() {
                 applyTheme(row.selectedTheme);
             }
         } else {
-            // push default theme to this column i.e darkOnyx
+            // push default theme to this column i.e darkOnyx :/
          }
     })
 }
 
-// running restore function after window ready
-win.on('ready-to-show', restoreUserState);
+// trigger restore user state event after getting message from main process
+ipcRenderer.on('restore-user-state', restoreUserState);
 
 function saveUserState() {
-
+    let currentSettings = [currentlySelectedTheme, currentlyPlayingTrack, audioPlayer.currentTime, progressBar.value, volumeBar.value]
+    let sql = `UPDATE Settings SET selectedTheme = ?,
+        lastPlayed = ?,
+        lastPlayedDuration = ?,
+        progressBarValue = ?,
+        volume = ?
+        WHERE rowid = 1`
+    db.run(sql, currentSettings, (err) => {
+        if(err) console.error(err);
+        ipcRenderer.send('save-state-success');
+    })
+    
 }
+
+document.addEventListener('keypress', saveUserState);
+
+// trigger save user state event after getting message from main process
+ipcRenderer.on('save-user-state', saveUserState);
 
 // exporting then calling with onclick on likeIcon iteself
 module.exports.likeTrack = likeTrack;
@@ -1370,3 +1406,5 @@ module.exports.showArtistTracks = showArtistTracks;
 module.exports.playTrack = playTrack;
 module.exports.playMusic = playMusic;
 module.exports.applyTheme = applyTheme;
+module.exports.restoreUserState = restoreUserState;
+module.exports.saveUserState = saveUserState;

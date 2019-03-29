@@ -28,8 +28,8 @@
   <body>
 
     <!-- Main audio element -->
-    <audio id="audioPlayer">
-      <source id="audioPlayerSrc" src="J:\Dropbox\myst\TEST\Mr FijiWiji &amp; Exist Strategy\Andromeda - Single\02 Andromeda (Instrumental).m4a">
+    <audio id="audioPlayer" autoplay="">
+      <source id="audioPlayerSrc" src="">
     </audio>
 
     <div id="container" class="flexChild columnParent">
@@ -48,12 +48,12 @@
       </div>
 
       <div id="titlebar" class="flexChild">
-        <div id="titlebar-settings-btn"><i class="fas fa-circle"></i></div>
+        <div id="titlebar-settings-btn"><i class="fas fa-heart"></i></div>
         <div id="titlebar-title">mystt</div>
         <div id="titlebar-buttons">
-          <div id="minimize-btn"></div>
-          <div id="maximize-btn"></div>
-          <div id="close-btn"></div>
+          <div id="minimize-btn"><i class="fas fa-circle"></i></div>
+          <div id="maximize-btn"><i class="fas fa-circle"></i></div>
+          <div id="close-btn"><i class="fas fa-circle"></i></div>
         </div>
       </div>      
       <div id="wrapper" class="flexChild rowParent">
@@ -89,13 +89,13 @@
             </div>
             <div id="playerProgressBarWrapper">
               <span id="playerBarCurrentTime"></span>
-              <progress id="playerProgressBar" onclick="progressTo(event)" max=100 value="35"></progress>
+              <progress id="playerProgressBar" onclick="progressTo(event)" max=100 value="10"></progress>
               <span id="playerBarTotalTime"></span>
             </div>
           </div>
           <div id="playerBarRight">
             <i id="playerVolumeBtn" class="fas fa-volume"></i>
-            <progress id="playerVolumeBar" onclick="progressTo(event)" max="100" value="40"></progress>;
+            <progress id="playerVolumeBar" onclick="progressTo(event)" max="100" value="10"></progress>;
           </div>
         </div>
       </div>      
