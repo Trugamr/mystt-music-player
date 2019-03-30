@@ -15,7 +15,7 @@ function createWindow () {
     height:  300,
     resizable: false,
     frame: false,
-    alwaysOnTop: true,
+    // alwaysOnTop: true,
     show: false
   })
 

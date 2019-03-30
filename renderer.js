@@ -20,6 +20,7 @@ const Vibrant = require('node-vibrant')
 let isDynamicThemeSelected = false;
 let currentlySelectedTheme = 'darkOnyx';
 
+
 // Siderbar links declaration
 const sbDiscoverLink = document.querySelector('#homePage');
 const sbSongsLink = document.querySelector('#songsPage');
@@ -232,7 +233,19 @@ function pushToDatabase(data) {
                     pushedTracksPromises.push(
                         // pushing promises to all 
                         new Promise((resolve, reject) => {
-                            stmt.run(track.common.title, track.common.album, track.common.artist, track.common.year, track.format.duration, 0, 0, track.birthtimeMs, track.path, (err) => {
+                            let trackFileName = String.raw`${track.path}`.split('\\');
+                            trackFileName = trackFileName[trackFileName.length - 1].replace(path.extname(track.path), '');
+                            if(!track.common.title) track.common.title = trackFileName;
+                            stmt.run(
+                                track.common.title,
+                                track.common.album ? track.common.album : `${trackFileName} - Single`,
+                                track.common.artist ? track.common.artist : `-`,
+                                track.common.year ? track.common.year : `-`,
+                                track.format.duration,
+                                0,
+                                0,
+                                track.birthtimeMs,
+                                track.path,(err) => {
                                 if(err) reject(err)
                                 else resolve('successfully inserted')
                             });
@@ -315,7 +328,7 @@ function generateHomePage(withTop5 = true) {
                     allHomePromises.push(
                         new Promise((resolve, reject) => {
                             mm.parseFile(track.path).then(metadata => {
-                                let datajpg = metadata.common.picture[0].data ? blobTob64(metadata.common.picture[0].data) : './assets/images/art.png'; 
+                                let datajpg = metadata.common.picture ? blobTob64(metadata.common.picture[0].data) : './assets/images/art.png'; 
                                 homeMusicCards += `
                                     <div id="homeMusicCard" onclick="playMusic(${track.id})" data-id=${track.id} data-title="${track.title}" data-album="${track.album}" data-artist="${track.artist}" data-path="${track.path}" data-duration="${track.duration}">
                                         <img src="${datajpg}" id="homeMusicCardArt">
@@ -479,13 +492,13 @@ function generateArtistsPage() {
         db.all(`SELECT artist, path, COUNT(title) as tracks FROM Music GROUP BY artist`, (err, artistData) => {
             if(err) console.error(err);
             artistData
-                .filter(artist => artist.tracks > 1)
+                .filter(artist => artist.tracks > 1 && artist.artist != '-')
                 .forEach(artist => {
                     allArtistsPromises.push(
                         new Promise((res, rej) => {
                             mm.parseFile(artist.path)
                                 .then(metadata => {
-                                    let datajpg = metadata.common.picture[0].data ? blobTob64(metadata.common.picture[0].data) : './assets/images/art.png';
+                                    let datajpg = metadata.common.picture ? blobTob64(metadata.common.picture[0].data) : './assets/images/art.png';
                                     allArtists += `
                                     <div id="artistCard" onclick="showArtistTracks('${artist.artist}')" data-artist="${artist.artist}" data-tracks="${artist.tracks}">
                                         <div id="artistCardArt">
@@ -1102,10 +1115,15 @@ function updateCurrentlyPlayingInfo(trackInfo) {
     // Updating album art on playerBar
     mm.parseFile(trackInfo.path)
     .then(metadata => {
-        let buffer = metadata.common.picture[0].data;
-        let datajpg = buffer ? blobTob64(buffer) : './assets/images/art.png';
-        playerBarArt.src = datajpg;
-        if(isDynamicThemeSelected) dynamicColorFetch(metadata.common.picture[0].data);
+        if(metadata.common.picture) {
+            let buffer = metadata.common.picture[0].data;
+            let datajpg = blobTob64(buffer);
+            playerBarArt.src = datajpg;
+        } else {
+            playerBarArt.src = datajpg = `./assets/images/art.png`;
+        }
+        
+        if(isDynamicThemeSelected) dynamicColorFetch(metadata.common.picture ? metadata.common.picture[0].data : `./assets/images/art.png`);
     })
 }
 
@@ -1281,7 +1299,7 @@ function applyDynamicTheme() {
             mm.parseFile(track[0].path)
                 .then(metadata => {
                     console.log(metadata);
-                    dynamicColorFetch(metadata.common.picture[0].data, { by: 'themeObject' });
+                    dynamicColorFetch(metadata.common.picture ? metadata.common.picture[0].data : `./assets/images/art.png`, { by: 'themeObject' });
                 })
         })    
 }
