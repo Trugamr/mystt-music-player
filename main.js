@@ -1,5 +1,5 @@
 // Modules to control application life and create native browser window
-const {app, BrowserWindow, ipcMain} = require('electron')
+const { app, BrowserWindow, ipcMain, globalShortcut } = require('electron')
 
 // For automatic reloads on changes MAKES SQLITE GO INSANE
 // require('electron-reload')(__dirname);
@@ -83,7 +83,68 @@ function createWindow () {
 // This method will be called when Electron has finished
 // initialization and is ready to create browser windows.
 // Some APIs can only be used after this event occurs.
-app.on('ready', createWindow)
+app.on('ready', () => {
+  createWindow();  
+  // Global play/pause, next & previous shortcuts
+  globalShortcut.register('CommandOrControl+Shift+Right', () => {
+    // Playing next track
+    mainWindow.webContents.send('play-next-track');
+    console.log('playing next track');
+  }) 
+  globalShortcut.register('CommandOrControl+Shift+Left', () => {
+    // Playing previous track
+    mainWindow.webContents.send('play-previous-track');
+    console.log('playing previous track');
+  })
+  globalShortcut.register('CommandOrControl+Shift+Down', () => {
+    // Playing/pausing track
+    mainWindow.webContents.send('play-pause-track');
+    console.log('playing/pausing track');
+  })
+  globalShortcut.register('CommandOrControl+Shift+PageUp', () => {
+    // Increasing volume
+    mainWindow.webContents.send('player-volume-up');
+    console.log('increasing volume');
+  })
+  globalShortcut.register('CommandOrControl+Shift+PageDown', () => {
+    // decreasing volume
+    mainWindow.webContents.send('player-volume-down');
+    console.log('decreasing volume');
+  })
+
+  // Registering media keys
+  globalShortcut.register('MediaNextTrack', () => {
+    // Playing next track
+    mainWindow.webContents.send('play-next-track');
+    console.log('playing next track');
+  }) 
+  globalShortcut.register('MediaPreviousTrack', () => {
+    // Playing previous track
+    mainWindow.webContents.send('play-previous-track');
+    console.log('playing previous track');
+  })
+  globalShortcut.register('MediaPlayPause', () => {
+    // Playing/pausing track
+    mainWindow.webContents.send('play-pause-track');
+    console.log('playing/pausing track');
+  })
+  globalShortcut.register('VolumeUp', () => {
+    // Increasing volume
+    mainWindow.webContents.send('player-volume-up');
+    console.log('increasing volume');
+  })
+  globalShortcut.register('VolumeDown', () => {
+    // decreasing volume
+    mainWindow.webContents.send('player-volume-down');
+    console.log('decreasing volume');
+  })
+  globalShortcut.register('VolumeMute', () => {
+    // decreasing volume
+    mainWindow.webContents.send('player-volume-mute-unmute');
+    console.log('muting/unmuting volume');
+  })
+
+})
 
 // Quit when all windows are closed.
 app.on('window-all-closed', function () {

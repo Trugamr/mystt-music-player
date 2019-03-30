@@ -953,6 +953,21 @@ const playerBarArtist = document.querySelector('#playerBarArtist')
 const playerBarArt = document.querySelector('#playerBarArt>img')
 const playerBarTotalTime = document.querySelector('#playerBarTotalTime')
 const playerBarCurrentTime = document.querySelector('#playerBarCurrentTime')
+const playerBarVolumeBtn = document.querySelector('#playerVolumeBtn')
+
+// Muting audio on volume btn click
+playerBarVolumeBtn.addEventListener('click', muteUnmuteAudio)
+function muteUnmuteAudio() {
+    if(audioPlayer.muted || audioPlayer.volume == 0) {
+        audioPlayer.muted = false;
+        playerBarVolumeBtn.classList.remove('fa-volume-mute')
+        playerBarVolumeBtn.classList.add('fa-volume')
+    } else {
+        audioPlayer.muted = true;
+        playerBarVolumeBtn.classList.remove('fa-volume')
+        playerBarVolumeBtn.classList.add('fa-volume-mute')
+    }
+}
 
 // Player Controls
 // Loading main audio element
@@ -1176,7 +1191,8 @@ backButton.addEventListener('click', previousTrack)
 
 forwardButton.addEventListener('click', nextTrack)
 
-playButton.addEventListener('click', () => {
+playButton.addEventListener('click', playOrPauseTrack)
+function playOrPauseTrack() {
     if(audioPlayer.paused) {
         audioPlayer.play();
         playButton.classList.remove('fa-play');
@@ -1186,7 +1202,29 @@ playButton.addEventListener('click', () => {
         playButton.classList.remove('fa-pause');
         playButton.classList.add('fa-play');
     }
-})
+}
+
+function volumeUp() {
+    if(audioPlayer.volume + 0.05 < 1) {
+        audioPlayer.volume += 0.05;
+        volumeBar.value = audioPlayer.volume * 100;
+    };
+}
+
+function volumeDown() {
+    if(audioPlayer.volume - 0.05 > 0) {
+        audioPlayer.volume -= 0.05;
+        volumeBar.value = audioPlayer.volume * 100;
+    };
+}
+
+// Global shortcuts to play/pause & play next or previous tracks
+ipcRenderer.on('play-pause-track', playOrPauseTrack)
+ipcRenderer.on('play-next-track', nextTrack)
+ipcRenderer.on('play-previous-track', previousTrack)
+ipcRenderer.on('player-volume-up', volumeUp)
+ipcRenderer.on('player-volume-down', volumeDown)
+ipcRenderer.on('player-volume-mute-unmute', muteUnmuteAudio)
 
 
 // Changing progress bar values

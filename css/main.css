@@ -632,6 +632,7 @@ html, body {
     color: var(--primary-color-gray-light);
     margin-right: 9px;
     transform: translateY(-1px);
+    cursor: pointer;
 }
 
 #playerVolumeBar {
