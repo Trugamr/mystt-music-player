@@ -27,8 +27,9 @@ const sbSongsLink = document.querySelector('#songsPage');
 const sbAlbumsLink = document.querySelector('#albumsPage');
 const sbArtistsLink = document.querySelector('#artistsPage');
 const sbLikedLink = document.querySelector('#likedPage');
+const sbPlaylistsLink = document.querySelector('#playlistsPage');
 
-let sbLinks = [sbDiscoverLink, sbSongsLink, sbAlbumsLink, sbArtistsLink, sbLikedLink];
+let sbLinks = [sbDiscoverLink, sbSongsLink, sbAlbumsLink, sbArtistsLink, sbLikedLink, sbPlaylistsLink];
 
 // Get current window and creating custom min, max, close buttons
 let win = remote.getCurrentWindow();
@@ -251,7 +252,7 @@ function pushToDatabase(data) {
                                 track.common.album ? track.common.album : `${trackFileName} - Single`,
                                 track.common.artist ? track.common.artist : `-`,
                                 track.common.year ? track.common.year : `-`,
-                                track.format.duration,
+                                track.format.duration ? track.format.duration : '0',
                                 0,
                                 0,
                                 track.birthtimeMs,
@@ -295,7 +296,7 @@ function fetchMusic(args = "ORDER BY title COLLATE NOCASE ASC") {
                 album: row.album,
                 artist: row.artist,
                 year: row.year,
-                duration: row.duration ? row.duration : 0,
+                duration: row.duration,
                 plays: row.plays,
                 favourite: row.favourite,
                 birthtime: row.birthtime,
@@ -340,7 +341,7 @@ function generateHomePage(withTop5 = true) {
                             mm.parseFile(track.path).then(metadata => {
                                 let datajpg = metadata.common.picture ? blobTob64(metadata.common.picture[0].data) : './assets/images/art.png'; 
                                 homeMusicCards += `
-                                    <div id="homeMusicCard" onclick="playMusic(${track.id})" data-id=${track.id} data-title="${track.title}" data-album="${track.album}" data-artist="${track.artist}" data-path="${track.path}" data-duration="${track.duration}">
+                                    <div id="homeMusicCard" onclick="playMusic(${track.id})" data-id=${track.id} data-title="${track.title}" data-album="${track.album}" data-artist="${track.artist}" data-year=${track.year} data-path="${track.path}" data-duration="${track.duration}">
                                         <img src="${datajpg}" id="homeMusicCardArt">
                                         <p id="homeMusicCardTitle">${track.title}</p>
                                         <p id="homeMusicCardArtist">${track.artist}</p>
@@ -357,7 +358,7 @@ function generateHomePage(withTop5 = true) {
                     allHomePromises.push(
                         new Promise((resolve, reject) => {
                             homeMusicRecents += `
-                                <li class="infoRow" onclick="playMusic(${track.id})" data-id=${track.id} data-title="${track.title}" data-album="${track.album}" data-artist="${track.artist}" data-path="${track.path}" data-duration="${track.duration}">
+                                <li class="infoRow" onclick="playMusic(${track.id})" data-id=${track.id} data-title="${track.title}" data-album="${track.album}" data-year=${track.year} data-artist="${track.artist}" data-path="${track.path}" data-duration="${track.duration}">
                                     <p>${track.title}</p>
                                     <p>${track.album}</p>
                                     <p>${track.artist}</p>
@@ -408,7 +409,7 @@ function generateSongsPage() {
                 data.forEach(track => {
                     // console.log(track);
                     allSongs += `
-                    <li class="infoRowSongs" onclick="playMusic(${track.id})" data-id=${track.id} data-title="${track.title}" data-album="${track.album}" data-artist="${track.artist}" data-path="${track.path}" data-duration="${track.duration}">
+                    <li class="infoRowSongs" onclick="playMusic(${track.id})" data-id=${track.id} data-title="${track.title}" data-album="${track.album}" data-artist="${track.artist}" data-year=${track.year} data-path="${track.path}" data-duration="${track.duration}">
                         <p class="songName">${track.title}</p>
                         <p class="songAlbum">${track.album}</p>
                         <p class="songArtist">${track.artist}</p>
@@ -560,7 +561,7 @@ function generateLikedPage() {
                 if(data) data.forEach(track => {
                     // console.log(track);
                     allLiked += `
-                    <li class="infoRowLiked" onclick="playMusic(${track.id})" data-id=${track.id} data-title="${track.title}" data-album="${track.album}" data-artist="${track.artist}" data-path="${track.path}" data-duration="${track.duration}">
+                    <li class="infoRowLiked" onclick="playMusic(${track.id})" data-id=${track.id} data-title="${track.title}" data-album="${track.album}" data-artist="${track.artist}" data-year=${track.year} data-path="${track.path}" data-duration="${track.duration}">
                         <p class="likedName">${track.title}</p>
                         <p class="likedAlbum">${track.album}</p>
                         <p class="likedArtist">${track.artist}</p>
@@ -585,7 +586,71 @@ function generateLikedPage() {
     })
 }
 
-// Get and show album tacks
+// Generating artists page
+generatePlaylistsPage()
+    .then(data => console.log(data))
+    .catch(err => console.error(err))
+
+function generatePlaylistsPage() {
+    let allPlaylists = '';
+    return new Promise((resolve, reject) => {
+        let allPlaylistsPromises = [];
+        // fetching all playlists
+        db.all(`SELECT name FROM sqlite_master WHERE type='table'`, (err, tables) => {
+            if(err) console.error(err);
+            tables
+                .filter(table => table.name.endsWith('_playlist'))
+                .forEach(playlist => {
+                    allPlaylistsPromises.push(
+                        new Promise((res, rej) => {
+                            db.all(`SELECT COUNT(*) as tracks, path FROM ${playlist.name}`, (err, row) => {
+                                if(err) console.error(err);
+                                mm.parseFile(row[0].path)
+                                    .then(metadata => {
+                                        let datajpg = metadata.common.picture ? blobTob64(metadata.common.picture[0].data) : './assets/images/art.png';
+                                        allPlaylists += `
+                                        <div id="playlistCard" onclick="showPlaylistTracks('${playlist.name}')" data-playlist="${playlist.name}" data-tracks="${row.tracks}">
+                                            <div id="playlistCardArt">
+                                                <img src="${datajpg}">
+                                            </div>
+                                            <p id="playlistCardTitle">${capitalizeFirstLetter(playlist.name.replace('_playlist', ''))}</p>
+                                            <p id="playlistCardTracks">${row[0].tracks} tracks</p>
+                                        </div>
+                                        `
+                                        if(metadata) res(`got metadata for ${playlist.name} with ${row[0].tracks} tracks`)
+                                        else rej(`failed to get metadata for ${playlist.name}} with ${row[0].tracks} tracks`);
+                                    })
+                            })
+                        })
+                    )
+                })
+
+                Promise.all(allPlaylistsPromises)
+                .then(data => {
+                    console.log(data);
+                    fs.readFile('./pages/playlists.htm', 'utf-8', (err, data) => {
+                        if(err) console.error(err);
+                        const jsdomWindow = new JSDOM(data).window;
+                        // only update if withTop5 is true
+                        jsdomWindow.document.querySelector('#playlistsContainer').innerHTML = allPlaylists;
+                        const generatedContent = jsdomWindow.document.documentElement.outerHTML;                    
+                        fs.writeFile('./pages/playlists.htm', generatedContent, (err) => {
+                            if(err) reject(err)
+                            else resolve(`playlists page generated`)
+                        })  
+    
+                    })   
+                })
+                .catch(err => reject(err))
+        })
+    })
+}
+
+function capitalizeFirstLetter(string) {
+    return string.charAt(0).toUpperCase() + string.slice(1);
+}
+
+// Get and show album tracks
 function showAlbumTracks(albumName) {
     let album = albumName;
     let albumSongsList = '';
@@ -593,7 +658,7 @@ function showAlbumTracks(albumName) {
         .then(data => {
             data.forEach(track => {
                 albumSongsList += `
-                <li class="infoRowAlbums" onclick="playMusic(${track.id})" data-id=${track.id} data-title="${track.title}" data-album="${track.album}" data-artist="${track.artist}" data-path="${track.path}" data-duration="${track.duration}">
+                <li class="infoRowAlbums" onclick="playMusic(${track.id})" data-id=${track.id} data-title="${track.title}" data-album="${track.album}" data-artist="${track.artist}" data-year=${track.year} data-path="${track.path}" data-duration="${track.duration}">
                     <p class="albumName">${track.title}</p>
                     <p class="albumArtist">${track.artist}</p>
                     <p class="albumTime">${secondsToMinutes(track.duration)}</p>
@@ -606,7 +671,7 @@ function showAlbumTracks(albumName) {
                 closeMethods: ['overlay', 'escape']
             })
             modal.setContent(`
-                <div id="#albumTracksContainer">
+                <div id="albumTracksContainer">
                     <span id="playAlbumBtn" onclick="playMusic('${albumName}', { playBy: 'albumName', fromQueue: true })"><i class="fas fa-play"></i> Play</span>
                     <h1 id="albumNameHeading"><span>${albumName}</span></h1>
                     <li class="infoRowAlbums" id="categoryRowAlbums">
@@ -664,11 +729,11 @@ function showAlbumTracks(albumName) {
                 sortClass : 'albumSort'
             }
 
-            var trackList = new List('#albumTracksContainer', options);
+            var trackList = new List('albumTracksContainer', options);
         })
 }
 
-// Get and show album tacks
+// Get and show album tracks
 function showArtistTracks(artistName) {
     let artist = artistName;
     let artistSongsList = '';
@@ -676,7 +741,7 @@ function showArtistTracks(artistName) {
         .then(data => {
             data.forEach(track => {
                 artistSongsList += `
-                <li class="infoRowArtists" onclick="playMusic(${track.id})" data-id=${track.id} data-title="${track.title}" data-album="${track.album}" data-artist="${track.artist}" data-path="${track.path}" data-duration="${track.duration}">
+                <li class="infoRowArtists" onclick="playMusic(${track.id})" data-id=${track.id} data-title="${track.title}" data-album="${track.album}" data-artist="${track.artist}" data-year=${track.year} data-path="${track.path}" data-duration="${track.duration}">
                     <p class="artistName">${track.title}</p>
                     <p class="artistAlbum">${track.album}</p>
                     <p class="artistTime">${secondsToMinutes(track.duration)}</p>
@@ -689,12 +754,12 @@ function showArtistTracks(artistName) {
                 closeMethods: ['overlay', 'escape']
             })
             modal.setContent(`
-                <div id="#artistTracksContainer">
+                <div id="artistTracksContainer">
                     <span id="playArtistBtn" onclick="playMusic('${artistName}', { playBy: 'artistName', fromQueue: true })"><i class="fas fa-play"></i> Play</span>
                     <h1 id="artistNameHeading"><span>${artistName}</span></h1>
                     <li class="infoRowArtists" id="categoryRowArtists">
                         <p class="artistSort artistName" data-sort="artistName">Title <span class="typcn"></span></p>
-                        <p class="artistSort artistAlbum" data-sort="artistArtist">Album <span class="typcn"></span></p>
+                        <p class="artistSort artistAlbum" data-sort="artistAlbum">Album <span class="typcn"></span></p>
                         <p class="artistSort artistTime" data-sort="artistTime">Duration <span class="typcn"></span></p>
                         <p class="artistSort artistLiked" data-sort="artistLiked">Liked <span class="typcn"></span></p> 
                     </li>
@@ -747,10 +812,103 @@ function showArtistTracks(artistName) {
                 sortClass : 'artistSort'
             }
 
-            var trackList = new List('#artistTracksContainer', options);
+            var trackList = new List('artistTracksContainer', options);
         })
 }
 
+// Get and show playlist tracks
+function showPlaylistTracks(playlist) {
+    let playlistSongsList = '';
+    db.all(`SELECT * FROM ${playlist}`, (err, rows) => {
+        if(err) console.error(err);
+        rows.forEach(row => {
+            let track = {
+                id: row.id,
+                title: row.title,
+                album: row.album,
+                artist: row.artist,
+                year: row.year,
+                duration: row.duration,
+                favourite: row.favourite,
+                path: row.path
+            }
+            
+            
+            playlistSongsList += `
+            <li class="infoRowPlaylists" onclick="playMusic(${track.id})" data-id=${track.id} data-title="${track.title}" data-album="${track.album}" data-artist="${track.artist}" data-year=${track.year} data-path="${track.path}" data-duration="${track.duration}">
+                <p class="playlistName">${track.title}</p>
+                <p class="playlistAlbum">${track.album}</p>
+                <p class="playlistTime">${secondsToMinutes(track.duration)}</p>
+                <p class="playlistLiked"><span style="display: none;">${track.favourite ? 'Heart' : 'Nope'}</span> <span id="likeHeart" onclick="likeTrack(event)" data-track-id="${track.id}" data-liked="${track.favourite}" class="typcn ${track.favourite ? 'typcn-heart' : 'typcn-heart-outline'}"></span></p> 
+            </li>
+            `
+        })
+
+        var modal = new tingle.modal({
+            closeMethods: ['overlay', 'escape']
+        })
+        modal.setContent(`
+            <div id="playlistTracksContainer">
+                <span id="playPlaylistBtn" onclick="playMusic('${playlist}', { playBy: 'playlistName', fromQueue: true })"><i class="fas fa-play"></i> Play</span>
+                <h1 id="playlistNameHeading"><span>${capitalizeFirstLetter(playlist.replace('_playlist', ''))}</span></h1>
+                <li class="infoRowPlaylists" id="categoryRowPlaylists">
+                    <p class="playlistSort playlistName" data-sort="playlistName">Title <span class="typcn"></span></p>
+                    <p class="playlistSort playlistAlbum" data-sort="playlistAlbum">Album <span class="typcn"></span></p>
+                    <p class="playlistSort playlistTime" data-sort="playlistTime">Duration <span class="typcn"></span></p>
+                    <p class="playlistSort playlistLiked" data-sort="playlistLiked">Liked <span class="typcn"></span></p> 
+                </li>
+                <ul class="list">            
+                    ${playlistSongsList}
+                </ul>
+            </div>
+        `)
+        modal.open();
+
+        // changing sorting icons
+        var playlistTracksSortCategories = Array.from(document.querySelectorAll('.playlistSort'));
+        playlistTracksSortCategories.forEach(category => {
+            category.addEventListener('click', handleSortingIcons);
+        })
+
+        function handleSortingIcons(e) {
+            
+            // childNodes[1] targets typicon span
+            var iconSpan = e.target.childNodes[1];
+
+            // removing sorting icon from other categories
+            playlistTracksSortCategories.forEach(category => {
+                if(category != e.target) {
+                    category.childNodes[1].classList.remove('typcn-arrow-sorted-down', 'typcn-arrow-sorted-up');
+                }
+            })
+
+            // toggling/adding sorting icon
+            if(iconSpan.classList.contains('typcn-arrow-sorted-down')) {
+                iconSpan.classList.remove('typcn-arrow-sorted-down');
+                iconSpan.classList.add('typcn-arrow-sorted-up');
+            } else if(iconSpan.classList.contains('typcn-arrow-sorted-up')) {
+                iconSpan.classList.remove('typcn-arrow-sorted-up');
+                iconSpan.classList.add('typcn-arrow-sorted-down');
+            } else {
+                iconSpan.classList.add('typcn-arrow-sorted-down');
+            }
+            
+        }
+
+        // list.js settings and init
+        var options = {
+            valueNames: [
+                'playlistName',
+                'playlistAlbum',
+                'playlistTime',
+                'playlistLiked'
+            ],
+            sortClass : 'playlistSort'
+        }
+
+        var playlistList = new List('playlistTracksContainer', options);
+    })
+}
 
 //  To convert image blobs to usable base64 images
 function blobTob64(blob) {
@@ -771,7 +929,8 @@ function secondsToMinutes(duration) {
 // marked for re-generation if anytrack was liked if not don't regenerate page
 let regeneratePage = {
     homePage: false,
-    likedPage: false
+    likedPage: false,
+    playlistsPage: false
 };
 
 function loadHomePage (e) {
@@ -860,6 +1019,30 @@ function loadLikedPage (e) {
     }
 }
 
+function loadPlaylistsPage (e) {
+    if(e) highlightSbLink(e);
+    // Loading artists page in #main content at start
+    if(regeneratePage.Playlists) {
+        regeneratePage.Playlists = false;
+        // For example
+        // generateLikedPage()
+        //     .then(data => {
+        //         console.log(data);
+        //         $('#main').fadeOut('slow',function(){
+        //             $('#main').load('./pages/liked.htm',function(data){
+        //                $('#main').fadeIn('slow'); 
+        //            });
+        //         })
+        //     })
+    } else {
+        $('#main').fadeOut('slow',function(){
+            $('#main').load('./pages/playlists.htm',function(data){
+               $('#main').fadeIn('slow'); 
+           });
+        })
+    }
+}
+
 
 //  Making sidebar links work here
 
@@ -868,6 +1051,7 @@ sbSongsLink.addEventListener('click', loadSongsPage)
 sbAlbumsLink.addEventListener('click', loadAlbumsPage)
 sbArtistsLink.addEventListener('click', loadArtistsPage)
 sbLikedLink.addEventListener('click', loadLikedPage)
+sbPlaylistsLink.addEventListener('click', loadPlaylistsPage)
 
 loadHomePage();
 
@@ -1465,13 +1649,34 @@ document.addEventListener('keypress', saveUserState);
 // trigger save user state event after getting message from main process
 ipcRenderer.on('save-user-state', saveUserState);
 
+
+// Playlists
+// FOR LATER | CREATE TABLE IF NOT EXISTS first_playlist (id INTEGER, title TEXT, album TEXT, artist TEXT, year INT, duration INT, favourite INT, path TEXT, UNIQUE(id))
+
+function addToPlaylist(trackInfo, playlistName) {
+    let track = [trackInfo.id, trackInfo.title, trackInfo.album, trackInfo.artist, trackInfo.year, trackInfo.duration, trackInfo.favourite, trackInfo.path];
+    let sql = `
+        INSERT INTO ${playlistName}_playlist(id, title, album, artist, year, duration, favourite, path)
+        VALUES(?, ?, ?, ?, ?, ?, ?, ?)
+    `;
+    
+    db.run(sql, track, (err) => {
+        if(err) console.error(err)
+        else console.log(`added ${trackInfo.title} to ${playlistName}`);
+    })
+    
+}
+
+
 // exporting then calling with onclick on likeIcon iteself
 module.exports.likeTrack = likeTrack;
 module.exports.progressTo = progressTo;
 module.exports.showAlbumTracks = showAlbumTracks;
 module.exports.showArtistTracks = showArtistTracks;
+module.exports.showPlaylistTracks = showPlaylistTracks;
 module.exports.playTrack = playTrack;
 module.exports.playMusic = playMusic;
 module.exports.applyTheme = applyTheme;
 module.exports.restoreUserState = restoreUserState;
 module.exports.saveUserState = saveUserState;
+module.exports.addToPlaylist = addToPlaylist;

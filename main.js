@@ -16,7 +16,8 @@ function createWindow () {
     resizable: false,
     frame: false,
     // alwaysOnTop: true,
-    show: false
+    show: false,
+    icon: './assets/icon.png'
   })
 
   // load loading page
@@ -37,7 +38,8 @@ function createWindow () {
     webPreferences: {
       nodeIntegration: true
     },
-    show: false
+    show: false,
+    icon: './assets/icon.png'
   })
 
   mainWindow.on('ready-to-show', () => {

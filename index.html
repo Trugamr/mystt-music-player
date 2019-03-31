@@ -14,6 +14,7 @@
     <link rel="stylesheet" href="./css/liked.css">    
     <link rel="stylesheet" href="./css/animate.css">    
     <link rel="stylesheet" href="./css/tingle.css">    
+    <link rel="stylesheet" href="./css/contextmenu/jquery.contextMenu.css">    
 
     <!-- Adding first and last script tags to make scripts work in both browser and electron -->
     <script>if (typeof module === 'object') {window.module = module; module = undefined;}</script>
@@ -22,6 +23,8 @@
     <script src="./js/list.js"></script>	
     <script src="./js/pivot.js"></script>		
     <script src="./js/tingle.js"></script>		
+    <script src="./js/contextmenu/jquery.contextMenu.js"></script>		
+    <script src="./js/contextmenu/jquery.ui.position.js"></script>		
 
     <script>if (window.module) module = window.module;</script>
   </head>
@@ -65,6 +68,7 @@
                 <div class="sidebarLinks" id="albumsPage"><span class="typcn typcn-th-large"></span> Albums</div>
                 <div class="sidebarLinks" id="artistsPage"><span class="typcn typcn-user"></span> Artists</div>
                 <div class="sidebarLinks" id="likedPage"><span class="typcn typcn-heart-full-outline"></span> Liked</div>
+                <div class="sidebarLinks" id="playlistsPage"><span class="typcn typcn-th-list"></span> Playlists</div>
             </div>            
         </div>
         <div id="main" class="flexChild"></div>
@@ -107,8 +111,10 @@
       var progressTo = renderer.progressTo
       var showAlbumTracks = renderer.showAlbumTracks
       var showArtistTracks = renderer.showArtistTracks
+      var showPlaylistTracks = renderer.showPlaylistTracks
       var playMusic = renderer.playMusic      
-      var applyTheme = renderer.applyTheme      
+      var applyTheme = renderer.applyTheme
+      var addToPlaylist = renderer.addToPlaylist
     </script>
   </body>
 </html>
