@@ -223,6 +223,16 @@ let db = new sqlite3.Database('mystt.db');
 //pushing final metadata to sqlite database
 function pushToDatabase(data) {
     return new Promise((resolve, reject) => {
+        // Sorting metadata array before pushing
+        data.sort((first, second) => {
+            let firstTitle = first.common.title.toLowerCase();
+            let secondTitle = second.common.title.toLowerCase();
+            if (firstTitle < secondTitle) //sort string ascending
+                return -1 
+            if (firstTitle > secondTitle)
+                return 1
+            return 0 //default return value (no sorting)
+        })
         let pushedTracksPromises = [];
         db.serialize(function() {
             db.run("DROP TABLE Music");
@@ -1205,14 +1215,14 @@ function playOrPauseTrack() {
 }
 
 function volumeUp() {
-    if(audioPlayer.volume + 0.05 < 1) {
+    if(audioPlayer.volume < 1) {
         audioPlayer.volume += 0.05;
         volumeBar.value = audioPlayer.volume * 100;
     };
 }
 
 function volumeDown() {
-    if(audioPlayer.volume - 0.05 > 0) {
+    if(audioPlayer.volume > 0) {
         audioPlayer.volume -= 0.05;
         volumeBar.value = audioPlayer.volume * 100;
     };
@@ -1364,9 +1374,10 @@ function dynamicColorFetch(image) {
             //     fifth: '#1e1e1e'
             // }
 
-            //Text colors
+            //Ligthing up bacground color by 5%
+            // themeObject.first = `#${lightenColor(palette.LightVibrant.getHex().replace('#',''), 5)}`
             //Ligthing up highlight color by 5%
-            //themeObject.second = `#${lightenColor(palette.Vibrant.getHex().replace('#',''), 0)}`
+            // themeObject.second = `#${lightenColor(palette.Vibrant.getHex().replace('#',''), 5)}`
             //Darkening text colors
             themeObject.third = `#${lightenColor(palette.DarkVibrant.getHex().replace('#',''), -32)}`
             themeObject.fourth = `#${lightenColor(palette.DarkVibrant.getHex().replace('#',''), -28)}`;

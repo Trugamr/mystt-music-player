@@ -49,6 +49,17 @@
     transition: ease background 0.7s;
 }
 
+/* Disabling text selection across app */
+:not(input):not(textarea),
+:not(input):not(textarea)::after,
+:not(input):not(textarea)::before {
+    -webkit-user-select: none;
+    user-select: none;
+}
+input, button, textarea, :focus {
+    outline: none;
+}
+
 /* Custom scrollbar */
 ::-webkit-scrollbar-button { 
     display: none; 
