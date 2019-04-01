@@ -18,84 +18,26 @@
                 <p class="likedSort likedLiked" data-sort="likedLiked">Liked <span class="typcn"></span></p> 
             </li>
             <ul class="list">
-                    <li class="infoRowLiked" onclick="playMusic(19)" data-id="19" data-title="Beside Me" data-album="Beside Me - Single" data-artist="Tom Swoon &amp; Tungevaag &amp; Raaban" data-year="2017" data-path="J:\Dropbox\myst\TEST\Tom Swoon &amp; Tungevaag &amp; Raaban\Beside Me - Single\01 Beside Me.m4a" data-duration="184.50575963718822">
-                        <p class="likedName">Beside Me</p>
-                        <p class="likedAlbum">Beside Me - Single</p>
-                        <p class="likedArtist">Tom Swoon &amp; Tungevaag &amp; Raaban</p>
-                        <p class="likedTime">3:04</p>
-                        <p class="likedYear">2017</p>
-                        <p class="likedLiked"><span style="display: none;">Heart</span> <span id="likeHeart" onclick="likeTrack(event)" data-track-id="19" data-fromliked="true" data-liked="1" class="typcn typcn-heart"></span></p> 
+                    <li class="infoRowLiked" onclick="playMusic(4)" data-id="4" data-title="Adventure of a Lifetime" data-album="A Head Full of Dreams" data-artist="Coldplay" data-year="2015" data-path="J:\Dropbox\myst\TEST\A Head Full of Dreams\Adventure of a Lifetime - Coldplay.m4a" data-duration="263.8483446712018">
+                        <p class="likedName">Adventure of a Lifetime</p>
+                        <p class="likedAlbum">A Head Full of Dreams</p>
+                        <p class="likedArtist">Coldplay</p>
+                        <p class="likedTime">4:23</p>
+                        <p class="likedYear">2015</p>
+                        <p class="likedLiked"><span style="display: none;">Heart</span> <span id="likeHeart" onclick="likeTrack(event)" data-track-id="4" data-fromliked="true" data-liked="1" class="typcn typcn-heart"></span></p> 
                     </li>
                     
-                    <li class="infoRowLiked" onclick="playMusic(63)" data-id="63" data-title="Gorilla" data-album="Unorthodox Jukebox" data-artist="Bruno Mars" data-year="2012" data-path="J:\Dropbox\myst\TEST\Unorthodox Jukebox\Gorilla - Bruno Mars.m4a" data-duration="244.55256235827665">
-                        <p class="likedName">Gorilla</p>
-                        <p class="likedAlbum">Unorthodox Jukebox</p>
-                        <p class="likedArtist">Bruno Mars</p>
-                        <p class="likedTime">4:04</p>
-                        <p class="likedYear">2012</p>
-                        <p class="likedLiked"><span style="display: none;">Heart</span> <span id="likeHeart" onclick="likeTrack(event)" data-track-id="63" data-fromliked="true" data-liked="1" class="typcn typcn-heart"></span></p> 
-                    </li>
-                    
-                    <li class="infoRowLiked" onclick="playMusic(75)" data-id="75" data-title="Honey" data-album="Honey - Single" data-artist="Kehlani" data-year="2017" data-path="J:\Dropbox\myst\TEST\01 Honey.m4a" data-duration="199.2736507936508">
-                        <p class="likedName">Honey</p>
-                        <p class="likedAlbum">Honey - Single</p>
-                        <p class="likedArtist">Kehlani</p>
-                        <p class="likedTime">3:19</p>
-                        <p class="likedYear">2017</p>
-                        <p class="likedLiked"><span style="display: none;">Heart</span> <span id="likeHeart" onclick="likeTrack(event)" data-track-id="75" data-fromliked="true" data-liked="1" class="typcn typcn-heart"></span></p> 
+                    <li class="infoRowLiked" onclick="playMusic(5)" data-id="5" data-title="Adventures" data-album="Monstercat 023 - Voyage" data-artist="Hyper Potions &amp; Subtact" data-year="2015" data-path="J:\Dropbox\myst\TEST\Monstercat 023 - Voyage\Adventures - Hyper Potions &amp; Subtact.m4a" data-duration="173.94068027210884">
+                        <p class="likedName">Adventures</p>
+                        <p class="likedAlbum">Monstercat 023 - Voyage</p>
+                        <p class="likedArtist">Hyper Potions &amp; Subtact</p>
+                        <p class="likedTime">2:53</p>
+                        <p class="likedYear">2015</p>
+                        <p class="likedLiked"><span style="display: none;">Heart</span> <span id="likeHeart" onclick="likeTrack(event)" data-track-id="5" data-fromliked="true" data-liked="1" class="typcn typcn-heart"></span></p> 
                     </li>
                     </ul>
         </div>
     </div>
-    <script>
-        // changing sorting icons
-        
-
-        var likedSortCategories = Array.from(document.querySelectorAll('.likedSort'));
-        likedSortCategories.forEach(category => {
-            category.addEventListener('click', handleSortingIcons);
-        })
-
-        function handleSortingIcons(e) {
-            
-            // childNodes[1] targets typicon span
-            var iconSpan = e.target.childNodes[1];
-
-            // removing sorting icon from other categories
-            likedSortCategories.forEach(category => {
-                if(category != e.target) {
-                    category.childNodes[1].classList.remove('typcn-arrow-sorted-down', 'typcn-arrow-sorted-up');
-                }
-            })
-
-            // toggling/adding sorting icon
-            if(iconSpan.classList.contains('typcn-arrow-sorted-down')) {
-                iconSpan.classList.remove('typcn-arrow-sorted-down');
-                iconSpan.classList.add('typcn-arrow-sorted-up');
-            } else if(iconSpan.classList.contains('typcn-arrow-sorted-up')) {
-                iconSpan.classList.remove('typcn-arrow-sorted-up');
-                iconSpan.classList.add('typcn-arrow-sorted-down');
-            } else {
-                iconSpan.classList.add('typcn-arrow-sorted-down');
-            }
-            
-        }
-
-        // list.js settings and init
-        var options = {
-            valueNames: [
-                'likedName',
-                'likedAlbum',
-                'likedArtist',
-                'likedTime',
-                'likedYear',
-                'likedLiked'
-            ],
-            searchClass : 'likedSearch',
-            sortClass : 'likedSort'
-        }
-
-        var likedList = new List('likedContainer', options);
-    </script>
+    <script src="./js/pages/likedPage.js"></script>
 
 </body></html>

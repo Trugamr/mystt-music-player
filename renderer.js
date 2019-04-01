@@ -122,7 +122,7 @@ function addMusicFlow() {
                     addMusicFlowProgress.value = 80;
                     console.log('pushed to database', metadata)
                     // Generating all pages now
-                    Promise.all([generateHomePage(), generateSongsPage(), generateAlbumsPage(), generateArtistsPage(), generateLikedPage()])
+                    Promise.all([generateHomePage(), generateSongsPage(), generateAlbumsPage(), generateArtistsPage(), generateLikedPage(), generatePlaylistsPage()])
                         .then(data => {
                             console.log('generated all pages', data);
                             addMusicFlowProgress.value = 100;
@@ -248,9 +248,9 @@ function pushToDatabase(data) {
                             trackFileName = trackFileName[trackFileName.length - 1].replace(path.extname(track.path), '');
                             if(!track.common.title) track.common.title = trackFileName;
                             stmt.run(
-                                track.common.title,
-                                track.common.album ? track.common.album : `${trackFileName} - Single`,
-                                track.common.artist ? track.common.artist : `-`,
+                                escapeRegExp(track.common.title),
+                                track.common.album ? escapeRegExp(track.common.album) : `${escapeRegExp(trackFileName)} - Single`,
+                                track.common.artist ? escapeRegExp(track.common.artist) : `-`,
                                 track.common.year ? track.common.year : `-`,
                                 track.format.duration ? track.format.duration : '0',
                                 0,
@@ -587,9 +587,9 @@ function generateLikedPage() {
 }
 
 // Generating artists page
-generatePlaylistsPage()
-    .then(data => console.log(data))
-    .catch(err => console.error(err))
+// generatePlaylistsPage()
+//     .then(data => console.log(data))
+//     .catch(err => console.error(err))
 
 function generatePlaylistsPage() {
     let allPlaylists = '';
@@ -1713,6 +1713,13 @@ function fetchPlaylistNames() {
         })
     })
 }
+
+function escapeRegExp(text) {
+    // Removing double and single quotes
+    return text.replace(/([\"\'])/g,'');
+    // return text.replace(/([\"\'])/g,'\\$&');
+}
+
 
 // exporting then calling with onclick on likeIcon iteself
 module.exports.likeTrack = likeTrack;

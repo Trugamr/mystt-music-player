@@ -248,7 +248,7 @@
   width: 0;
   height: 0;
   content: '';
-  border-color: transparent transparent transparent #2f2f2f;
+  border-color: transparent transparent transparent var(--primary-color-white);
   border-style: solid;
   border-width: .25em 0 .25em .25em;
   -webkit-transform: translateY(-50%);

@@ -667,6 +667,10 @@ html, body {
     transform: translateY(-1px);    
 }
 
+.createNewPlaylistModal {
+    z-index: 4 !important;
+}
+
 .createNewPlaylistModal > .tingle-modal-box {
     width: 300px;
     padding: 0px;
