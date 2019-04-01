@@ -666,3 +666,56 @@ html, body {
     height: 8px;
     transform: translateY(-1px);    
 }
+
+.createNewPlaylistModal > .tingle-modal-box {
+    width: 300px;
+    padding: 0px;
+}
+
+.createNewPlaylistModal > .tingle-modal-box > .tingle-modal-box__content {
+    display: flex;
+    flex-direction: column;
+}
+
+#playlistInput {
+    color: var(--primary-color-white); 
+    font-size: 16px;
+    line-height: 40px;
+    width: 100px;
+    height: 40px;
+    border-radius: 4px;
+    width: 100%;
+    border: 0px;
+    background-color: var(--primary-color-light);
+    box-sizing: border-box;
+    font-family: Avenir;
+    margin-bottom: 10px;
+    padding: 0px 10px 0px 10px;
+}
+
+#playlistInput::placeholder {
+    color: var(--primary-color-gray);
+}
+
+#playlistInput:focus {
+    outline: none;
+}
+
+#createPlaylistBtn {
+    border-radius: 4px;
+    padding: 10px 4px;
+    box-sizing: border-box;
+    width: 100%;
+    font-size: 14px;
+    text-transform: uppercase;
+    background-color: var(--primary-color-light);
+    color: var(--primary-color-white);
+    border: 0px;
+    cursor: pointer;
+    transition: ease all 0.2s;
+}
+
+#createPlaylistBtn:hover {
+    color: var(--primary-color-light);
+    background-color: var(--primary-color-white);
+}

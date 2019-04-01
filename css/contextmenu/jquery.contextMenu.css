@@ -185,11 +185,11 @@
   font-family: inherit;
   font-size: inherit;
   list-style-type: none;
-  background: #fff;
-  border: 1px solid #bebebe;
-  border-radius: .2em;
-  -webkit-box-shadow: 0 2px 5px rgba(0, 0, 0, .5);
-          box-shadow: 0 2px 5px rgba(0, 0, 0, .5);
+  background-color: var(--primary-color-light);
+  border: 2px solid var(--primary-color-gray);
+  box-shadow: 0px 5px 20px -7px rgba(0, 0, 0, 0.6);
+  padding: 8px;
+  box-sizing: border-box;
 }
 
 .context-menu-item {
@@ -197,19 +197,23 @@
   -webkit-box-sizing: content-box;
      -moz-box-sizing: content-box;
           box-sizing: content-box;
-  padding: .2em 2em;
-  color: #2f2f2f;
+  padding: .6em 1.2em;
   -webkit-user-select: none;
      -moz-user-select: none;
       -ms-user-select: none;
           user-select: none; 
-  background-color: #fff;
+  background-color: transparent;
+  color: var(--primary-color-white);
+  font-family: Montserrat;
+  font-size: 14px;
+  font-weight: 500;
+  transition: ease all 0.2s;
 }
 
 .context-menu-separator {
   padding: 0; 
   margin: .35em 0;
-  border-bottom: 1px solid #e6e6e6;
+  border-bottom: 1px solid var(--primary-color-gray);
 }
 
 .context-menu-item > label > input,
@@ -221,9 +225,8 @@
 }
 
 .context-menu-item.context-menu-hover {
-  color: #fff;
   cursor: pointer; 
-  background-color: #2980b9;
+  background-color: var(--primary-color);
 }
 
 .context-menu-item.context-menu-disabled {

@@ -605,21 +605,23 @@ function generatePlaylistsPage() {
                         new Promise((res, rej) => {
                             db.all(`SELECT COUNT(*) as tracks, path FROM ${playlist.name}`, (err, row) => {
                                 if(err) console.error(err);
-                                mm.parseFile(row[0].path)
-                                    .then(metadata => {
-                                        let datajpg = metadata.common.picture ? blobTob64(metadata.common.picture[0].data) : './assets/images/art.png';
-                                        allPlaylists += `
-                                        <div id="playlistCard" onclick="showPlaylistTracks('${playlist.name}')" data-playlist="${playlist.name}" data-tracks="${row.tracks}">
-                                            <div id="playlistCardArt">
-                                                <img src="${datajpg}">
+                                if(row[0].tracks) {
+                                    mm.parseFile(row[0].path)
+                                        .then(metadata => {
+                                            let datajpg = metadata.common.picture ? blobTob64(metadata.common.picture[0].data) : './assets/images/art.png';
+                                            allPlaylists += `
+                                            <div id="playlistCard" onclick="showPlaylistTracks('${playlist.name}')" data-playlist="${playlist.name}" data-tracks="${row.tracks}">
+                                                <div id="playlistCardArt">
+                                                    <img src="${datajpg}">
+                                                </div>
+                                                <p id="playlistCardTitle">${capitalizeFirstLetter(playlist.name.replace('_playlist', ''))}</p>
+                                                <p id="playlistCardTracks">${row[0].tracks} tracks</p>
                                             </div>
-                                            <p id="playlistCardTitle">${capitalizeFirstLetter(playlist.name.replace('_playlist', ''))}</p>
-                                            <p id="playlistCardTracks">${row[0].tracks} tracks</p>
-                                        </div>
-                                        `
-                                        if(metadata) res(`got metadata for ${playlist.name} with ${row[0].tracks} tracks`)
-                                        else rej(`failed to get metadata for ${playlist.name}} with ${row[0].tracks} tracks`);
-                                    })
+                                            `
+                                            if(metadata) res(`got metadata for ${playlist.name} with ${row[0].tracks} tracks`)
+                                            else rej(`failed to get metadata for ${playlist.name}} with ${row[0].tracks} tracks`);
+                                        })
+                                } else { res(`${ playlist.name } has 0 tracks`); }
                             })
                         })
                     )
@@ -837,9 +839,9 @@ function showPlaylistTracks(playlist) {
             playlistSongsList += `
             <li class="infoRowPlaylists" onclick="playMusic(${track.id})" data-id=${track.id} data-title="${track.title}" data-album="${track.album}" data-artist="${track.artist}" data-year=${track.year} data-path="${track.path}" data-duration="${track.duration}">
                 <p class="playlistName">${track.title}</p>
-                <p class="playlistAlbum">${track.album}</p>
+                <p class="playlistArtist">${track.artist}</p>
                 <p class="playlistTime">${secondsToMinutes(track.duration)}</p>
-                <p class="playlistLiked"><span style="display: none;">${track.favourite ? 'Heart' : 'Nope'}</span> <span id="likeHeart" onclick="likeTrack(event)" data-track-id="${track.id}" data-liked="${track.favourite}" class="typcn ${track.favourite ? 'typcn-heart' : 'typcn-heart-outline'}"></span></p> 
+                <p class="playlistDelete"><span onclick="deleteFromPlaylist(event, ${track.id}, '${playlist}')" class="typcn typcn-delete-outline"></span></p> 
             </li>
             `
         })
@@ -853,9 +855,9 @@ function showPlaylistTracks(playlist) {
                 <h1 id="playlistNameHeading"><span>${capitalizeFirstLetter(playlist.replace('_playlist', ''))}</span></h1>
                 <li class="infoRowPlaylists" id="categoryRowPlaylists">
                     <p class="playlistSort playlistName" data-sort="playlistName">Title <span class="typcn"></span></p>
-                    <p class="playlistSort playlistAlbum" data-sort="playlistAlbum">Album <span class="typcn"></span></p>
+                    <p class="playlistSort playlistArtist" data-sort="playlistArtist">Artist <span class="typcn"></span></p>
                     <p class="playlistSort playlistTime" data-sort="playlistTime">Duration <span class="typcn"></span></p>
-                    <p class="playlistSort playlistLiked" data-sort="playlistLiked">Liked <span class="typcn"></span></p> 
+                    <p class="playlistDelete">Delete</p> 
                 </li>
                 <ul class="list">            
                     ${playlistSongsList}
@@ -899,9 +901,8 @@ function showPlaylistTracks(playlist) {
         var options = {
             valueNames: [
                 'playlistName',
-                'playlistAlbum',
-                'playlistTime',
-                'playlistLiked'
+                'playlistArtist',
+                'playlistTime'
             ],
             sortClass : 'playlistSort'
         }
@@ -1022,18 +1023,17 @@ function loadLikedPage (e) {
 function loadPlaylistsPage (e) {
     if(e) highlightSbLink(e);
     // Loading artists page in #main content at start
-    if(regeneratePage.Playlists) {
-        regeneratePage.Playlists = false;
-        // For example
-        // generateLikedPage()
-        //     .then(data => {
-        //         console.log(data);
-        //         $('#main').fadeOut('slow',function(){
-        //             $('#main').load('./pages/liked.htm',function(data){
-        //                $('#main').fadeIn('slow'); 
-        //            });
-        //         })
-        //     })
+    if(regeneratePage.playlistsPage) {
+        regeneratePage.playlistsPage = false;
+        generatePlaylistsPage()
+            .then(data => {
+                console.log(data);
+                $('#main').fadeOut('slow',function(){
+                    $('#main').load('./pages/playlists.htm',function(data){
+                       $('#main').fadeIn('slow'); 
+                   });
+                })
+            })
     } else {
         $('#main').fadeOut('slow',function(){
             $('#main').load('./pages/playlists.htm',function(data){
@@ -1297,6 +1297,14 @@ function playMusic(data, options = { playBy: 'trackId', fromQueue: false}) {
                 playMusic(currentQueue[currentQueueTrackIndex].id, { playBy: 'trackId', fromQueue: true })
                 console.log(currentQueue);
             });
+    } else if(options.playBy == 'playlistName') {
+        db.all(`SELECT * FROM ${data}`, (err, data) => {
+            if(err) console.error(err);
+            currentQueue = data;
+            currentQueueTrackIndex = 0;
+            playMusic(currentQueue[currentQueueTrackIndex].id, { playBy: 'trackId', fromQueue: true })
+            console.log(currentQueue);
+        })
     }
 }
 
@@ -1654,10 +1662,11 @@ ipcRenderer.on('save-user-state', saveUserState);
 // FOR LATER | CREATE TABLE IF NOT EXISTS first_playlist (id INTEGER, title TEXT, album TEXT, artist TEXT, year INT, duration INT, favourite INT, path TEXT, UNIQUE(id))
 
 function addToPlaylist(trackInfo, playlistName) {
-    let track = [trackInfo.id, trackInfo.title, trackInfo.album, trackInfo.artist, trackInfo.year, trackInfo.duration, trackInfo.favourite, trackInfo.path];
+    regeneratePage.playlistsPage = true;
+    let track = [trackInfo.id, trackInfo.title, trackInfo.album, trackInfo.artist, trackInfo.year, trackInfo.duration, trackInfo.path];
     let sql = `
-        INSERT INTO ${playlistName}_playlist(id, title, album, artist, year, duration, favourite, path)
-        VALUES(?, ?, ?, ?, ?, ?, ?, ?)
+        INSERT INTO ${playlistName}_playlist(id, title, album, artist, year, duration, path)
+        VALUES(?, ?, ?, ?, ?, ?, ?)
     `;
     
     db.run(sql, track, (err) => {
@@ -1667,6 +1676,43 @@ function addToPlaylist(trackInfo, playlistName) {
     
 }
 
+function deleteFromPlaylist(event, trackId, playlistName) {
+    regeneratePage.playlistsPage = true;
+    event.stopPropagation(); // to stop event bubbling and playing tracks on delete click
+
+    let sql = `DELETE FROM ${playlistName} WHERE ID = "${trackId}"`;
+    
+    db.run(sql, (err) => {
+        if(err) console.error(err)
+        else console.log(`deleted ${trackId} from ${playlistName}`);
+    })
+
+    console.log(event);
+
+    event.target.parentElement.parentElement.addEventListener('animationend', () => {event.target.parentElement.parentElement.style = "display: none;"} )
+    event.target.parentElement.parentElement.classList.add('animated', 'fadeOut')
+    
+}
+
+function createNewPlaylist(playlistName) {
+    return new Promise((resolve, reject) => {
+        if(!(playlistName.length < 5)) {
+            db.run(`CREATE TABLE IF NOT EXISTS ${playlistName}_playlist (id INTEGER, title TEXT, album TEXT, artist TEXT, year INT, duration INT, favourite INT, path TEXT, UNIQUE(id))`, (err) => {
+                if(err) reject(err)
+                else resolve(`${playlistName} playlist created`);
+            }) 
+        } else { reject('playlist name should be more than 5 characters') }       
+    })
+}
+
+function fetchPlaylistNames() {
+    return new Promise((resolve, reject) => {
+        db.all(`SELECT name FROM sqlite_master WHERE type='table'`, (err, data) => {
+            if(err) reject(err)
+            else resolve(data.filter(row => row.name.endsWith('_playlist')).map(row => row.name.replace('_playlist', '')));
+        })
+    })
+}
 
 // exporting then calling with onclick on likeIcon iteself
 module.exports.likeTrack = likeTrack;
@@ -1680,3 +1726,6 @@ module.exports.applyTheme = applyTheme;
 module.exports.restoreUserState = restoreUserState;
 module.exports.saveUserState = saveUserState;
 module.exports.addToPlaylist = addToPlaylist;
+module.exports.deleteFromPlaylist = deleteFromPlaylist;
+module.exports.fetchPlaylistNames = fetchPlaylistNames;
+module.exports.createNewPlaylist = createNewPlaylist;

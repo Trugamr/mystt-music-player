@@ -161,7 +161,7 @@
 }
 
 
-/* Font side of 'Liked' text */
+/* Font side of 'delete' text */
 #categoryRowPlaylists p:last-child {
     font-size: 15px;
 }
@@ -214,7 +214,7 @@
 }
 
 /* Playlist column */
-.infoRowPlaylists .playlistAlbum {
+.infoRowPlaylists .playlistArtist {
     width: 180px;;
 }
 
@@ -224,11 +224,11 @@
     text-align: center;
 }
 
-/* Liked column */
-.infoRowPlaylists .playlistLiked {
+/* delete column */
+.infoRowPlaylists .playlistDelete {
     width: 100px;
     text-align: center;
-    font-size: 18px;    
+    font-size: 20px;    
 }
 
 /* Extra Margin at end */
