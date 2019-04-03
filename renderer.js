@@ -610,7 +610,7 @@ function generatePlaylistsPage() {
                                         .then(metadata => {
                                             let datajpg = metadata.common.picture ? blobTob64(metadata.common.picture[0].data) : './assets/images/art.png';
                                             allPlaylists += `
-                                            <div id="playlistCard" onclick="showPlaylistTracks('${playlist.name}')" data-playlist="${playlist.name}" data-tracks="${row.tracks}">
+                                            <div id="playlistCard" onclick="showPlaylistTracks('${playlist.name}')" data-playlist="${playlist.name}" data-tracks="${row[0].tracks}">
                                                 <div id="playlistCardArt">
                                                     <img src="${datajpg}">
                                                 </div>
@@ -862,6 +862,7 @@ function showPlaylistTracks(playlist) {
                 <ul class="list">            
                     ${playlistSongsList}
                 </ul>
+                <p id="removePlaylistText" onclick="deletePlaylist(event, '${playlist}')">remove this playlist</p>
             </div>
         `)
         modal.open();
@@ -1705,6 +1706,23 @@ function createNewPlaylist(playlistName) {
     })
 }
 
+function deletePlaylist(event, playlistName) {
+    regeneratePage.playlistsPage = true;
+    return new Promise((resolve, reject) => {        
+        db.run(`DROP TABLE ${playlistName}`, (err) => {
+            if(err) {
+                reject(err)
+            } else {
+                document.querySelector(`[data-playlist='${playlistName}']`).addEventListener('animationend', () => {document.querySelector(`[data-playlist='${playlistName}']`).style = "display: none;"} )
+                document.querySelector(`[data-playlist='${playlistName}']`).classList.add('animated', 'fadeOut')  
+                loadPlaylistsPage();
+                resolve(`${playlistName} playlist deleted`);
+                console.log(`${playlistName} playlist deleted`)
+            }
+        })
+    })
+}
+
 function fetchPlaylistNames() {
     return new Promise((resolve, reject) => {
         db.all(`SELECT name FROM sqlite_master WHERE type='table'`, (err, data) => {
@@ -1736,3 +1754,4 @@ module.exports.addToPlaylist = addToPlaylist;
 module.exports.deleteFromPlaylist = deleteFromPlaylist;
 module.exports.fetchPlaylistNames = fetchPlaylistNames;
 module.exports.createNewPlaylist = createNewPlaylist;
+module.exports.deletePlaylist = deletePlaylist;

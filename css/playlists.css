@@ -240,3 +240,17 @@
 .infoRowPlaylists p {
     display: inline-block;
 }
+
+#removePlaylistText {
+    color: var(--primary-color-gray);
+    font-family: Avenir;
+    cursor: pointer;
+    width: 140px;
+    margin: auto;
+    text-align: center;
+    transition: ease all 0.1s;
+}
+
+#removePlaylistText:hover {
+    color:var(--primary-color-white);
+}
