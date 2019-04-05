@@ -119,6 +119,41 @@ html, body {
     background-color: var(--primary-color);
 }
 
+#toastContainer {
+    position: fixed;
+    bottom: 90px;
+    right: 25px;
+    z-index: 10;
+    background-color: var(--primary-color-light);
+    border: 1px solid var(--primary-color-gray-light);
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    padding: 10px;
+    transform: translateX(480px);
+    transition: ease 0.5s;
+    opacity: 0;
+}
+
+#toastIcon {
+    color: var(--primary-color-white);
+}
+
+#toastText {
+    max-width: 400px;
+    margin-left: 10px;
+    font-family: Avenir;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    color: var(--primary-color-white);
+}
+
+.showToast {
+    transform: translateX(0px) !important;
+    opacity: 1 !important;
+}
+
 #settingsPanelOverlay {
     height: 100%;
     width: 100%;
@@ -127,7 +162,7 @@ html, body {
     z-index: 7;
     cursor: pointer;
     pointer-events: none;
-    transition: ease all 0.3s;
+    transition: ease-in all 0.3s;
 }
 
 .showSettingsPanel {

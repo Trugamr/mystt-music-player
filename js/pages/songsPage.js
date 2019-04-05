@@ -82,7 +82,7 @@ function createContextMenu() {
             myItems.addToPlaylist.disabled = true;
         }                   
         data.forEach(playlist => {
-            myItems.addToPlaylist.items[playlist] = { name: playlist }
+            myItems.addToPlaylist.items[playlist] = { name: playlist.replace('_', ' ') }
         })
         $.contextMenu({
             selector: '.infoRowSongs',

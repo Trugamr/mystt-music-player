@@ -615,7 +615,7 @@ function generatePlaylistsPage() {
                                                     <img src="${datajpg}">
                                                 </div>
                                                 <div id="playlistCardInfo">
-                                                    <p id="playlistCardTitle">${capitalizeFirstLetter(playlist.name.replace('_playlist', ''))}</p>
+                                                    <p id="playlistCardTitle">${capitalizeFirstLetter(playlist.name.replace('_playlist', '').replace('_', ' '))}</p>
                                                     <p id="playlistCardTracks">${row[0].tracks} tracks</p>
                                                 </div>
                                             </div>
@@ -854,7 +854,7 @@ function showPlaylistTracks(playlist) {
         modal.setContent(`
             <div id="playlistTracksContainer">
                 <span id="playPlaylistBtn" onclick="playMusic('${playlist}', { playBy: 'playlistName', fromQueue: true })"><i class="fas fa-play"></i> Play</span>
-                <h1 id="playlistNameHeading"><span>${capitalizeFirstLetter(playlist.replace('_playlist', ''))}</span></h1>
+                <h1 id="playlistNameHeading"><span>${capitalizeFirstLetter(playlist.replace('_playlist', '').replace('_', ' '))}</span></h1>
                 <li class="infoRowPlaylists" id="categoryRowPlaylists">
                     <p class="playlistSort playlistName" data-sort="playlistName">Title <span class="typcn"></span></p>
                     <p class="playlistSort playlistArtist" data-sort="playlistArtist">Artist <span class="typcn"></span></p>
@@ -940,9 +940,9 @@ let regeneratePage = {
 function loadHomePage (e) {
     if(e) highlightSbLink(e);
     // Loading artists page in #main content at start
-    $('#main').fadeOut('slow',function(){
+    $('#main').fadeOut('fast',function(){
         $('#main').load('./pages/home.htm',function(data){
-           $('#main').fadeIn('slow'); 
+           $('#main').fadeIn('fast'); 
        });
     })
 }
@@ -950,9 +950,9 @@ function loadHomePage (e) {
 function loadArtistsPage (e) {
     if(e) highlightSbLink(e);
     // Loading artists page in #main content at start
-    $('#main').fadeOut('slow',function(){
+    $('#main').fadeOut('fast',function(){
         $('#main').load('./pages/artists.htm',function(data){
-           $('#main').fadeIn('slow'); 
+           $('#main').fadeIn('fast'); 
        });
     })
 }
@@ -965,16 +965,16 @@ function loadSongsPage (e) {
         generateSongsPage()
             .then(data => {
                 console.log(data);
-                $('#main').fadeOut('slow',function(){
+                $('#main').fadeOut('fast',function(){
                     $('#main').load('./pages/songs.htm',function(data){
-                       $('#main').fadeIn('slow'); 
+                       $('#main').fadeIn('fast'); 
                    });
                 })
             })
     } else {
-        $('#main').fadeOut('slow',function(){
+        $('#main').fadeOut('fast',function(){
             $('#main').load('./pages/songs.htm',function(data){
-               $('#main').fadeIn('slow'); 
+               $('#main').fadeIn('fast'); 
            });
         })
     }
@@ -983,9 +983,9 @@ function loadSongsPage (e) {
 function loadAlbumsPage (e) {
     if(e) highlightSbLink(e);
     // Loading artists page in #main content at start
-    $('#main').fadeOut('slow',function(){
+    $('#main').fadeOut('fast',function(){
         $('#main').load('./pages/albums.htm',function(data){            
-           $('#main').fadeIn('slow'); 
+           $('#main').fadeIn('fast'); 
        });
     });
 }
@@ -993,9 +993,9 @@ function loadAlbumsPage (e) {
 function loadArtistsPage (e) {
     if(e) highlightSbLink(e);
     // Loading artists page in #main content at start
-    $('#main').fadeOut('slow',function(){
+    $('#main').fadeOut('fast',function(){
         $('#main').load('./pages/artists.htm',function(data){
-           $('#main').fadeIn('slow'); 
+           $('#main').fadeIn('fast'); 
        });
     })
 }
@@ -1008,16 +1008,16 @@ function loadLikedPage (e) {
         generateLikedPage()
             .then(data => {
                 console.log(data);
-                $('#main').fadeOut('slow',function(){
+                $('#main').fadeOut('fast',function(){
                     $('#main').load('./pages/liked.htm',function(data){
-                       $('#main').fadeIn('slow'); 
+                       $('#main').fadeIn('fast'); 
                    });
                 })
             })
     } else {
-        $('#main').fadeOut('slow',function(){
+        $('#main').fadeOut('fast',function(){
             $('#main').load('./pages/liked.htm',function(data){
-               $('#main').fadeIn('slow'); 
+               $('#main').fadeIn('fast'); 
            });
         })
     }
@@ -1031,16 +1031,16 @@ function loadPlaylistsPage (e) {
         generatePlaylistsPage()
             .then(data => {
                 console.log(data);
-                $('#main').fadeOut('slow',function(){
+                $('#main').fadeOut('fast',function(){
                     $('#main').load('./pages/playlists.htm',function(data){
-                       $('#main').fadeIn('slow'); 
+                       $('#main').fadeIn('fast'); 
                    });
                 })
             })
     } else {
-        $('#main').fadeOut('slow',function(){
+        $('#main').fadeOut('fast',function(){
             $('#main').load('./pages/playlists.htm',function(data){
-               $('#main').fadeIn('slow'); 
+               $('#main').fadeIn('fast'); 
            });
         })
     }
@@ -1701,11 +1701,18 @@ function deleteFromPlaylist(event, trackId, playlistName) {
 function createNewPlaylist(playlistName) {
     return new Promise((resolve, reject) => {
         if(!(playlistName.length < 5)) {
-            db.run(`CREATE TABLE IF NOT EXISTS ${playlistName}_playlist (id INTEGER, title TEXT, album TEXT, artist TEXT, year INT, duration INT, favourite INT, path TEXT, UNIQUE(id))`, (err) => {
+            // replacing spaces with underscores | table name can't have spaces
+            db.run(`CREATE TABLE IF NOT EXISTS ${playlistName.replace(' ', '_')}_playlist (id INTEGER, title TEXT, album TEXT, artist TEXT, year INT, duration INT, favourite INT, path TEXT, UNIQUE(id))`, (err) => {
                 if(err) reject(err)
-                else resolve(`${playlistName} playlist created`);
+                else {
+                    showToast(`${playlistName} playlist created`, 'fa-check');
+                    resolve(`${playlistName} playlist created`);
+                }
             }) 
-        } else { reject('playlist name should be more than 5 characters') }       
+        } else { 
+            showToast(`playlist name should be more than 5 characters`, 'fa-edit');
+            reject('playlist name should 5 or more characters')
+        }       
     })
 }
 
@@ -1719,7 +1726,8 @@ function deletePlaylist(event, playlistName) {
                 document.querySelector(`[data-playlist='${playlistName}']`).addEventListener('animationend', () => {document.querySelector(`[data-playlist='${playlistName}']`).style = "display: none;"} )
                 document.querySelector(`[data-playlist='${playlistName}']`).classList.add('animated', 'fadeOut')  
                 loadPlaylistsPage();
-                resolve(`${playlistName} playlist deleted`);
+                showToast(`${capitalizeFirstLetter(playlistName.replace('_playlist', ''))} playlist deleted`, 'fa-trash');
+                resolve(`${playlistName.replace('_', ' ')} playlist deleted`);
                 console.log(`${playlistName} playlist deleted`)
             }
         })
@@ -1741,6 +1749,18 @@ function escapeRegExp(text) {
     // return text.replace(/([\"\'])/g,'\\$&');
 }
 
+// simple show toast function to show various messages/errors
+function showToast(text, icon = 'fa-times') {
+    document.querySelector('#toastIcon').classList.add(`${icon}`);
+    document.querySelector('#toastText').textContent = text;
+    document.querySelector('#toastContainer').classList.add('showToast');
+    setTimeout(() => {
+        // remove toast after 3 seconds
+        document.querySelector('#toastIcon').classList.remove(`${icon}`);
+        document.querySelector('#toastContainer').classList.remove('showToast');
+    }, 3000)
+}
+
 
 // exporting then calling with onclick on likeIcon iteself
 module.exports.likeTrack = likeTrack;
@@ -1758,3 +1778,4 @@ module.exports.deleteFromPlaylist = deleteFromPlaylist;
 module.exports.fetchPlaylistNames = fetchPlaylistNames;
 module.exports.createNewPlaylist = createNewPlaylist;
 module.exports.deletePlaylist = deletePlaylist;
+module.exports.showToast = showToast;
