@@ -77,7 +77,10 @@ function createContextMenu() {
         }
     }
 
-    fetchPlaylistNames().then(data => {                    
+    fetchPlaylistNames().then(data => { 
+        if(data.length == 0) {
+            myItems.addToPlaylist.disabled = true;
+        }                   
         data.forEach(playlist => {
             myItems.addToPlaylist.items[playlist] = { name: playlist }
         })

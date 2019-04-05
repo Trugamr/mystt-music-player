@@ -614,8 +614,10 @@ function generatePlaylistsPage() {
                                                 <div id="playlistCardArt">
                                                     <img src="${datajpg}">
                                                 </div>
-                                                <p id="playlistCardTitle">${capitalizeFirstLetter(playlist.name.replace('_playlist', ''))}</p>
-                                                <p id="playlistCardTracks">${row[0].tracks} tracks</p>
+                                                <div id="playlistCardInfo">
+                                                    <p id="playlistCardTitle">${capitalizeFirstLetter(playlist.name.replace('_playlist', ''))}</p>
+                                                    <p id="playlistCardTracks">${row[0].tracks} tracks</p>
+                                                </div>
                                             </div>
                                             `
                                             if(metadata) res(`got metadata for ${playlist.name} with ${row[0].tracks} tracks`)
@@ -841,7 +843,7 @@ function showPlaylistTracks(playlist) {
                 <p class="playlistName">${track.title}</p>
                 <p class="playlistArtist">${track.artist}</p>
                 <p class="playlistTime">${secondsToMinutes(track.duration)}</p>
-                <p class="playlistDelete"><span onclick="deleteFromPlaylist(event, ${track.id}, '${playlist}')" class="typcn typcn-delete-outline"></span></p> 
+                <p class="playlistDelete"><span onclick="deleteFromPlaylist(event, ${track.id}, '${playlist}')" class="typcn typcn-times"></span></p> 
             </li>
             `
         })
@@ -1313,6 +1315,7 @@ function updateCurrentlyPlayingInfo(trackInfo) {
 
     playerBarTitle.textContent = trackInfo.title;
     playerBarArtist.textContent = trackInfo.artist;
+    document.title = `${trackInfo.title} | ${trackInfo.artist}`;
 
     playerBarCurrentTime.textContent = '0:00';
     playerBarTotalTime.textContent = secondsToMinutes(trackInfo.duration);

@@ -230,9 +230,8 @@
 }
 
 .context-menu-item.context-menu-disabled {
-  color: #bbb;
-  cursor: default; 
-  background-color: #fff;
+  color: var(--primary-color-gray);
+  cursor: no-drop;
 }
 
 .context-menu-input.context-menu-hover {

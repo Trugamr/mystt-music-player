@@ -63,10 +63,11 @@
     display: flex;
     flex-flow: row wrap;
     width: 100%;
-    justify-content: space-between;
+    justify-content: flex-start;
 }
 
 #playlistCard {
+    max-width: 40%;
     width: 150px;
     border-radius: 8px;
     background-color: var(--primary-color-light);
