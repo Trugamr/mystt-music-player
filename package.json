@@ -20,6 +20,7 @@
     "electron-reload": "^1.4.0"
   },
   "dependencies": {
+    "electron-window-state": "^5.0.3",
     "jsdom": "^14.0.0",
     "music-metadata": "^3.5.2",
     "node-vibrant": "^3.2.0-alpha",

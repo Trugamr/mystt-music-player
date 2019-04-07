@@ -1726,7 +1726,7 @@ function deletePlaylist(event, playlistName) {
                 document.querySelector(`[data-playlist='${playlistName}']`).addEventListener('animationend', () => {document.querySelector(`[data-playlist='${playlistName}']`).style = "display: none;"} )
                 document.querySelector(`[data-playlist='${playlistName}']`).classList.add('animated', 'fadeOut')  
                 loadPlaylistsPage();
-                showToast(`${capitalizeFirstLetter(playlistName.replace('_playlist', ''))} playlist deleted`, 'fa-trash');
+                showToast(`${capitalizeFirstLetter(playlistName.replace('_playlist', '').replace('_', ' '))} playlist deleted`, 'fa-trash');
                 resolve(`${playlistName.replace('_', ' ')} playlist deleted`);
                 console.log(`${playlistName} playlist deleted`)
             }

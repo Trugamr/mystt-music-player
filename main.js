@@ -1,6 +1,9 @@
 // Modules to control application life and create native browser window
 const { app, BrowserWindow, ipcMain, globalShortcut } = require('electron')
 
+// Window state manager
+const windowStateManager = require('electron-window-state')
+
 // For automatic reloads on changes MAKES SQLITE GO INSANE
 // require('electron-reload')(__dirname);
 
@@ -9,6 +12,12 @@ const { app, BrowserWindow, ipcMain, globalShortcut } = require('electron')
 let mainWindow
 
 function createWindow () {
+
+  let windowState = windowStateManager({
+    defaultWidth: 1115,
+    defaultHeight: 700,
+  })
+
   // Create loading window
   loadWindow = new BrowserWindow({
     width:  500,
@@ -29,8 +38,10 @@ function createWindow () {
 
   // Create the browser window.
   mainWindow = new BrowserWindow({
-    width: 1115,
-    height: 700,
+    width: windowState.width,
+    height: windowState.height,
+    x: windowState.x,
+    y: windowState.y,
     // transparent: true,
     minHeight: 600,
     minWidth: 1090,
@@ -51,6 +62,8 @@ function createWindow () {
   mainWindow.webContents.once('dom-ready', () => {
     loadWindow.hide();
     loadWindow.close();
+    // Restoring window size and position
+    windowState.manage(mainWindow);
     mainWindow.show();  
   });
 
