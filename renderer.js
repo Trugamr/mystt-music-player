@@ -61,7 +61,11 @@ let md = require('./mockdata.js');
 const musicExtensions = ['.m4a', '.mp3'];
 
 // opening directry add dialog on btn click
-document.querySelector('#selectBtn').addEventListener('click', addMusicFlow);
+document.querySelector('#selectBtn').addEventListener('click', () => {
+    // Close settings panel to only show adding status modal
+    handleSettingsPanel();
+    addMusicFlow();
+});
     // showAddDialog()
     //     .then((directory) => {
     //         // got directory, calling recursiveReadDir to get all music files in directory
@@ -105,8 +109,6 @@ function addMusicFlow() {
             <progress id="addMusicFlowProgress" max=100 value="5"></progress>
         `)
         addMusicFlowModal.open();
-        // Close settings panel to only show adding status modal
-        handleSettingsPanel();
         addMusicFlowStatus.textContent = `scanning directory for music files`;
         addMusicFlowProgress.value = 20;
         recursiveReadDir(directory).then(musicFiles => {
@@ -1761,6 +1763,37 @@ function showToast(text, icon = 'fa-times') {
     }, 3000)
 }
 
+// add music screen on first launch
+function firstLaunch() {   
+    let firstLaunchContainer = document.createElement('div');
+    firstLaunchContainer.setAttribute('id', 'firstLaunchContainer');
+    let firstLaunchText = document.createElement('p');
+    firstLaunchText.setAttribute('id', 'firstLaunchText');
+    firstLaunchText.textContent = 'welcome to mystt.';
+    let firstLaunchAdd = document.createElement('p');
+    firstLaunchAdd.setAttribute('id', 'firstLaunchAdd');
+    firstLaunchAdd.textContent = 'Add Music';
+    firstLaunchAdd.addEventListener('click',() => {
+        addMusicFlow();
+    });
+    let container = document.querySelector('#container');
+    firstLaunchContainer.append(firstLaunchText, firstLaunchAdd);
+    container.appendChild(firstLaunchContainer);
+}
+
+// querting database to check if music table exists and has atleast 1 track, if not call firstLaunch();
+db.all(`SELECT name FROM sqlite_master WHERE type='table' AND name='Music'`, (err, data) => {
+    if(err) console.error(err);
+    if(data.length != 1) {
+        firstLaunch();
+    } else {
+        db.all(`SELECT COUNT(*) AS tracks FROM Music`, (err, table) => {
+            if(err) console.error(err);
+            if(table[0].tracks < 1) { firstLaunch() };
+        })
+    }
+})
+
 
 // exporting then calling with onclick on likeIcon iteself
 module.exports.likeTrack = likeTrack;
@@ -1779,3 +1812,4 @@ module.exports.fetchPlaylistNames = fetchPlaylistNames;
 module.exports.createNewPlaylist = createNewPlaylist;
 module.exports.deletePlaylist = deletePlaylist;
 module.exports.showToast = showToast;
+module.exports.firstLaunch = firstLaunch;

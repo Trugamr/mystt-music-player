@@ -1,0 +1,25 @@
+<html><head>
+    <title>Songs</title>
+    <!-- Move css injections to index.html page to get rid of jQuery.load() flicker -->
+    <!-- <link rel="stylesheet" href="./css/liked.css"> -->
+</head>
+<body>
+    <div id="likedPageContainer">
+        <h1 id="likedHeading"><span>Liked</span></h1>
+        <div id="likedContainer">
+            <div id="likedSearchContainer"><input type="text" placeholder="Search" class="likedSearch"><i class="fa fa-search"></i></div>
+            <!-- Keeping this row outside to it wont get filtered -->
+            <li class="infoRowLiked" id="categoryRowSongs">
+                <p class="likedSort likedName" data-sort="likedName">Title <span class="typcn"></span></p>
+                <p class="likedSort likedAlbum" data-sort="likedAlbum">Album <span class="typcn"></span></p>
+                <p class="likedSort likedArtist" data-sort="likedArtist">Artist <span class="typcn"></span></p>
+                <p class="likedSort likedTime" data-sort="likedTime">Duration <span class="typcn"></span></p>
+                <p class="likedSort likedYear" data-sort="likedYear">Year <span class="typcn"></span></p>
+                <p class="likedSort likedLiked" data-sort="likedLiked">Liked <span class="typcn"></span></p> 
+            </li>
+            <ul class="list"></ul>
+        </div>
+    </div>
+    <script src="./js/pages/likedPage.js"></script>
+
+</body></html>

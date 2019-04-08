@@ -1,0 +1,26 @@
+<html><head>
+        <title>Songs</title>
+        <!-- Move css injections to index.html page to get rid of jQuery.load() flicker -->
+        <!-- <link rel="stylesheet" href="./css/songs.css"> -->
+    </head>
+    <body>
+        <div id="songsPageContainer">
+            <h1 id="songsHeading"><span>All Music</span></h1>
+            <div id="songsContainer">
+                <div id="songSearchContainer"><input type="text" placeholder="Search" class="songSearch"><i class="fa fa-search"></i></div>
+                <!-- Keeping this row outside to it wont get filtered -->
+                <li class="infoRowSongs" id="categoryRowSongs">
+                    <p class="songSort songName" data-sort="songName">Title <span class="typcn"></span></p>
+                    <p class="songSort songAlbum" data-sort="songAlbum">Album <span class="typcn"></span></p>
+                    <p class="songSort songArtist" data-sort="songArtist">Artist <span class="typcn"></span></p>
+                    <p class="songSort songTime" data-sort="songTime">Duration <span class="typcn"></span></p>
+                    <p class="songSort songYear" data-sort="songYear">Year <span class="typcn"></span></p>
+                    <p class="songSort songLiked" data-sort="songLiked">Liked <span class="typcn"></span></p> 
+                </li>
+                <ul class="list">
+                    
+                </ul>
+            </div>
+        </div>
+        <script src="./js/pages/songsPage.js"></script>  
+</body></html>

@@ -119,6 +119,35 @@ html, body {
     background-color: var(--primary-color);
 }
 
+#firstLaunchContainer {
+    background-color: var(--primary-color);
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    z-index: 5;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+#firstLaunchText {
+    color: var(--primary-color-white);
+    font-family: Avenir;
+    font-size: 30px;
+    text-shadow: 2px 2px 2px var(--primary-color-light);
+}
+
+#firstLaunchAdd {
+    font-family: Futura;
+    text-decoration: underline;
+    color: var(--primary-color-white);
+    font-size: 30px;
+    margin-top: 20px;
+    cursor: pointer;
+}
+
 #toastContainer {
     position: fixed;
     bottom: 90px;
