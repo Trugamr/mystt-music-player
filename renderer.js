@@ -54,9 +54,6 @@ document.querySelector('#close-btn').addEventListener('click', () => {
     win.close();
 })
 
-// Mock metadata for testing with sqlite
-let md = require('./mockdata.js');
-
 // Allowed music formats
 const musicExtensions = ['.m4a', '.mp3'];
 
