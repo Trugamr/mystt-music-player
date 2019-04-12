@@ -787,3 +787,29 @@ html, body {
     color: var(--primary-color-light);
     background-color: var(--primary-color-white);
 }
+
+/* Fixing position of heading and categoryRow */
+#hackFixedHeader {
+    /* subtracting sidebar and scrollbar width, wont matter if scrollbar is not there because color is same as bg anyway */
+    width: calc(100% - 214px);
+    height: 150px;
+    background-color: var(--primary-color);
+    position: fixed;
+    z-index: 1;
+    margin-top: -30px;
+}
+
+#songsHeading, #likedHeading {
+    position: fixed;
+    z-index: 1;
+}
+
+#categoryRowSongs, #categoryRowLiked {
+    position: fixed;
+    top: 120px;
+    z-index: 1;
+}
+
+#songsContainer, #likedContainer {
+    padding-top: 124px;
+}

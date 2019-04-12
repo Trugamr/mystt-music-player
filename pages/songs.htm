@@ -5,6 +5,8 @@
     </head>
     <body>
         <div id="songsPageContainer">
+            <!-- Hacky way of fixing header position -->
+            <div id="hackFixedHeader"></div>
             <h1 id="songsHeading"><span>All Music</span></h1>
             <div id="songsContainer">
                 <div id="songSearchContainer"><input type="text" placeholder="Search" class="songSearch"><i class="fa fa-search"></i></div>
@@ -42,7 +44,7 @@
                         <p class="songArtist">Coldplay</p>
                         <p class="songTime">3:56</p>
                         <p class="songYear">2014</p>
-                        <p class="songLiked"><span style="display: none;">Nope</span> <span id="likeHeart" onclick="likeTrack(event)" data-track-id="3" data-liked="0" class="typcn typcn-heart-outline"></span></p> 
+                        <p class="songLiked"><span style="display: none;">Heart</span> <span id="likeHeart" onclick="likeTrack(event)" data-track-id="3" data-liked="1" class="typcn typcn-heart"></span></p> 
                     </li>
                     
                     <li class="infoRowSongs" onclick="playMusic(4)" data-id="4" data-title="Adventure of a Lifetime" data-album="A Head Full of Dreams" data-artist="Coldplay" data-year="2015" data-path="J:\Dropbox\myst\TEST\A Head Full of Dreams\Adventure of a Lifetime - Coldplay.m4a" data-duration="263.8483446712018">
@@ -150,7 +152,7 @@
                         <p class="songArtist">blackbear</p>
                         <p class="songTime">3:11</p>
                         <p class="songYear">2017</p>
-                        <p class="songLiked"><span style="display: none;">Heart</span> <span id="likeHeart" onclick="likeTrack(event)" data-track-id="15" data-liked="1" class="typcn typcn-heart"></span></p> 
+                        <p class="songLiked"><span style="display: none;">Nope</span> <span id="likeHeart" onclick="likeTrack(event)" data-track-id="15" data-liked="0" class="typcn typcn-heart-outline"></span></p> 
                     </li>
                     
                     <li class="infoRowSongs" onclick="playMusic(16)" data-id="16" data-title="Aphasia" data-album="Monstercat 023 - Voyage" data-artist="Mr FijiWiji" data-year="2015" data-path="J:\Dropbox\myst\TEST\Monstercat 023 - Voyage\Aphasia - Mr FijiWiji.m4a" data-duration="291.7122902494331">
@@ -276,7 +278,7 @@
                         <p class="songArtist">The Chainsmokers</p>
                         <p class="songTime">4:05</p>
                         <p class="songYear">2016</p>
-                        <p class="songLiked"><span style="display: none;">Nope</span> <span id="likeHeart" onclick="likeTrack(event)" data-track-id="29" data-liked="0" class="typcn typcn-heart-outline"></span></p> 
+                        <p class="songLiked"><span style="display: none;">Heart</span> <span id="likeHeart" onclick="likeTrack(event)" data-track-id="29" data-liked="1" class="typcn typcn-heart"></span></p> 
                     </li>
                     
                     <li class="infoRowSongs" onclick="playMusic(30)" data-id="30" data-title="Closer (feat. Halsey)" data-album="Closer (feat. Halsey) - Single" data-artist="The Chainsmokers" data-year="2016" data-path="J:\Dropbox\myst\TEST\Closer (feat. Halsey) - The Chainsmokers.m4a" data-duration="245.01696145124717">
@@ -285,7 +287,7 @@
                         <p class="songArtist">The Chainsmokers</p>
                         <p class="songTime">4:05</p>
                         <p class="songYear">2016</p>
-                        <p class="songLiked"><span style="display: none;">Nope</span> <span id="likeHeart" onclick="likeTrack(event)" data-track-id="30" data-liked="0" class="typcn typcn-heart-outline"></span></p> 
+                        <p class="songLiked"><span style="display: none;">Heart</span> <span id="likeHeart" onclick="likeTrack(event)" data-track-id="30" data-liked="1" class="typcn typcn-heart"></span></p> 
                     </li>
                     
                     <li class="infoRowSongs" onclick="playMusic(31)" data-id="31" data-title="Colossus" data-album="Monstercat 023 - Voyage" data-artist="Droptek" data-year="2015" data-path="J:\Dropbox\myst\TEST\Monstercat 023 - Voyage\Colossus - Droptek.m4a" data-duration="276.5032199546485">
@@ -1527,7 +1529,7 @@
                         <p class="songArtist">Post Malone</p>
                         <p class="songTime">2:50</p>
                         <p class="songYear">2019</p>
-                        <p class="songLiked"><span style="display: none;">Nope</span> <span id="likeHeart" onclick="likeTrack(event)" data-track-id="168" data-liked="0" class="typcn typcn-heart-outline"></span></p> 
+                        <p class="songLiked"><span style="display: none;">Heart</span> <span id="likeHeart" onclick="likeTrack(event)" data-track-id="168" data-liked="1" class="typcn typcn-heart"></span></p> 
                     </li>
                     </ul>
             </div>

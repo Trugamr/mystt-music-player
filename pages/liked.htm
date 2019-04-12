@@ -5,11 +5,13 @@
 </head>
 <body>
     <div id="likedPageContainer">
+        <!-- Hacky way of fixing header position -->
+        <div id="hackFixedHeader"></div>
         <h1 id="likedHeading"><span>Liked</span></h1>
         <div id="likedContainer">
             <div id="likedSearchContainer"><input type="text" placeholder="Search" class="likedSearch"><i class="fa fa-search"></i></div>
             <!-- Keeping this row outside to it wont get filtered -->
-            <li class="infoRowLiked" id="categoryRowSongs">
+            <li class="infoRowLiked" id="categoryRowLiked">
                 <p class="likedSort likedName" data-sort="likedName">Title <span class="typcn"></span></p>
                 <p class="likedSort likedAlbum" data-sort="likedAlbum">Album <span class="typcn"></span></p>
                 <p class="likedSort likedArtist" data-sort="likedArtist">Artist <span class="typcn"></span></p>
@@ -17,7 +19,124 @@
                 <p class="likedSort likedYear" data-sort="likedYear">Year <span class="typcn"></span></p>
                 <p class="likedSort likedLiked" data-sort="likedLiked">Liked <span class="typcn"></span></p> 
             </li>
-            <ul class="list"></ul>
+            <ul class="list">
+                    <li class="infoRowLiked" onclick="playMusic(3)" data-id="3" data-title="A Sky Full of Stars (Radio Edit)" data-album="A Sky Full of Stars - EP" data-artist="Coldplay" data-year="2014" data-path="J:\Dropbox\myst\TEST\Coldplay\A Sky Full of Stars - EP\01 A Sky Full of Stars (Radio Edit).m4a" data-duration="236.44879818594103">
+                        <p class="likedName">A Sky Full of Stars (Radio Edit)</p>
+                        <p class="likedAlbum">A Sky Full of Stars - EP</p>
+                        <p class="likedArtist">Coldplay</p>
+                        <p class="likedTime">3:56</p>
+                        <p class="likedYear">2014</p>
+                        <p class="likedLiked"><span style="display: none;">Heart</span> <span id="likeHeart" onclick="likeTrack(event)" data-track-id="3" data-fromliked="true" data-liked="1" class="typcn typcn-heart"></span></p> 
+                    </li>
+                    
+                    <li class="infoRowLiked" onclick="playMusic(4)" data-id="4" data-title="Adventure of a Lifetime" data-album="A Head Full of Dreams" data-artist="Coldplay" data-year="2015" data-path="J:\Dropbox\myst\TEST\A Head Full of Dreams\Adventure of a Lifetime - Coldplay.m4a" data-duration="263.8483446712018">
+                        <p class="likedName">Adventure of a Lifetime</p>
+                        <p class="likedAlbum">A Head Full of Dreams</p>
+                        <p class="likedArtist">Coldplay</p>
+                        <p class="likedTime">4:23</p>
+                        <p class="likedYear">2015</p>
+                        <p class="likedLiked"><span style="display: none;">Heart</span> <span id="likeHeart" onclick="likeTrack(event)" data-track-id="4" data-fromliked="true" data-liked="1" class="typcn typcn-heart"></span></p> 
+                    </li>
+                    
+                    <li class="infoRowLiked" onclick="playMusic(5)" data-id="5" data-title="Adventures" data-album="Monstercat 023 - Voyage" data-artist="Hyper Potions &amp; Subtact" data-year="2015" data-path="J:\Dropbox\myst\TEST\Monstercat 023 - Voyage\Adventures - Hyper Potions &amp; Subtact.m4a" data-duration="173.94068027210884">
+                        <p class="likedName">Adventures</p>
+                        <p class="likedAlbum">Monstercat 023 - Voyage</p>
+                        <p class="likedArtist">Hyper Potions &amp; Subtact</p>
+                        <p class="likedTime">2:53</p>
+                        <p class="likedYear">2015</p>
+                        <p class="likedLiked"><span style="display: none;">Heart</span> <span id="likeHeart" onclick="likeTrack(event)" data-track-id="5" data-fromliked="true" data-liked="1" class="typcn typcn-heart"></span></p> 
+                    </li>
+                    
+                    <li class="infoRowLiked" onclick="playMusic(6)" data-id="6" data-title="After Midnight" data-album="DOROTHY - EP" data-artist="DOROTHY" data-year="2014" data-path="J:\Dropbox\myst\TEST\DOROTHY - EP\After Midnight - DOROTHY.m4a" data-duration="150.04734693877552">
+                        <p class="likedName">After Midnight</p>
+                        <p class="likedAlbum">DOROTHY - EP</p>
+                        <p class="likedArtist">DOROTHY</p>
+                        <p class="likedTime">2:30</p>
+                        <p class="likedYear">2014</p>
+                        <p class="likedLiked"><span style="display: none;">Heart</span> <span id="likeHeart" onclick="likeTrack(event)" data-track-id="6" data-fromliked="true" data-liked="1" class="typcn typcn-heart"></span></p> 
+                    </li>
+                    
+                    <li class="infoRowLiked" onclick="playMusic(7)" data-id="7" data-title="Again" data-album="Monstercat 023 - Voyage" data-artist="Kasbo" data-year="2015" data-path="J:\Dropbox\myst\TEST\Monstercat 023 - Voyage\Again - Kasbo.m4a" data-duration="229.52925170068028">
+                        <p class="likedName">Again</p>
+                        <p class="likedAlbum">Monstercat 023 - Voyage</p>
+                        <p class="likedArtist">Kasbo</p>
+                        <p class="likedTime">3:49</p>
+                        <p class="likedYear">2015</p>
+                        <p class="likedLiked"><span style="display: none;">Heart</span> <span id="likeHeart" onclick="likeTrack(event)" data-track-id="7" data-fromliked="true" data-liked="1" class="typcn typcn-heart"></span></p> 
+                    </li>
+                    
+                    <li class="infoRowLiked" onclick="playMusic(8)" data-id="8" data-title="All That (feat. Twista &amp; The Rejectz)" data-album="Money Sucks, Friends Rule" data-artist="Dillon Francis" data-year="2014" data-path="J:\Dropbox\myst\TEST\Money Sucks, Friends Rule\All That (feat. Twista &amp; The Rejectz) - Dillon Francis.m4a" data-duration="189.9392290249433">
+                        <p class="likedName">All That (feat. Twista &amp; The Rejectz)</p>
+                        <p class="likedAlbum">Money Sucks, Friends Rule</p>
+                        <p class="likedArtist">Dillon Francis</p>
+                        <p class="likedTime">3:09</p>
+                        <p class="likedYear">2014</p>
+                        <p class="likedLiked"><span style="display: none;">Heart</span> <span id="likeHeart" onclick="likeTrack(event)" data-track-id="8" data-fromliked="true" data-liked="1" class="typcn typcn-heart"></span></p> 
+                    </li>
+                    
+                    <li class="infoRowLiked" onclick="playMusic(9)" data-id="9" data-title="All the Little Lights (Live from the Factory Theatre, Sydney)" data-album="Let Her Go (Live) - EP" data-artist="Passenger" data-year="2012" data-path="J:\Dropbox\myst\TEST\Let Her Go - EP\All the Little Lights (Live from the Factory Theatre, Sydney) - Passenger.m4a" data-duration="221.68090702947845">
+                        <p class="likedName">All the Little Lights (Live from the Factory Theatre, Sydney)</p>
+                        <p class="likedAlbum">Let Her Go (Live) - EP</p>
+                        <p class="likedArtist">Passenger</p>
+                        <p class="likedTime">3:41</p>
+                        <p class="likedYear">2012</p>
+                        <p class="likedLiked"><span style="display: none;">Heart</span> <span id="likeHeart" onclick="likeTrack(event)" data-track-id="9" data-fromliked="true" data-liked="1" class="typcn typcn-heart"></span></p> 
+                    </li>
+                    
+                    <li class="infoRowLiked" onclick="playMusic(15)" data-id="15" data-title="anxiety (feat. FRND)" data-album="cybersex" data-artist="blackbear" data-year="2017" data-path="J:\Dropbox\myst\TEST\blackbear\cybersex\06 anxiety (feat. FRND).m4a" data-duration="191.10022675736963">
+                        <p class="likedName">anxiety (feat. FRND)</p>
+                        <p class="likedAlbum">cybersex</p>
+                        <p class="likedArtist">blackbear</p>
+                        <p class="likedTime">3:11</p>
+                        <p class="likedYear">2017</p>
+                        <p class="likedLiked"><span style="display: none;">Heart</span> <span id="likeHeart" onclick="likeTrack(event)" data-track-id="15" data-fromliked="true" data-liked="1" class="typcn typcn-heart"></span></p> 
+                    </li>
+                    
+                    <li class="infoRowLiked" onclick="playMusic(16)" data-id="16" data-title="Aphasia" data-album="Monstercat 023 - Voyage" data-artist="Mr FijiWiji" data-year="2015" data-path="J:\Dropbox\myst\TEST\Monstercat 023 - Voyage\Aphasia - Mr FijiWiji.m4a" data-duration="291.7122902494331">
+                        <p class="likedName">Aphasia</p>
+                        <p class="likedAlbum">Monstercat 023 - Voyage</p>
+                        <p class="likedArtist">Mr FijiWiji</p>
+                        <p class="likedTime">4:51</p>
+                        <p class="likedYear">2015</p>
+                        <p class="likedLiked"><span style="display: none;">Heart</span> <span id="likeHeart" onclick="likeTrack(event)" data-track-id="16" data-fromliked="true" data-liked="1" class="typcn typcn-heart"></span></p> 
+                    </li>
+                    
+                    <li class="infoRowLiked" onclick="playMusic(17)" data-id="17" data-title="Bang Bang Bang" data-album="DOROTHY - EP" data-artist="DOROTHY" data-year="2014" data-path="J:\Dropbox\myst\TEST\DOROTHY - EP\Bang Bang Bang - DOROTHY.m4a" data-duration="189.5677097505669">
+                        <p class="likedName">Bang Bang Bang</p>
+                        <p class="likedAlbum">DOROTHY - EP</p>
+                        <p class="likedArtist">DOROTHY</p>
+                        <p class="likedTime">3:09</p>
+                        <p class="likedYear">2014</p>
+                        <p class="likedLiked"><span style="display: none;">Heart</span> <span id="likeHeart" onclick="likeTrack(event)" data-track-id="17" data-fromliked="true" data-liked="1" class="typcn typcn-heart"></span></p> 
+                    </li>
+                    
+                    <li class="infoRowLiked" onclick="playMusic(18)" data-id="18" data-title="Bed of Roses (feat. Stanaj)" data-album="Bed of Roses (feat. Stanaj) - Single" data-artist="Afrojack" data-year="2018" data-path="J:\Dropbox\myst\TEST\Afrojack\Bed of Roses (feat. Stanaj) - Single\01 Bed of Roses (feat. Stanaj).m4a" data-duration="201.1544671201814">
+                        <p class="likedName">Bed of Roses (feat. Stanaj)</p>
+                        <p class="likedAlbum">Bed of Roses (feat. Stanaj) - Single</p>
+                        <p class="likedArtist">Afrojack</p>
+                        <p class="likedTime">3:21</p>
+                        <p class="likedYear">2018</p>
+                        <p class="likedLiked"><span style="display: none;">Heart</span> <span id="likeHeart" onclick="likeTrack(event)" data-track-id="18" data-fromliked="true" data-liked="1" class="typcn typcn-heart"></span></p> 
+                    </li>
+                    
+                    <li class="infoRowLiked" onclick="playMusic(151)" data-id="151" data-title="Ve Maahi" data-album="Kesari" data-artist="Arijit Singh, Asees Kaur" data-year="-" data-path="J:\Dropbox\myst\TEST\Kesari\Ve Maahi.mp3" data-duration="224.10448979591837">
+                        <p class="likedName">Ve Maahi</p>
+                        <p class="likedAlbum">Kesari</p>
+                        <p class="likedArtist">Arijit Singh, Asees Kaur</p>
+                        <p class="likedTime">3:44</p>
+                        <p class="likedYear">-</p>
+                        <p class="likedLiked"><span style="display: none;">Heart</span> <span id="likeHeart" onclick="likeTrack(event)" data-track-id="151" data-fromliked="true" data-liked="1" class="typcn typcn-heart"></span></p> 
+                    </li>
+                    
+                    <li class="infoRowLiked" onclick="playMusic(168)" data-id="168" data-title="Wow. (feat. Roddy Ricch &amp; Tyga) [Remix]" data-album="Wow. (Remix) [feat. Roddy Ricch &amp; Tyga] - Single" data-artist="Post Malone" data-year="2019" data-path="J:\Dropbox\myst\TEST\01 Wow. (feat. Roddy Ricch &amp; Tyga) .m4a" data-duration="170.10938775510203">
+                        <p class="likedName">Wow. (feat. Roddy Ricch &amp; Tyga) [Remix]</p>
+                        <p class="likedAlbum">Wow. (Remix) [feat. Roddy Ricch &amp; Tyga] - Single</p>
+                        <p class="likedArtist">Post Malone</p>
+                        <p class="likedTime">2:50</p>
+                        <p class="likedYear">2019</p>
+                        <p class="likedLiked"><span style="display: none;">Heart</span> <span id="likeHeart" onclick="likeTrack(event)" data-track-id="168" data-fromliked="true" data-liked="1" class="typcn typcn-heart"></span></p> 
+                    </li>
+                    </ul>
         </div>
     </div>
     <script src="./js/pages/likedPage.js"></script>

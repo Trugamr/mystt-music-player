@@ -5,11 +5,13 @@
 </head>
 <body>
     <div id="likedPageContainer">
+        <!-- Hacky way of fixing header position -->
+        <div id="hackFixedHeader"></div>
         <h1 id="likedHeading"><span>Liked</span></h1>
         <div id="likedContainer">
             <div id="likedSearchContainer"><input type="text" placeholder="Search" class="likedSearch"><i class="fa fa-search"></i></div>
             <!-- Keeping this row outside to it wont get filtered -->
-            <li class="infoRowLiked" id="categoryRowSongs">
+            <li class="infoRowLiked" id="categoryRowLiked">
                 <p class="likedSort likedName" data-sort="likedName">Title <span class="typcn"></span></p>
                 <p class="likedSort likedAlbum" data-sort="likedAlbum">Album <span class="typcn"></span></p>
                 <p class="likedSort likedArtist" data-sort="likedArtist">Artist <span class="typcn"></span></p>
