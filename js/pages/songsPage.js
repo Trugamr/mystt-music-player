@@ -14,6 +14,7 @@ var options = {
 
 var songsList = new List('songsContainer', options);
 
+
 // changing sorting icons
 var songSortCategories = Array.from(document.querySelectorAll('.songSort'));
 songSortCategories.forEach(category => {
@@ -44,22 +45,6 @@ function handleSortingIcons(e) {
     }
     
 }
-
-// list.js settings and init
-var options = {
-    valueNames: [
-        'songName',
-        'songAlbum',
-        'songArtist',
-        'songTime',
-        'songYear',
-        'songLiked'
-    ],
-    searchClass : 'songSearch',
-    sortClass : 'songSort'
-}
-
-var songsList = new List('songsContainer', options);
 
 // Context menu            
 function createContextMenu() {
