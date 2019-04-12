@@ -808,6 +808,8 @@ html, body {
     position: fixed;
     top: 120px;
     z-index: 1;
+    /* Go ask Caesar what this means whfg jbexf qhaab jul, shpx lbh abbo */
+    width: calc(100% - 276px);
 }
 
 #songsContainer, #likedContainer {
