@@ -218,7 +218,7 @@ function getAllMetadata(musicFiles) {
 // Data persistance using sqlite3
 
 // Cretaing new database file
-let db = new sqlite3.Database('mystt.db');
+let db = new sqlite3.Database('./mystt.db');
 
 //pushing final metadata to sqlite database
 function pushToDatabase(data) {

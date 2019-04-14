@@ -26,7 +26,7 @@ function createWindow () {
     frame: false,
     // alwaysOnTop: true,
     show: false,
-    icon: './assets/icon.png'
+    icon: './assets/icon_small.png'
   })
 
   // load loading page
@@ -50,7 +50,7 @@ function createWindow () {
       nodeIntegration: true
     },
     show: false,
-    icon: './assets/icon.png'
+    icon: './assets/icon_small.png'
   })
 
   mainWindow.on('ready-to-show', () => {
