@@ -378,14 +378,14 @@ function generateHomePage(withTop5 = true) {
             .then(data => {
                 // console.log(data);
                 // Opening and updating file
-                fs.readFile('./pages/home.htm', 'utf-8', (err, data) => {
+                fs.readFile(path.join(app.getAppPath(), 'pages', 'home.htm'), 'utf-8', (err, data) => {
                     if(err) console.err(err);
                     const jsdomWindow = new JSDOM(data).window;
                     // only update if withTop5 is true
                     if(withTop5) jsdomWindow.document.querySelector('#homeMusicRow').innerHTML = homeMusicCards;
                     jsdomWindow.document.querySelector('#homeMusicRecent>ul').innerHTML = homeMusicRecents;
                     const generatedContent = jsdomWindow.document.documentElement.outerHTML;                    
-                    fs.writeFile('./pages/home.htm', generatedContent, (err) => {
+                    fs.writeFile(path.join(app.getAppPath(), 'pages', 'home.htm'), generatedContent, (err) => {
                         if(err) reject(err)
                         else resolve(`home page generated ${withTop5 ? 'with top 5' : 'without top 5'}`)
                     })  
@@ -420,12 +420,12 @@ function generateSongsPage() {
                     </li>
                     `
                 })
-                fs.readFile('./pages/songs.htm', 'utf-8', (err, data) => {
+                fs.readFile(path.join(app.getAppPath(), 'pages', 'songs.htm'), 'utf-8', (err, data) => {
                     if(err) console.error(err);
                     const jsdomWindow = new JSDOM(data).window;
                     jsdomWindow.document.querySelector('#songsContainer>ul').innerHTML = allSongs;
                     const generatedContent = jsdomWindow.document.documentElement.outerHTML;
-                    fs.writeFile('./pages/songs.htm', generatedContent, (err) => {
+                    fs.writeFile(path.join(app.getAppPath(), 'pages', 'songs.htm'), generatedContent, (err) => {
                         if(err) reject(err)
                         else resolve("songs page generated")
                     })  
@@ -472,13 +472,13 @@ function generateAlbumsPage() {
                 });
             Promise.all(allAlbumPromises)
                 .then(data => {
-                    fs.readFile('./pages/albums.htm', 'utf-8', (err, data) => {
+                    fs.readFile(path.join(app.getAppPath(), 'pages', 'albums.htm'), 'utf-8', (err, data) => {
                         if(err) console.error(err);
                         const jsdomWindow = new JSDOM(data).window;
                         // only update if withTop5 is true
                         jsdomWindow.document.querySelector('#albumsContainer').innerHTML = allAlbums;
                         const generatedContent = jsdomWindow.document.documentElement.outerHTML;                    
-                        fs.writeFile('./pages/albums.htm', generatedContent, (err) => {
+                        fs.writeFile(path.join(app.getAppPath(), 'pages', 'albums.htm'), generatedContent, (err) => {
                             if(err) reject(err)
                             else resolve(`album page generated`)
                         })  
@@ -530,13 +530,13 @@ function generateArtistsPage() {
             Promise.all(allArtistsPromises)
                 .then(data => {
                     console.log(data);
-                    fs.readFile('./pages/artists.htm', 'utf-8', (err, data) => {
+                    fs.readFile(path.join(app.getAppPath(), 'pages', 'artists.htm'), 'utf-8', (err, data) => {
                         if(err) console.error(err);
                         const jsdomWindow = new JSDOM(data).window;
                         // only update if withTop5 is true
                         jsdomWindow.document.querySelector('#artistsContainer').innerHTML = allArtists;
                         const generatedContent = jsdomWindow.document.documentElement.outerHTML;                    
-                        fs.writeFile('./pages/artists.htm', generatedContent, (err) => {
+                        fs.writeFile(path.join(app.getAppPath(), 'pages', 'artists.htm'), generatedContent, (err) => {
                             if(err) reject(err)
                             else resolve(`artists page generated`)
                         })  
@@ -572,12 +572,12 @@ function generateLikedPage() {
                     </li>
                     `
                 })
-                fs.readFile('./pages/liked.htm', 'utf-8', (err, data) => {
+                fs.readFile(path.join(app.getAppPath(), 'pages', 'liked.htm'), 'utf-8', (err, data) => {
                     if(err) console.error(err);
                     const jsdomWindow = new JSDOM(data).window;
                     jsdomWindow.document.querySelector('#likedContainer>ul').innerHTML = allLiked;
                     const generatedContent = jsdomWindow.document.documentElement.outerHTML;
-                    fs.writeFile('./pages/liked.htm', generatedContent, (err) => {
+                    fs.writeFile(path.join(app.getAppPath(), 'pages', 'liked.htm'), generatedContent, (err) => {
                         if(err) reject(err)
                         else resolve("liked page generated")
                     })  
@@ -633,13 +633,13 @@ function generatePlaylistsPage() {
                 Promise.all(allPlaylistsPromises)
                 .then(data => {
                     console.log(data);
-                    fs.readFile('./pages/playlists.htm', 'utf-8', (err, data) => {
+                    fs.readFile(path.join(app.getAppPath(), 'pages', 'playlists.htm'), 'utf-8', (err, data) => {
                         if(err) console.error(err);
                         const jsdomWindow = new JSDOM(data).window;
                         // only update if withTop5 is true
                         jsdomWindow.document.querySelector('#playlistsContainer').innerHTML = allPlaylists;
                         const generatedContent = jsdomWindow.document.documentElement.outerHTML;                    
-                        fs.writeFile('./pages/playlists.htm', generatedContent, (err) => {
+                        fs.writeFile(path.join(app.getAppPath(), 'pages', 'playlists.htm'), generatedContent, (err) => {
                             if(err) reject(err)
                             else resolve(`playlists page generated`)
                         })  
