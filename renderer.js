@@ -218,7 +218,9 @@ function getAllMetadata(musicFiles) {
 // Data persistance using sqlite3
 
 // Cretaing new database file
-let db = new sqlite3.Database('./mystt.db');
+let app = remote.app;
+// Getting full app path, without this app can't fild db file after packaging
+let db = new sqlite3.Database(path.join(app.getAppPath(), 'mystt.db'));
 
 //pushing final metadata to sqlite database
 function pushToDatabase(data) {
