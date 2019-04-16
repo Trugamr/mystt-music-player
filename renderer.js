@@ -1644,12 +1644,14 @@ ipcRenderer.on('restore-user-state', restoreUserState);
 
 function saveUserState() {
     let currentSettings = [currentlySelectedTheme, currentlyPlayingTrack, audioPlayer.currentTime, progressBar.value, volumeBar.value]
+    // Only works if some settings are already stored, it wont create a new row
     let sql = `UPDATE Settings SET selectedTheme = ?,
         lastPlayed = ?,
         lastPlayedDuration = ?,
         progressBarValue = ?,
         volume = ?
         WHERE rowid = 1`
+
     db.run(sql, currentSettings, (err) => {
         if(err) console.error(err);
         ipcRenderer.send('save-state-success');
