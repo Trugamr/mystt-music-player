@@ -1363,7 +1363,7 @@ function nextTrack() {
         }
     } else {
         ++currentlyPlayingTrack;
-        if(currentlyPlayingTrack >= totalTracks) {
+        if(currentlyPlayingTrack > totalTracks) {
             currentlyPlayingTrack = 1;
             playMusic(currentlyPlayingTrack, { playBy: 'trackId', fromQueue: false })
         } else {
