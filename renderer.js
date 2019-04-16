@@ -1412,15 +1412,21 @@ function playOrPauseTrack() {
 }
 
 function volumeUp() {
-    if(audioPlayer.volume < 1) {
+    if(audioPlayer.volume < 0.95) {
         audioPlayer.volume += 0.05;
+        volumeBar.value = audioPlayer.volume * 100;
+    } else {
+        audioPlayer.volume = 1;
         volumeBar.value = audioPlayer.volume * 100;
     };
 }
 
 function volumeDown() {
-    if(audioPlayer.volume > 0) {
+    if(audioPlayer.volume > 0.05) {
         audioPlayer.volume -= 0.05;
+        volumeBar.value = audioPlayer.volume * 100;
+    } else {
+        audioPlayer.volume = 0;
         volumeBar.value = audioPlayer.volume * 100;
     };
 }
