@@ -1,0 +1,25 @@
+<html>
+    <head>
+        <link rel="stylesheet" href="./css/Font Awesome/all.css">
+        <link rel="stylesheet" href="./css/mini-player.css">
+    </head>
+    <body>
+        <div id="dragBar"></div>
+        <div id="mini-container">
+            <div id="mini-wrapper">
+                <div id="mini-artwork"></div>
+                <div id="mini-overlay">
+                    <i id="closeMiniPlayerBtn" class="fa fa-times"></i>
+                    <div id="miniPlayerControls">
+                        <i id="miniPlayerBackBtn" class="fas fa-step-backward"></i>
+                        <i id="miniPlayerPlayBtn" class="fas fa-play"></i>
+                        <i id="miniPlayerForwardBtn"  class="fas fa-step-forward"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <script>
+            var miniPlayerRenderer = require('./miniPlayer.js');            
+        </script>
+    </body>
+</html>

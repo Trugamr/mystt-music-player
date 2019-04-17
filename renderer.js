@@ -19,6 +19,7 @@ const Vibrant = require('node-vibrant')
 // User Settings
 let isDynamicThemeSelected = false;
 let currentlySelectedTheme = 'darkOnyx';
+let isMiniPlayerShowing = false;
 
 
 // Siderbar links declaration
@@ -1153,6 +1154,9 @@ const playerBarTotalTime = document.querySelector('#playerBarTotalTime')
 const playerBarCurrentTime = document.querySelector('#playerBarCurrentTime')
 const playerBarVolumeBtn = document.querySelector('#playerVolumeBtn')
 
+// Mini player componenets
+const miniPlayerArt = document.querySelector('#mini-artwork');
+
 // Muting audio on volume btn click
 playerBarVolumeBtn.addEventListener('click', muteUnmuteAudio)
 function muteUnmuteAudio() {
@@ -1341,8 +1345,14 @@ function updateCurrentlyPlayingInfo(trackInfo) {
             let buffer = metadata.common.picture[0].data;
             let datajpg = blobTob64(buffer);
             playerBarArt.src = datajpg;
+            // adding artwork to trackinfo so it wont be needed to fetch artwork again
+            trackInfo.artwork = datajpg;
+            ipcRenderer.send('update-mini-player', trackInfo);
         } else {
-            playerBarArt.src = datajpg = `./assets/images/art.png`;
+            playerBarArt.src = `./assets/images/art.png`;
+            // adding artwork to trackinfo so it wont be needed to fetch artwork again
+            trackInfo.artwork = './assets/images/art.png';
+            ipcRenderer.send('update-mini-player', trackInfo);
         }
         
         if(isDynamicThemeSelected) dynamicColorFetch(metadata.common.picture ? metadata.common.picture[0].data : `./assets/images/art.png`);
@@ -1353,6 +1363,9 @@ function updateCurrentlyPlayingInfo(trackInfo) {
 // Hooking up media buttons
 
 function nextTrack() {
+    // Sending mini player playing status true
+    ipcRenderer.send('playing-status', true);
+
     if(playingQueue) {
         ++currentQueueTrackIndex;
         if(currentQueueTrackIndex > currentQueue.length-1) {
@@ -1373,6 +1386,9 @@ function nextTrack() {
 }
 
 function previousTrack() {
+    // Sending mini player playing status true
+    ipcRenderer.send('playing-status', true);
+
     if(playingQueue) {
         --currentQueueTrackIndex;
         if(currentQueueTrackIndex < 0) {
@@ -1402,10 +1418,12 @@ playButton.addEventListener('click', playOrPauseTrack)
 function playOrPauseTrack() {
     if(audioPlayer.paused) {
         audioPlayer.play();
+        ipcRenderer.send('playing-status', true);
         playButton.classList.remove('fa-play');
         playButton.classList.add('fa-pause');
     } else {
         audioPlayer.pause();
+        ipcRenderer.send('playing-status', false);
         playButton.classList.remove('fa-pause');
         playButton.classList.add('fa-play');
     }
@@ -1802,6 +1820,40 @@ db.all(`SELECT name FROM sqlite_master WHERE type='table' AND name='Music'`, (er
 })
 
 
+// Mini player
+
+const miniPlayerButton = document.querySelector('#miniPlayerBtn');
+miniPlayerButton.addEventListener('click', () => {
+    ipcRenderer.send('show-hide-mini-player');
+})
+
+// Update miniplayer info upon mini player creation
+ipcRenderer.on('update-mini-player-on-spawn', () => {
+    // updating playing status
+    ipcRenderer.send('playing-status', !audioPlayer.paused)
+
+    // updating artwork and other info
+    fetchMusic(`WHERE ID = ${currentlyPlayingTrack}`).then(track => {
+        trackInfo = track[0];
+        mm.parseFile(trackInfo.path)
+        .then(metadata => {
+            if(metadata.common.picture) {
+                let buffer = metadata.common.picture[0].data;
+                let datajpg = blobTob64(buffer);
+                playerBarArt.src = datajpg;
+                // adding artwork to trackinfo so it wont be needed to fetch artwork again
+                trackInfo.artwork = datajpg;
+                ipcRenderer.send('update-mini-player', trackInfo);
+            } else {
+                playerBarArt.src = `./assets/images/art.png`;
+                // adding artwork to trackinfo so it wont be needed to fetch artwork again
+                trackInfo.artwork = './assets/images/art.png';
+                ipcRenderer.send('update-mini-player', trackInfo);
+            }
+        })
+    })
+})
+
 // exporting then calling with onclick on likeIcon iteself
 module.exports.likeTrack = likeTrack;
 module.exports.progressTo = progressTo;
@@ -1820,3 +1872,4 @@ module.exports.createNewPlaylist = createNewPlaylist;
 module.exports.deletePlaylist = deletePlaylist;
 module.exports.showToast = showToast;
 module.exports.firstLaunch = firstLaunch;
+module.exports.myReomte = remote;

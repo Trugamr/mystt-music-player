@@ -703,11 +703,15 @@ html, body {
     width: 200px;
 }
 
-#playerVolumeBtn {
+#playerVolumeBtn, #miniPlayerBtn {
     color: var(--primary-color-gray-light);
     margin-right: 9px;
     transform: translateY(-1px);
     cursor: pointer;
+}
+
+#miniPlayerBtn {
+    font-size: 12px;
 }
 
 #playerVolumeBar {

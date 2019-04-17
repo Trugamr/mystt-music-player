@@ -10,6 +10,7 @@ const windowStateManager = require('electron-window-state')
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
 let mainWindow
+let miniPlayerWindow
 
 function createWindow () {
 
@@ -68,7 +69,7 @@ function createWindow () {
   });
 
   // and load the index.html of the app.
-  mainWindow.loadFile('index.html')
+  mainWindow.loadFile('index.html')  
 
   // Open the DevTools.
   // mainWindow.webContents.openDevTools()
@@ -92,6 +93,74 @@ function createWindow () {
     // in an array if your app supports multi windows, this is the time
     // when you should delete the corresponding element.
     mainWindow = null
+  })
+
+  // showing/hiding miniPlayerWindow
+  ipcMain.on('show-hide-mini-player', () => {
+    if(miniPlayerWindow) {
+      if(miniPlayerWindow.isDestroyed()) {
+        createMiniPlayerWindow();
+      } else {
+        miniPlayerWindow.destroy();
+      }
+    } else {
+      createMiniPlayerWindow();
+    }
+  })
+
+  // Mini player events, putting them here becuase create mini player window can be called sveral time that multiplies the events
+  // Sending data receieved from mainWindow to miniPlayerWindow
+  ipcMain.on('update-mini-player', (event, data) => {
+    if(miniPlayerWindow) {
+      if(!miniPlayerWindow.isDestroyed()) {
+        miniPlayerWindow.webContents.send('update-mini-player-info', data);
+      }      
+    }
+  }) 
+
+  // Checking if main player is playing or not
+  ipcMain.on('playing-status', (event, data) => {
+    if(miniPlayerWindow) {
+        if(!miniPlayerWindow.isDestroyed()) { miniPlayerWindow.webContents.send('mini-playing-status', data);
+      }
+    }
+  })
+
+  // Playing pausing from miniplayer
+  ipcMain.on('mini-player-play-pause', () => {
+    mainWindow.webContents.send('play-pause-track');
+  })
+  ipcMain.on('mini-player-next-track', () => {
+    mainWindow.webContents.send('play-next-track');
+  })
+  ipcMain.on('mini-player-previous-track', () => {
+    mainWindow.webContents.send('play-previous-track');
+  })
+}
+
+function createMiniPlayerWindow() {
+  // Mini Player
+  miniPlayerWindow = new BrowserWindow({
+    width: 200,
+    height: 200,
+    x: 1158,
+    y: 518,
+    resizable: true,
+    frame: false,
+    // transparent: true,
+    webPreferences: {
+      nodeIntegration: true
+    },
+    alwaysOnTop: true,
+    show: false,
+    icon: './assets/icon_new.ico'
+  })
+
+  miniPlayerWindow.loadFile('./mini-player.html');
+
+  miniPlayerWindow.on('ready-to-show', () => {
+    mainWindow.webContents.send('update-mini-player-on-spawn');
+    miniPlayerWindow.show();    
   })
 }
 
