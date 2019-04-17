@@ -17,6 +17,19 @@ const miniBackBtn = document.querySelector('#miniPlayerBackBtn');
 const miniPlayBtn = document.querySelector('#miniPlayerPlayBtn');
 const miniForwardBtn = document.querySelector('#miniPlayerForwardBtn');
 
+const miniOverlay = document.querySelector('#mini-overlay');
+ipcRenderer.on('update-mini-player-theme', (event, theme) => {
+    closeMiniPlayerBtn.style = `color: ${theme.fifth}`;
+    miniBackBtn.style = `color: ${theme.fifth}`;
+    miniPlayBtn.style = `color: ${theme.fifth}`;
+    miniForwardBtn.style = `color: ${theme.fifth}`;
+    let color = hexToRgb(theme.first);
+    document.documentElement.style.setProperty('--overlay-color', `rgba(${color.r}, ${color.g}, ${color.b}, 0)`);
+    document.documentElement.style.setProperty('--overlay-color-hover', `rgba(${color.r}, ${color.g}, ${color.b}, 0.75)`);
+    document.querySelector('#mini-overlay').style = `border-color: ${theme.fifth};`;    
+})
+
+
 ipcRenderer.on('mini-playing-status', (event, isPlaying) => {
     musicPlaying = isPlaying;
     if(musicPlaying) {
@@ -46,3 +59,12 @@ miniPlayBtn.addEventListener('click', (event) => {
 miniForwardBtn.addEventListener('click', (event) => {
     ipcRenderer.send('mini-player-next-track');
 })
+
+function hexToRgb(hex) {
+    var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+    return result ? {
+        r: parseInt(result[1], 16),
+        g: parseInt(result[2], 16),
+        b: parseInt(result[3], 16)
+    } : null;
+}

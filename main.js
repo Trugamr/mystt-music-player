@@ -126,6 +126,14 @@ function createWindow () {
     }
   })
 
+  // Sending colors to main theme you it can use them;
+  ipcMain.on('mini-color-theme', (event, data) => {
+    if(miniPlayerWindow) {
+        if(!miniPlayerWindow.isDestroyed()) { miniPlayerWindow.webContents.send('update-mini-player-theme', data);
+      }
+    }
+  })
+
   // Playing pausing from miniplayer
   ipcMain.on('mini-player-play-pause', () => {
     mainWindow.webContents.send('play-pause-track');
@@ -136,6 +144,7 @@ function createWindow () {
   ipcMain.on('mini-player-previous-track', () => {
     mainWindow.webContents.send('play-previous-track');
   })
+  
 }
 
 function createMiniPlayerWindow() {

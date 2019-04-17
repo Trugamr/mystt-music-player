@@ -1539,6 +1539,9 @@ function applyTheme(value, options = { by: 'name' }) {
         isDynamicThemeSelected = false;
     }
 
+    // Sending colors to miniplayer so it can use them
+    ipcRenderer.send('mini-color-theme', theme);
+
     // Theme from theme object    
     document.documentElement.style.setProperty('--primary-color', theme.first);
     document.documentElement.style.setProperty('--primary-color-light', theme.second);
@@ -1614,8 +1617,7 @@ function dynamicColorFetch(image) {
             // console.log(palette.LightVibrant.getHsl());
             // console.log(palette.Vibrant.getHsl());
             // console.log(palette.DarkMuted.getHsl());
-            // console.log(palette);
-            
+            // console.log(palette);          
         })
         .catch(err => console.error(err)); 
 }
@@ -1830,7 +1832,7 @@ miniPlayerButton.addEventListener('click', () => {
 // Update miniplayer info upon mini player creation
 ipcRenderer.on('update-mini-player-on-spawn', () => {
     // updating playing status
-    ipcRenderer.send('playing-status', !audioPlayer.paused)
+    ipcRenderer.send('playing-status', !audioPlayer.paused);
 
     // updating artwork and other info
     fetchMusic(`WHERE ID = ${currentlyPlayingTrack}`).then(track => {
@@ -1852,6 +1854,13 @@ ipcRenderer.on('update-mini-player-on-spawn', () => {
             }
         })
     })
+
+    // applying currently selected theme to miniplayer
+    if(currentlySelectedTheme != 'dynamic') {
+        applyTheme(currentlySelectedTheme)
+    } else {
+        applyDynamicTheme();        
+    }
 })
 
 // exporting then calling with onclick on likeIcon iteself
