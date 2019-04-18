@@ -935,8 +935,9 @@ function secondsToMinutes(duration) {
 // marked for re-generation if anytrack was liked if not don't regenerate page
 let regeneratePage = {
     homePage: false,
+    songsPage: false,
     likedPage: false,
-    playlistsPage: false
+    playlistsPage: false,
 };
 
 function loadHomePage (e) {
@@ -1627,7 +1628,7 @@ function restoreUserState() {
     // Creating table if it doesn't exist
     // db.run("DROP TABLE Settings");
     // db.run("CREATE TABLE IF NOT EXISTS Settings (selectedTheme TEXT, lastPlayed INT");    
-    db.each("SELECT selectedTheme, lastPlayed, lastPlayedDuration, progressBarValue, volume FROM Settings WHERE rowid = 1", (err, row) => {
+    db.each("SELECT selectedTheme, lastPlayed, lastPlayedDuration, progressBarValue, volume, regenSongsPage, regenLikedPage, regenPlaylistsPage FROM Settings WHERE rowid = 1", (err, row) => {
         if(err) console.error(err);
         console.log(row);
 
@@ -1661,7 +1662,12 @@ function restoreUserState() {
             }
         } else {
             // push default theme to this column i.e darkOnyx :/
-         }
+        }
+
+        // Mark pages for regeneration if they weren't regenerated last time after making changes
+        regeneratePage.songsPage = row.regenSongsPage;
+        regeneratePage.likedPage = row.regenLikedPage;
+        regeneratePage.playlistsPage = row.regenPlaylistsPage;
     })
 }
 
@@ -1669,13 +1675,24 @@ function restoreUserState() {
 ipcRenderer.on('restore-user-state', restoreUserState);
 
 function saveUserState() {
-    let currentSettings = [currentlySelectedTheme, currentlyPlayingTrack, audioPlayer.currentTime, progressBar.value, volumeBar.value]
+    let currentSettings = [
+        currentlySelectedTheme,
+        currentlyPlayingTrack,
+        audioPlayer.currentTime,
+        progressBar.value,
+        volumeBar.value,
+        regeneratePage.songsPage ? 1 : 0,
+        regeneratePage.likedPage ? 1 : 0,
+        regeneratePage.playlistsPage ? 1 : 0]
     // Only works if some settings are already stored, it wont create a new row
     let sql = `UPDATE Settings SET selectedTheme = ?,
         lastPlayed = ?,
         lastPlayedDuration = ?,
         progressBarValue = ?,
-        volume = ?
+        volume = ?,
+        regenSongsPage = ?,
+        regenLikedPage = ?,
+        regenPlaylistsPage = ?
         WHERE rowid = 1`
 
     db.run(sql, currentSettings, (err) => {
@@ -1684,8 +1701,6 @@ function saveUserState() {
     })
     
 }
-
-document.addEventListener('keypress', saveUserState);
 
 // trigger save user state event after getting message from main process
 ipcRenderer.on('save-user-state', saveUserState);
