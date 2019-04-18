@@ -111,8 +111,7 @@ body {
     color: #ffffff;
     font-size: 30px;
     opacity: 0.75;
-    transition: ease all 0.15s;
-    transition: ease color 0.4s;
+    transition: ease opacity 0.15s;
 }
 
 #miniPlayerControls i:hover {

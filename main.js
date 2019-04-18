@@ -1,5 +1,6 @@
 // Modules to control application life and create native browser window
 const { app, BrowserWindow, ipcMain, globalShortcut } = require('electron')
+const electron = require('electron');
 
 // Window state manager
 const windowStateManager = require('electron-window-state')
@@ -144,16 +145,21 @@ function createWindow () {
   ipcMain.on('mini-player-previous-track', () => {
     mainWindow.webContents.send('play-previous-track');
   })
-  
 }
 
 function createMiniPlayerWindow() {
+  const { width, height } = electron.screen.getPrimaryDisplay().workAreaSize;
   // Mini Player
   miniPlayerWindow = new BrowserWindow({
     width: 200,
     height: 200,
-    x: 1158,
-    y: 518,
+    minHeight: 140,
+    minWidth: 140,
+    maxHeight: 400,
+    maxWidth: 400,
+    maximizable: false,
+    x: width - 208,
+    y: height - 208,
     resizable: true,
     frame: false,
     // transparent: true,
@@ -171,6 +177,17 @@ function createMiniPlayerWindow() {
     mainWindow.webContents.send('update-mini-player-on-spawn');
     miniPlayerWindow.show();    
   })
+
+  // force 1:1 ratio of miniplayer window
+  var resizeTimeout;
+  miniPlayerWindow.on('resize', (e)=>{
+      clearTimeout(resizeTimeout);
+      resizeTimeout = setTimeout(function(){
+          var size = miniPlayerWindow.getSize();
+          miniPlayerWindow.setSize(size[0], parseInt(size[0] * 1 / 1));
+      }, 100);
+  });
+  
 }
 
 // This method will be called when Electron has finished
