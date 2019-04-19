@@ -640,10 +640,25 @@ html, body {
 
 #playerBarMediaButtons i {
     cursor: pointer;
+    opacity: 0.8;
+    transiton: ease opacity 0.15s;
+}
+
+#playerBarMediaButtons i:hover {
+    opacity: 1;
+}
+
+
+#playerBackBtn, #playerForwardBtn, #playerShuffleQueue, #playerRepeatTrack {
+    color: var(--primary-color-gray-light);
+    color: var(--primary-color-gray-light);
+}
+
+#playerShuffleQueue {
+    margin-right: 18px;
 }
 
 #playerBackBtn {
-    color: var(--primary-color-gray-light);
     margin-right: 22px;
 }
 
@@ -653,8 +668,15 @@ html, body {
 }
 
 #playerForwardBtn {
-    color: var(--primary-color-gray-light);
     margin-left: 20px;
+}
+
+#playerRepeatTrack {
+    margin-left: 18px;
+}
+
+#playerShuffleQueue, #playerRepeatTrack {
+    font-size: 14px;
 }
 
 #playerProgressBarWrapper {

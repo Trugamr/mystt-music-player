@@ -1192,6 +1192,8 @@ const playerBar = document.querySelector('#playerBar')
 const backButton = document.querySelector('#playerBackBtn');
 const playButton = document.querySelector('#playerPlayBtn');
 const forwardButton = document.querySelector('#playerForwardBtn');
+const shuffleButton = document.querySelector('#playerShuffleQueue');
+const repeatButton = document.querySelector('#playerRepeatTrack');
 
 const playerBarHeart = document.querySelector('#playerBarHeart>span')
 const playerBarTitle = document.querySelector('#playerBarTitle')
@@ -1924,6 +1926,51 @@ ipcRenderer.on('update-mini-player-on-spawn', () => {
     }
 })
 
+
+// Shuffling and updating currentQueue
+shuffleButton.addEventListener('click', shuffleCurrentQueue);
+
+function shuffleCurrentQueue() {
+    // shuffle currently playing queue. can be an artist, album or playlist 
+    if(currentQueue !=0 && playingQueue == true) {
+        // shuffling array and updating current queue
+        currentQueue = shuffleArray(currentQueue);
+        // playing first song from queue and passing fromQueue true so it will play next song from queue
+        playMusic(currentQueue[0].id, options = { playBy: 'trackId', fromQueue: true});
+        // showing toast
+        showToast('shuffled current queue', 'fa-random');
+    } else {
+        // getting all tracks
+        fetchMusic().then(tracks => {
+            // shuffling and settings all tracks as current queue
+            currentQueue = shuffleArray(tracks);
+            // playing first song from queue and passing fromQueue true so it will play next song from queue
+            playMusic(currentQueue[0].id, options = { playBy: 'trackId', fromQueue: true});
+            // showing toast
+            showToast('shuffled all songs', 'fa-random');
+        })
+    }
+}
+
+function shuffleArray(array) {
+    var currentIndex = array.length, temporaryValue, randomIndex;
+  
+    // While there remain elements to shuffle...
+    while (0 !== currentIndex) {
+  
+      // Pick a remaining element...
+      randomIndex = Math.floor(Math.random() * currentIndex);
+      currentIndex -= 1;
+  
+      // And swap it with the current element.
+      temporaryValue = array[currentIndex];
+      array[currentIndex] = array[randomIndex];
+      array[randomIndex] = temporaryValue;
+    }
+  
+    return array;
+  }  
+
 // exporting then calling with onclick on likeIcon iteself
 module.exports.likeTrack = likeTrack;
 module.exports.progressTo = progressTo;
@@ -1942,4 +1989,11 @@ module.exports.createNewPlaylist = createNewPlaylist;
 module.exports.deletePlaylist = deletePlaylist;
 module.exports.showToast = showToast;
 module.exports.firstLaunch = firstLaunch;
-module.exports.myReomte = remote;
+
+// TESTING FUNCTIONS
+module.exports.shuffleCurrentQueue = shuffleCurrentQueue;
+
+document.addEventListener('keypress', () => {
+    console.log('currentQueue', currentQueue);
+    console.log('playingQueue', playingQueue);
+})
