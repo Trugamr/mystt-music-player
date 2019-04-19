@@ -47,6 +47,15 @@ const allThemes = {
         fourth: '#dbabbe',
         fifth: '#edd2e0'
     },
+    navyGold: {
+        name: 'navyGold',
+        first: '#0b0233',
+        second: '#160859',
+        third: '#e5c71b',
+        fourth: '#efefef',
+        fifth: '#efefef'
+        
+    },
     periWinkle: {
         name: 'periWinkle',
         first: '#c6d8ff',

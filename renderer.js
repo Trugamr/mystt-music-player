@@ -13,7 +13,7 @@ const mm = require('music-metadata')
 const fs = require('fs')
 const sqlite3 = require('sqlite3')
 const jsdom = require('jsdom')
-const { JSDOM } = jsdom;
+const { JSDOM } = jsdom
 const Vibrant = require('node-vibrant')
 
 // User Settings
@@ -917,8 +917,54 @@ function showPlaylistTracks(playlist) {
 }
 
 //  To convert image blobs to usable base64 images
-function blobTob64(blob) {
-    return("data:image/jpg;base64," + btoa(new Uint8Array(blob).reduce((data, byte) => data + String.fromCharCode(byte), '')));
+function blobTob64(blob, width = 300, height = 300) {
+    return ("data:image/jpg;base64," + btoa(new Uint8Array(blob).reduce((data, byte) => data + String.fromCharCode(byte), '')));
+    return new Promise((resolve , reject) => {
+        let base64img = "data:image/jpg;base64," + btoa(new Uint8Array(blob).reduce((data, byte) => data + String.fromCharCode(byte), ''));
+        // create an off-screen canvas
+        var canvas = document.createElement('canvas'),
+        ctx = canvas.getContext('2d');
+
+        // set its dimension to target size
+        canvas.width = width;
+        canvas.height = width;
+
+        let loadedImg = new Image();
+        loadedImg.src = base64img;
+
+        loadedImg.onload = async () => {
+            // draw source image into the off-screen canvas:
+            ctx.drawImage(loadedImg, 0, 0, width, width);
+
+            // encode image to data-uri with base64 version of compressed image
+            resolve (canvas.toDataURL())
+        }
+    })
+}
+
+//  To convert and resizeimage blobs to usable base64 images | FOR FUTURE USE
+function blobTob64Resize(blob, width = 300, height = 300) {
+    return new Promise((resolve , reject) => {
+        let base64img = "data:image/jpg;base64," + btoa(new Uint8Array(blob).reduce((data, byte) => data + String.fromCharCode(byte), ''));
+        // create an off-screen canvas
+        var canvas = document.createElement('canvas'),
+        ctx = canvas.getContext('2d');
+
+        // set its dimension to target size
+        canvas.width = width;
+        canvas.height = width;
+
+        let loadedImg = new Image();
+        loadedImg.src = base64img;
+
+        loadedImg.onload = async () => {
+            // draw source image into the off-screen canvas:
+            ctx.drawImage(loadedImg, 0, 0, width, width);
+
+            // encode image to data-uri with base64 version of compressed image
+            resolve (canvas.toDataURL())
+        }
+    })
 }
 
 // To convert seconds to MM:SS format
