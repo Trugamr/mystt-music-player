@@ -350,7 +350,7 @@ function generateHomePage(withTop5 = true) {
                         new Promise((resolve, reject) => {
                             mm.parseFile(track.path).then(metadata => {
                                 if(metadata.common.picture) {
-                                    blobTob64(metadata.common.picture[0].data, { path: track.path, category: 'home' })
+                                    blobTob64(metadata.common.picture[0].data, { filePath: track.path, category: 'home' })
                                         .then(imagePath => {
                                             track.datajpg = imagePath;
                                             homeMusicCards += homeTemplate(track);
@@ -474,7 +474,7 @@ function generateAlbumsPage() {
                             mm.parseFile(album.path)
                                 .then(metadata => {
                                     if(metadata.common.picture) {
-                                        blobTob64(metadata.common.picture[0].data, { path: album.path, category: 'albums' })
+                                        blobTob64(metadata.common.picture[0].data, { filePath: album.path, category: 'albums' })
                                             .then(imagePath => {
                                                 album.datajpg = imagePath;
                                                 allAlbums += albumTemplate(album);
@@ -539,7 +539,7 @@ function generateArtistsPage() {
                             mm.parseFile(artist.path)
                                 .then(metadata => {
                                     if(metadata.common.picture) {
-                                        blobTob64(metadata.common.picture[0].data, { path: artist.path, category: 'artists' })
+                                        blobTob64(metadata.common.picture[0].data, { filePath: artist.path, category: 'artists' })
                                             .then(imagePath => {
                                                 artist.datajpg = imagePath;
                                                 allArtists += artistTemplate(artist);
@@ -650,7 +650,7 @@ function generatePlaylistsPage() {
                                     mm.parseFile(row[0].path)
                                         .then(metadata => {
                                             if(metadata.common.picture) {
-                                                blobTob64(metadata.common.picture[0].data, { path: playlist.path, category: 'playlists' })
+                                                blobTob64(metadata.common.picture[0].data, { filePath: playlist.path, category: 'playlists' })
                                                     .then(imagePath => {
                                                         playlist.datajpg = imagePath;
                                                         allPlaylists += playlistTemplate(playlist);
@@ -962,11 +962,11 @@ function strDecode(str) {
 }
 
 //  To convert image blobs to usable base64 images
-function blobTob64(blob, options = { path: null, category: null }) {
-    let { path, category } = options;
-    if(path) {        
+function blobTob64(blob, options = { filePath: null, category: null }) {
+    let { filePath, category } = options;
+    if(filePath) {        
         return new Promise((resolve, reject) => {
-            let uniquePath = `./cache/${category}/${strEncode(path)}`;
+            let uniquePath = path.join(app.getAppPath(), `./cache/${category}/${strEncode(filePath)}`);
             fs.writeFile(uniquePath, blob, (err, data) => {
                 if(err) reject(err)
                 else resolve(uniquePath);
