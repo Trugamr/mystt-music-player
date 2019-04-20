@@ -916,30 +916,28 @@ function showPlaylistTracks(playlist) {
     })
 }
 
+// String to base64 , base64 to sring encoding
+function strEncode(str) {
+    return btoa(str);
+}
+function strDecode(str) {
+    return atob(str);
+}
+
 //  To convert image blobs to usable base64 images
-function blobTob64(blob, width = 300, height = 300) {
-    return ("data:image/jpg;base64," + btoa(new Uint8Array(blob).reduce((data, byte) => data + String.fromCharCode(byte), '')));
-    return new Promise((resolve , reject) => {
-        let base64img = "data:image/jpg;base64," + btoa(new Uint8Array(blob).reduce((data, byte) => data + String.fromCharCode(byte), ''));
-        // create an off-screen canvas
-        var canvas = document.createElement('canvas'),
-        ctx = canvas.getContext('2d');
-
-        // set its dimension to target size
-        canvas.width = width;
-        canvas.height = width;
-
-        let loadedImg = new Image();
-        loadedImg.src = base64img;
-
-        loadedImg.onload = async () => {
-            // draw source image into the off-screen canvas:
-            ctx.drawImage(loadedImg, 0, 0, width, width);
-
-            // encode image to data-uri with base64 version of compressed image
-            resolve (canvas.toDataURL())
-        }
-    })
+function blobTob64(blob, options = { path: null, category: null }) {
+    let { path, category } = options;
+    if(path) {        
+        return new Promise((resolve, reject) => {
+            let uniquePath = `./cache/${category}/${strEncode(path)}`;
+            fs.writeFile(uniquePath, blob, (err, data) => {
+                if(err) reject(err)
+                else resolve(uniquePath);
+            })    
+        })
+    } else {
+        return ("data:image/jpg;base64," + btoa(new Uint8Array(blob).reduce((data, byte) => data + String.fromCharCode(byte), '')));
+    }    
 }
 
 //  To convert and resizeimage blobs to usable base64 images | FOR FUTURE USE
@@ -1390,6 +1388,7 @@ function updateCurrentlyPlayingInfo(trackInfo) {
     // Updating album art on playerBar
     mm.parseFile(trackInfo.path)
     .then(metadata => {
+        console.log('currently playing',metadata)
         if(metadata.common.picture) {
             let buffer = metadata.common.picture[0].data;
             let datajpg = blobTob64(buffer);
