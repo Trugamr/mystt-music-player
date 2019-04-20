@@ -331,6 +331,14 @@ function generateHomePage(withTop5 = true) {
             <p>Liked</p> 
         </li>
     `;
+    function homeTemplate(track) {
+        return `<div id="homeMusicCard" onclick="playMusic(${track.id})" data-id=${track.id} data-title="${track.title}" data-album="${track.album}" data-artist="${track.artist}" data-year=${track.year} data-path="${track.path}" data-duration="${track.duration}">
+                <img src="${track.datajpg}" id="homeMusicCardArt">
+                <p id="homeMusicCardTitle">${track.title}</p>
+                <p id="homeMusicCardArtist">${track.artist}</p>
+                <p style="display: none;"><span id="likeHeart" onclick="likeTrack(event)" data-track-id="${track.id}" data-liked="${track.favourite}" class="typcn ${track.favourite ? 'typcn-heart' : 'typcn-heart-outline'}"></span></p> 
+            </div>`
+    }
     return new Promise((resolve, reject) => {
         fetchMusic('ORDER BY birthtime DESC LIMIT 15')
         .then(data => {
@@ -341,17 +349,18 @@ function generateHomePage(withTop5 = true) {
                     allHomePromises.push(
                         new Promise((resolve, reject) => {
                             mm.parseFile(track.path).then(metadata => {
-                                let datajpg = metadata.common.picture ? blobTob64(metadata.common.picture[0].data) : './assets/images/art.png'; 
-                                homeMusicCards += `
-                                    <div id="homeMusicCard" onclick="playMusic(${track.id})" data-id=${track.id} data-title="${track.title}" data-album="${track.album}" data-artist="${track.artist}" data-year=${track.year} data-path="${track.path}" data-duration="${track.duration}">
-                                        <img src="${datajpg}" id="homeMusicCardArt">
-                                        <p id="homeMusicCardTitle">${track.title}</p>
-                                        <p id="homeMusicCardArtist">${track.artist}</p>
-                                        <p style="display: none;"><span id="likeHeart" onclick="likeTrack(event)" data-track-id="${track.id}" data-liked="${track.favourite}" class="typcn ${track.favourite ? 'typcn-heart' : 'typcn-heart-outline'}"></span></p> 
-                                    </div>
-                                `
-                                if(metadata) resolve(`got art for ${track.title}`) 
-                                else reject(`failed to get art for ${track.title}`)
+                                if(metadata.common.picture) {
+                                    blobTob64(metadata.common.picture[0].data, { path: track.path, category: 'home' })
+                                        .then(imagePath => {
+                                            track.datajpg = imagePath;
+                                            homeMusicCards += homeTemplate(track);
+                                            resolve(`got art for ${track.title}`)
+                                        })
+                                } else {
+                                    track.datajpg = './assets/images/art.png';
+                                    homeMusicCards += homeTemplate(track);
+                                    reject(`failed to get art for ${track.title}`)
+                                }
                             })
                         })
                     )                       
@@ -612,6 +621,17 @@ function generateLikedPage() {
 
 function generatePlaylistsPage() {
     let allPlaylists = '';
+    function playlistTemplate(playlist) {
+        return `<div id="playlistCard" onclick="showPlaylistTracks('${playlist.name}')" data-playlist="${playlist.name}" data-tracks="${playlist.tracks}">
+                    <div id="playlistCardArt">
+                        <img src="${playlist.datajpg}">
+                    </div>
+                    <div id="playlistCardInfo">
+                        <p id="playlistCardTitle">${capitalizeFirstLetter(playlist.name.replace('_playlist', '').replace('_', ' '))}</p>
+                        <p id="playlistCardTracks">${playlist.tracks} tracks</p>
+                    </div>
+                </div>`
+    } 
     return new Promise((resolve, reject) => {
         let allPlaylistsPromises = [];
         // fetching all playlists
@@ -625,22 +645,22 @@ function generatePlaylistsPage() {
                             db.all(`SELECT COUNT(*) as tracks, path FROM ${playlist.name}`, (err, row) => {
                                 if(err) console.error(err);
                                 if(row[0].tracks) {
+                                    playlist.tracks = row[0].tracks;
+                                    playlist.path = row[0].path;
                                     mm.parseFile(row[0].path)
                                         .then(metadata => {
-                                            let datajpg = metadata.common.picture ? blobTob64(metadata.common.picture[0].data) : './assets/images/art.png';
-                                            allPlaylists += `
-                                            <div id="playlistCard" onclick="showPlaylistTracks('${playlist.name}')" data-playlist="${playlist.name}" data-tracks="${row[0].tracks}">
-                                                <div id="playlistCardArt">
-                                                    <img src="${datajpg}">
-                                                </div>
-                                                <div id="playlistCardInfo">
-                                                    <p id="playlistCardTitle">${capitalizeFirstLetter(playlist.name.replace('_playlist', '').replace('_', ' '))}</p>
-                                                    <p id="playlistCardTracks">${row[0].tracks} tracks</p>
-                                                </div>
-                                            </div>
-                                            `
-                                            if(metadata) res(`got metadata for ${playlist.name} with ${row[0].tracks} tracks`)
-                                            else rej(`failed to get metadata for ${playlist.name}} with ${row[0].tracks} tracks`);
+                                            if(metadata.common.picture) {
+                                                blobTob64(metadata.common.picture[0].data, { path: playlist.path, category: 'playlists' })
+                                                    .then(imagePath => {
+                                                        playlist.datajpg = imagePath;
+                                                        allPlaylists += playlistTemplate(playlist);
+                                                        res(`got metadata for ${playlist.name} with ${playlist.tracks} tracks`)
+                                                    })
+                                            } else {
+                                                playlist.datajpg = './assets/images/art.png';
+                                                allPlaylists += playlistTemplate(playlist);
+                                                rej(`failed to get metadata for ${playlist.name}} with ${playlist.tracks} tracks`);
+                                            }
                                         })
                                 } else { res(`${ playlist.name } has 0 tracks`); }
                             })
@@ -1004,11 +1024,24 @@ let regeneratePage = {
 function loadHomePage (e) {
     if(e) highlightSbLink(e);
     // Loading artists page in #main content at start
-    $('#main').fadeOut('fast',function(){
-        $('#main').load('./pages/home.htm',function(data){
-           $('#main').fadeIn('fast'); 
-       });
-    })
+    if(regeneratePage.homePage) {
+        regeneratePage.homePage = false;
+        generateHomePage(false)
+            .then(data => {
+                console.log(data);
+                $('#main').fadeOut('fast',function(){
+                    $('#main').load('./pages/home.htm',function(data){
+                       $('#main').fadeIn('fast'); 
+                   });
+                })
+            })
+    } else {
+        $('#main').fadeOut('fast',function(){
+            $('#main').load('./pages/home.htm',function(data){
+               $('#main').fadeIn('fast'); 
+           });
+        })
+    }
 }
 
 function loadArtistsPage (e) {
@@ -1162,6 +1195,7 @@ function likeTrack(e) {
             // marking regenration of pages
             regeneratePage.likedPage = true;
             regeneratePage.songsPage = true;
+            regeneratePage.homePage = true;
 
             console.log(`${trackId} set like to 0`);
             // updating for data liked for cached page
@@ -1181,8 +1215,9 @@ function likeTrack(e) {
             if(err) console.error(err);
 
             // marking regenration of pages
-            regeneratePage.likedPage = true;
+            regeneratePage.homePage = true;
             regeneratePage.songsPage = true;
+            regeneratePage.likedPage = true;
 
             console.log(`${trackId} set to like 1`);
             // updating for data liked for cached page
@@ -2005,11 +2040,3 @@ module.exports.createNewPlaylist = createNewPlaylist;
 module.exports.deletePlaylist = deletePlaylist;
 module.exports.showToast = showToast;
 module.exports.firstLaunch = firstLaunch;
-
-// TESTING FUNCTIONS
-module.exports.shuffleCurrentQueue = shuffleCurrentQueue;
-
-document.addEventListener('keypress', () => {
-    console.log('currentQueue', currentQueue);
-    console.log('playingQueue', playingQueue);
-})
