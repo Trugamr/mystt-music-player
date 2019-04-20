@@ -25,7 +25,7 @@ body {
 
 #dragBar {
     /* -webkit-app-region: drag; */
-    width: 80%;
+    width: 60%;
     height: 20px;
     position: fixed;
     top: 2px;
@@ -80,24 +80,26 @@ body {
     opacity: 1;
 }
 
-#closeMiniPlayerBtn {
+#top-buttons {
+    position: fixed;
+    top: 10px;
+    right: 10px;
+}
+
+#top-buttons i {
     font-size: 12px;
     color: rgba(225, 225, 225);
     cursor: pointer;
     transition: ease all 0.2s;
-    position: fixed;
-    top: 10px;
-    right: 10px;
-    z-index: 3;
+    opacity: 0.5;
     /* creating more clickable area */
     width: 14px;
     height: 14px;
     text-align: center;
-    line-height: 14px;    
-    opacity: 0.5;
+    line-height: 14px;   
 }
 
-#closeMiniPlayerBtn:hover {
+#top-buttons i:hover {
     opacity: 1;
 }
 

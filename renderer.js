@@ -2005,22 +2005,22 @@ function shuffleCurrentQueue() {
 
 function shuffleArray(array) {
     var currentIndex = array.length, temporaryValue, randomIndex;
-  
+
     // While there remain elements to shuffle...
     while (0 !== currentIndex) {
-  
-      // Pick a remaining element...
-      randomIndex = Math.floor(Math.random() * currentIndex);
-      currentIndex -= 1;
-  
-      // And swap it with the current element.
-      temporaryValue = array[currentIndex];
-      array[currentIndex] = array[randomIndex];
-      array[randomIndex] = temporaryValue;
+
+        // Pick a remaining element...
+        randomIndex = Math.floor(Math.random() * currentIndex);
+        currentIndex -= 1;
+
+        // And swap it with the current element.
+        temporaryValue = array[currentIndex];
+        array[currentIndex] = array[randomIndex];
+        array[randomIndex] = temporaryValue;
     }
-  
+
     return array;
-  }  
+}  
 
 // exporting then calling with onclick on likeIcon iteself
 module.exports.likeTrack = likeTrack;
@@ -2040,3 +2040,15 @@ module.exports.createNewPlaylist = createNewPlaylist;
 module.exports.deletePlaylist = deletePlaylist;
 module.exports.showToast = showToast;
 module.exports.firstLaunch = firstLaunch;
+
+// EXPERIMENTAL
+// Preload images
+function preloadImage(url){
+    var img=new Image();
+    img.src=url;
+}
+recursiveRead(path.join(app.getAppPath(), 'cache')).then((images) => {
+    images.forEach(image => {
+        preloadImage(image);
+    })
+})

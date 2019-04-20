@@ -6,6 +6,20 @@ closeMiniPlayerBtn.addEventListener('click', () => {
     win.destroy();
 })
 
+// toggling if window always on top or not
+const alwaysOnTopBtn = document.querySelector('#alwaysOnTopBtn');
+alwaysOnTopBtn.addEventListener('click', () => {
+    if(win.isAlwaysOnTop()) {
+        win.setAlwaysOnTop(false);
+        alwaysOnTopBtn.classList.remove('fa-eye-slash');
+        alwaysOnTopBtn.classList.add('fa-eye');
+    } else {
+        win.setAlwaysOnTop(true);
+        alwaysOnTopBtn.classList.remove('fa-eye');
+        alwaysOnTopBtn.classList.add('fa-eye-slash');        
+    }
+})
+
 ipcRenderer.on('update-mini-player-info', (event, trackInfo) => {
     console.log(trackInfo);
     document.querySelector('#mini-artwork').style = `background: url('${trackInfo.artwork}')`;
@@ -20,6 +34,7 @@ const miniForwardBtn = document.querySelector('#miniPlayerForwardBtn');
 const miniOverlay = document.querySelector('#mini-overlay');
 ipcRenderer.on('update-mini-player-theme', (event, theme) => {
     closeMiniPlayerBtn.style = `color: ${theme.fifth}`;
+    alwaysOnTopBtn.style = `color: ${theme.fifth}`;
     miniBackBtn.style = `color: ${theme.fifth}`;
     miniPlayBtn.style = `color: ${theme.fifth}`;
     miniForwardBtn.style = `color: ${theme.fifth}`;
@@ -28,6 +43,7 @@ ipcRenderer.on('update-mini-player-theme', (event, theme) => {
     document.documentElement.style.setProperty('--overlay-color-hover', `rgba(${color.r}, ${color.g}, ${color.b}, 0.75)`);
     document.querySelector('#mini-overlay').style = `border-color: ${theme.fifth};`;    
 })
+
 
 
 ipcRenderer.on('mini-playing-status', (event, isPlaying) => {
