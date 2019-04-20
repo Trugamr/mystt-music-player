@@ -73,7 +73,7 @@ function createWindow () {
   mainWindow.loadFile('index.html')  
 
   // Open the DevTools.
-  mainWindow.webContents.openDevTools()
+  // mainWindow.webContents.openDevTools()
 
   mainWindow.on('close', (e) => {
     // sending message to save user state

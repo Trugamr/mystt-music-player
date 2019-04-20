@@ -442,6 +442,16 @@ function generateSongsPage() {
 
 function generateAlbumsPage() {
     let allAlbums = '';
+    function albumTemplate(album) {
+        return `<div id="albumCard" onclick="showAlbumTracks('${album.album}')" data-album="${album.album}" data-artist="${album.artist}" data-tracks="${album.tracks}">
+                <div id="albumCardArt">
+                    <img src="${album.datajpg}">
+                </div>
+                <p id="albumCardTitle">${album.album}</p>
+                <p id="albumCardArtist">${album.artist}</p>
+            </div>
+            `
+    }
     return new Promise((resolve, reject) => {
         let allAlbumPromises = [];
         // fetching all albums        
@@ -454,19 +464,18 @@ function generateAlbumsPage() {
                         new Promise((res, rej) => {
                             mm.parseFile(album.path)
                                 .then(metadata => {
-                                    let datajpg = metadata.common.picture[0].data ? blobTob64(metadata.common.picture[0].data) : './assets/images/art.png';
-                                    allAlbums += `
-                                    <div id="albumCard" onclick="showAlbumTracks('${album.album}')" data-album="${album.album}" data-artist="${album.artist}" data-tracks="${album.tracks}">
-                                        <div id="albumCardArt">
-                                            <img src="${datajpg}">
-                                        </div>
-                                        <p id="albumCardTitle">${album.album}</p>
-                                        <p id="albumCardArtist">${album.artist}</p>
-                                    </div>
-                                    `
-
-                                    if(metadata) res(`got metadata for ${album.album} by ${album.artist}`)
-                                    else rej(`failed to get metadata for ${album.album}} by ${album.artist}`);
+                                    if(metadata.common.picture) {
+                                        blobTob64(metadata.common.picture[0].data, { path: album.path, category: 'albums' })
+                                            .then(imagePath => {
+                                                album.datajpg = imagePath;
+                                                allAlbums += albumTemplate(album);
+                                                res(`got metadata for ${album.album} by ${album.artist}`)
+                                            })
+                                    } else {
+                                        album.datajpg = './assets/images/art.png';
+                                        allAlbums += albumTemplate(album);
+                                        rej(`failed to get metadata for ${album.album}} by ${album.artist}`);
+                                    }
                                 })
                         })
                     )
@@ -499,6 +508,15 @@ function generateAlbumsPage() {
 
 function generateArtistsPage() {
     let allArtists = '';
+    function artistTemplate(artist) {
+        return `<div id="artistCard" onclick="showArtistTracks('${artist.artist}')" data-artist="${artist.artist}" data-tracks="${artist.tracks}">
+                    <div id="artistCardArt">
+                        <img src="${artist.datajpg}">
+                    </div>
+                    <p id="artistCardTitle">${artist.artist}</p>
+                    <p id="artistCardTracks">${artist.tracks} tracks</p>
+                </div>`
+    }
     return new Promise((resolve, reject) => {
         let allArtistsPromises = [];
         // fetching all albums        
@@ -511,19 +529,18 @@ function generateArtistsPage() {
                         new Promise((res, rej) => {
                             mm.parseFile(artist.path)
                                 .then(metadata => {
-                                    let datajpg = metadata.common.picture ? blobTob64(metadata.common.picture[0].data) : './assets/images/art.png';
-                                    allArtists += `
-                                    <div id="artistCard" onclick="showArtistTracks('${artist.artist}')" data-artist="${artist.artist}" data-tracks="${artist.tracks}">
-                                        <div id="artistCardArt">
-                                            <img src="${datajpg}">
-                                        </div>
-                                        <p id="artistCardTitle">${artist.artist}</p>
-                                        <p id="artistCardTracks">${artist.tracks} tracks</p>
-                                    </div>
-                                    `
-
-                                    if(metadata) res(`got metadata for ${artist.artist} with ${artist.tracks} tracks`)
-                                    else rej(`failed to get metadata for ${artist.artist}} with ${artist.artist} tracks`);
+                                    if(metadata.common.picture) {
+                                        blobTob64(metadata.common.picture[0].data, { path: artist.path, category: 'artists' })
+                                            .then(imagePath => {
+                                                artist.datajpg = imagePath;
+                                                allArtists += artistTemplate(artist);
+                                                res(`got metadata for ${artist.artist} with ${artist.tracks} tracks`)
+                                            })
+                                    } else {
+                                        artist.datajpg = './assets/images/art.png';
+                                        allArtists += artistTemplate(artist);
+                                        rej(`failed to get metadata for ${artist.artist}} with ${artist.artist} tracks`);
+                                    }
                                 })
                         })
                     )
