@@ -614,12 +614,10 @@ function generateLikedPage() {
     })
 }
 
-// Generating artists page
-generatePlaylistsPage()
-    .then(data => console.log(data))
-    .catch(err => console.error(err))
-
-
+// Generating playlists page
+// generatePlaylistsPage()
+//     .then(data => console.log(data))
+//     .catch(err => console.error(err))
     
 function generatePlaylistsPage() {
     let allPlaylists = '';
@@ -1315,6 +1313,19 @@ const playerBarTotalTime = document.querySelector('#playerBarTotalTime')
 const playerBarCurrentTime = document.querySelector('#playerBarCurrentTime')
 const playerBarVolumeBtn = document.querySelector('#playerVolumeBtn')
 
+// repeat function
+repeatButton.addEventListener('click', () => {
+    if(repeatMode == 'single') {
+        repeatMode = 'queue';
+        repeatButton.classList.remove('fa-repeat-1-alt')
+        repeatButton.classList.add('fa-repeat')
+    } else {
+        repeatMode = 'single';
+        repeatButton.classList.remove('fa-repeat')
+        repeatButton.classList.add('fa-repeat-1-alt')        
+    }
+})
+
 // Mini player componenets
 const miniPlayerArt = document.querySelector('#mini-artwork');
 
@@ -1351,6 +1362,7 @@ let currentlyPlayingTrack = 0;
 let currentQueue = [];
 let currentQueueTrackIndex = 0;
 let playingQueue = false;
+let repeatMode = 'queue';
 
 // Playing track from id
 // Legacy playing function
@@ -1523,8 +1535,13 @@ function updateCurrentlyPlayingInfo(trackInfo) {
 
 
 // Hooking up media buttons
+function nextTrack(options = { from: null }) {
+    // repeat
+    if(repeatMode == 'single' && options.from != 'nextBtn') {
+        playMusic(currentlyPlayingTrack, { playBy: 'trackId', fromQueue: currentQueue.length ? true : false });
+        return;
+    }
 
-function nextTrack() {
     // Sending mini player playing status true
     ipcRenderer.send('playing-status', true);
 
@@ -1572,9 +1589,13 @@ function previousTrack() {
     } 
 }
 
-backButton.addEventListener('click', previousTrack)
+backButton.addEventListener('click', () => {
+    previousTrack({ from: 'backBtn'})
+})
 
-forwardButton.addEventListener('click', nextTrack)
+forwardButton.addEventListener('click', () => {
+    nextTrack({ from: 'nextBtn'})  
+})
 
 playButton.addEventListener('click', playOrPauseTrack)
 function playOrPauseTrack() {
