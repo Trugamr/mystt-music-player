@@ -615,16 +615,47 @@ function generateLikedPage() {
 }
 
 // Generating artists page
-// generatePlaylistsPage()
-//     .then(data => console.log(data))
-//     .catch(err => console.error(err))
+generatePlaylistsPage()
+    .then(data => console.log(data))
+    .catch(err => console.error(err))
 
+
+    
 function generatePlaylistsPage() {
     let allPlaylists = '';
     function playlistTemplate(playlist) {
+        console.log(playlist);
+        let playlistImages = `<div class="first-row">
+            <div class="art-1" style="background-image: url('${playlist.images[0]}')"></div>
+        </div>`
+        if(playlist.images.length == 2) {
+            playlistImages = `<div class="first-row">
+                                <div class="art-1" style="background-image: url('${playlist.images[0]}')"></div>
+                                <div class="art-2" style="background-image: url('${playlist.images[1]}')"></div>
+                            </div>`
+        } else if(playlist.images.length == 3) {
+            playlistImages = `<div class="first-row">
+                                <div class="art-1" style="background-image: url('${playlist.images[0]}')"></div>
+                                <div class="art-2" style="background-image: url('${playlist.images[1]}')"></div>
+                            </div>
+                            <div class="second-row">
+                                <div class="art-3" style="background-image: url('${playlist.images[2]}')"></div>
+                            </div>`
+        } else if(playlist.images.length == 4) {
+            playlistImages = `<div class="first-row">
+                                <div class="art-1" style="background-image: url('${playlist.images[0]}')"></div>
+                                <div class="art-2" style="background-image: url('${playlist.images[1]}')"></div>
+                            </div>
+                            <div class="second-row">
+                                <div class="art-3" style="background-image: url('${playlist.images[2]}')"></div>
+                                <div class="art-4" style="background-image: url('${playlist.images[3]}')"></div>
+                            </div>`
+        }
         return `<div id="playlistCard" onclick="showPlaylistTracks('${playlist.name}')" data-playlist="${playlist.name}" data-tracks="${playlist.tracks}">
                     <div id="playlistCardArt">
-                        <img src="${playlist.datajpg}">
+                        <div class="art-container">
+                            ${playlistImages}
+                        </div>
                     </div>
                     <div id="playlistCardInfo">
                         <p id="playlistCardTitle">${capitalizeFirstLetter(playlist.name.replace('_playlist', '').replace('_', ' '))}</p>
@@ -632,6 +663,31 @@ function generatePlaylistsPage() {
                     </div>
                 </div>`
     } 
+    function getPlaylistImages(tracks) {
+        let allPlaylistImagesPromises = [];
+        return new Promise((resolve, reject) => {
+            tracks.some((track, i) => {
+                allPlaylistImagesPromises.push(
+                    new Promise((res) => {
+                        mm.parseFile(track.path).then(metadata => {
+                            if(metadata.common.picture) {
+                                blobTob64(metadata.common.picture[0].data, { filePath: track.path, category: 'playlists' })
+                                    .then(imagePath => {
+                                        res(imagePath);
+                                    })
+                            } else {
+                                res('./assets/images/art.png');
+                            }
+                        }).catch(err => rej(err));
+                    })
+                )
+                return (i >= 3) // break loop after we get 4 tracks
+            })
+            Promise.all(allPlaylistImagesPromises).then(allImages => {
+                resolve(allImages);
+            })
+        })
+    }
     return new Promise((resolve, reject) => {
         let allPlaylistsPromises = [];
         // fetching all playlists
@@ -642,26 +698,31 @@ function generatePlaylistsPage() {
                 .forEach(playlist => {
                     allPlaylistsPromises.push(
                         new Promise((res, rej) => {
-                            db.all(`SELECT COUNT(*) as tracks, path FROM ${playlist.name}`, (err, row) => {
-                                if(err) console.error(err);
-                                if(row[0].tracks) {
+                            db.all(`SELECT (SELECT COUNT(*) FROM ${playlist.name}) as tracks, path FROM ${playlist.name}`, (err, row) => {
+                                if(err) console.error(err);                                
+                                if(row.length) {
                                     playlist.tracks = row[0].tracks;
-                                    playlist.path = row[0].path;
-                                    mm.parseFile(row[0].path)
-                                        .then(metadata => {
-                                            if(metadata.common.picture) {
-                                                blobTob64(metadata.common.picture[0].data, { filePath: playlist.path, category: 'playlists' })
-                                                    .then(imagePath => {
-                                                        playlist.datajpg = imagePath;
-                                                        allPlaylists += playlistTemplate(playlist);
-                                                        res(`got metadata for ${playlist.name} with ${playlist.tracks} tracks`)
-                                                    })
-                                            } else {
-                                                playlist.datajpg = './assets/images/art.png';
-                                                allPlaylists += playlistTemplate(playlist);
-                                                rej(`failed to get metadata for ${playlist.name}} with ${playlist.tracks} tracks`);
-                                            }
-                                        })
+                                    getPlaylistImages(row).then(allImages => {
+                                        playlist.images = allImages;
+                                        allPlaylists += playlistTemplate(playlist);
+                                        res(`got metadata for ${playlist.name} with ${playlist.tracks} tracks`);
+                                    })
+                                    
+                                    // mm.parseFile(row[0].path)
+                                    //     .then(metadata => {
+                                    //         // if(metadata.common.picture) {
+                                    //         //     blobTob64(metadata.common.picture[0].data, { filePath: playlist.path, category: 'playlists' })
+                                    //         //         .then(imagePath => {
+                                    //         //             playlist.datajpg = imagePath;
+                                    //         //             allPlaylists += playlistTemplate(playlist);
+                                    //         //             res(`got metadata for ${playlist.name} with ${playlist.tracks} tracks`)
+                                    //         //         })
+                                    //         // } else {
+                                    //         //     playlist.datajpg = './assets/images/art.png';
+                                    //         //     allPlaylists += playlistTemplate(playlist);
+                                    //         //     rej(`failed to get metadata for ${playlist.name}} with ${playlist.tracks} tracks`);
+                                    //         // }
+                                    //     })
                                 } else { res(`${ playlist.name } has 0 tracks`); }
                             })
                         })
@@ -966,7 +1027,8 @@ function blobTob64(blob, options = { filePath: null, category: null }) {
     let { filePath, category } = options;
     if(filePath) {        
         return new Promise((resolve, reject) => {
-            let uniquePath = path.join(app.getAppPath(), `./cache/${category}/${strEncode(filePath)}`);
+            // let uniquePath = path.join(app.getAppPath(), `./cache/${category}/${strEncode(filePath)}`);
+            let uniquePath = `./cache/${category}/${strEncode(filePath)}`;
             fs.writeFile(uniquePath, blob, (err, data) => {
                 if(err) reject(err)
                 else resolve(uniquePath);

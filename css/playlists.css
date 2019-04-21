@@ -84,18 +84,38 @@
 #playlistCardArt {
     width: 100%;
     /* prevent card click event for not triggering */
-    pointer-events: none
+    pointer-events: none;
+    display: inline-flex;
+    flex-grow: 1;
+    flex-basis: inherit;
 }
 
-#playlistCardArt img {
-    width: 100%;
+.art-container {
+    min-width: 100%;
     border-radius: 8px 8px 0px 0px;
     /* prevent card click event for not triggering */
     pointer-events: none;
-    box-sizing: border-box;
-    padding: 6px;
     border-radius: 12px;
-}  
+    display: flex;
+    flex-wrap: wrap;
+    flex-direction: column;
+    padding: 3px;
+    box-sizing: border-box; 
+} 
+
+.first-row, .second-row {
+    display: flex;
+    flex-grow: 1;
+}
+
+.art-1, .art-2, .art-3, .art-4 {
+    background-size: cover;
+    background-position: center;
+    flex-grow: 1;
+    box-sizing: border-box;
+    margin: 3px;
+    border-radius: 6px;
+}
 
 #playlistCardTitle, #playlistCardTracks {
     overflow: hidden;
