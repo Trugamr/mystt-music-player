@@ -3,7 +3,7 @@ const { remote, ipcRenderer } = require('electron');
 let win = remote.getCurrentWindow();
 const closeMiniPlayerBtn = document.querySelector('#closeMiniPlayerBtn');
 closeMiniPlayerBtn.addEventListener('click', () => {
-    win.destroy();
+    win.close();
 })
 
 // toggling if window always on top or not
@@ -22,6 +22,8 @@ alwaysOnTopBtn.addEventListener('click', () => {
 
 ipcRenderer.on('update-mini-player-info', (event, trackInfo) => {
     console.log(trackInfo);
+    // update mini player title
+    document.title = `${trackInfo.title} | ${trackInfo.artist}`;
     document.querySelector('#mini-artwork').style = `background: url('${trackInfo.artwork}')`;
 })
 

@@ -1,2 +1,7 @@
 **node_modules
 **sqliteBrowser
+cache/albums/**
+cache/artists/**
+cache/currentlyPlaying/**
+cache/home/**
+cache/playlists/**

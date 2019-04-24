@@ -315,9 +315,6 @@ function fetchMusic(args = "ORDER BY title COLLATE NOCASE ASC") {
 }
 
 // Generating home page
-// generateHomePage()
-//     .then(data => console.log(data))
-//     .catch(err => console.error(err))
 
 function generateHomePage(withTop5 = true) {
     const allHomePromises = [];
@@ -2126,12 +2123,12 @@ module.exports.firstLaunch = firstLaunch;
 
 // EXPERIMENTAL
 // Preload images
-function preloadImage(url){
-    var img=new Image();
-    img.src=url;
-}
-recursiveRead(path.join(app.getAppPath(), 'cache')).then((images) => {
-    images.forEach(image => {
-        preloadImage(image);
-    })
-})
+// function preloadImage(url){
+//     var img=new Image();
+//     img.src=url;
+// }
+// recursiveRead(path.join(app.getAppPath(), 'cache')).then((images) => {
+//     images.forEach(image => {
+//         preloadImage(image);
+//     })
+// })

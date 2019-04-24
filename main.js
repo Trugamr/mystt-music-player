@@ -175,7 +175,14 @@ function createMiniPlayerWindow() {
 
   miniPlayerWindow.on('ready-to-show', () => {
     mainWindow.webContents.send('update-mini-player-on-spawn');
-    miniPlayerWindow.show();    
+    miniPlayerWindow.show();
+    // minimize main window when mini player spawns
+    mainWindow.minimize();  
+  })
+
+  // restore main window to previous after mini player is closed
+  miniPlayerWindow.on('close', () => {
+    mainWindow.restore();
   })
 
   // force 1:1 ratio of miniplayer window
