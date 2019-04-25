@@ -1631,7 +1631,9 @@ function volumeDown() {
 
 // Global shortcuts to play/pause & play next or previous tracks
 ipcRenderer.on('play-pause-track', playOrPauseTrack)
-ipcRenderer.on('play-next-track', nextTrack)
+ipcRenderer.on('play-next-track', () => {
+    nextTrack({ from: 'nextBtn' })
+})
 ipcRenderer.on('play-previous-track', previousTrack)
 ipcRenderer.on('player-volume-up', volumeUp)
 ipcRenderer.on('player-volume-down', volumeDown)
