@@ -1022,9 +1022,9 @@ function blobTob64(blob, options = { filePath: null, category: null }) {
     let { filePath, category } = options;
     if(filePath) {        
         return new Promise((resolve, reject) => {
-            // let uniquePath = path.join(app.getAppPath(), `./cache/${category}/${strEncode(filePath)}`);
+            let uniquePathFull = path.join(app.getAppPath(), `./cache/${category}/${strEncode(filePath)}`);
             let uniquePath = `./cache/${category}/${strEncode(filePath)}`;
-            fs.writeFile(uniquePath, blob, (err, data) => {
+            fs.writeFile(uniquePathFull, blob, (err, data) => {
                 if(err) reject(err)
                 else resolve(uniquePath);
             })    
